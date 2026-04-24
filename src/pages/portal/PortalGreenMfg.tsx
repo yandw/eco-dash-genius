@@ -4,7 +4,7 @@ import { GreenMfgGrid } from "@/components/portal/GreenMfgGrid";
 export default function PortalGreenMfg() {
   return (
     <PortalLayout headerVariant="solid">
-      <section className="bg-gradient-to-br from-[hsl(217_91%_56%)] to-[hsl(210_100%_60%)] py-16">
+      <section className="bg-gradient-to-br from-[hsl(160_55%_28%)] to-[hsl(150_60%_40%)] py-16">
         <div className="max-w-[1400px] mx-auto px-6 text-white">
           <h1 className="text-4xl font-bold mb-3">绿色制造</h1>
           <p className="text-white/90">推动制造业全链条绿色低碳转型升级</p>
