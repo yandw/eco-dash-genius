@@ -38,8 +38,8 @@ export function AppLayout({ title, subtitle, children, side = "gov" }: AppLayout
         <AppSidebar side={side} />
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center gap-3 border-b border-border/60 bg-card/40 backdrop-blur-md px-4 sticky top-0 z-30">
-            <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
+          <header className="h-16 flex items-center gap-3 border-b border-border/60 bg-card/80 backdrop-blur-md px-5 sticky top-0 z-30">
+            <SidebarTrigger className="text-muted-foreground hover:text-primary h-9 w-9 rounded-full bg-muted/60 hover:bg-accent flex items-center justify-center" />
 
             <div className="hidden md:flex items-center gap-2 ml-2">
               <span className="glow-dot" />
@@ -55,25 +55,25 @@ export function AppLayout({ title, subtitle, children, side = "gov" }: AppLayout
               </div>
 
               <div className="relative hidden md:block">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                 <Input
                   placeholder={side === "gov" ? "搜索企业 / 报表..." : "搜索表单 / 文件..."}
-                  className="h-8 w-56 pl-8 bg-muted/40 border-border/60 text-xs"
+                  className="h-9 w-64 pl-9 rounded-full bg-muted/60 border-transparent text-xs focus-visible:bg-card"
                 />
               </div>
 
-              <Button variant="ghost" size="icon" className="relative h-8 w-8">
+              <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-full bg-muted/60 hover:bg-accent">
                 <Bell className="h-4 w-4" />
                 <Badge className="absolute -top-1 -right-1 h-4 min-w-4 px-1 bg-destructive text-destructive-foreground text-[10px]">
                   3
                 </Badge>
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full bg-muted/60 hover:bg-accent">
                 <Sun className="h-4 w-4" />
               </Button>
-              <div className="flex items-center gap-2 pl-2 border-l border-border/60">
-                <div className="h-7 w-7 rounded-full bg-gradient-primary flex items-center justify-center">
-                  <User className="h-3.5 w-3.5 text-primary-foreground" />
+              <div className="flex items-center gap-2 pl-3 border-l border-border/60">
+                <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center">
+                  <User className="h-4 w-4 text-primary-foreground" />
                 </div>
                 <span className="hidden md:inline text-xs text-foreground">{userLabel}</span>
                 <Link
