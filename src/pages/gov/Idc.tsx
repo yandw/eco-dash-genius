@@ -84,7 +84,7 @@ function PanelTitle({ children, action }: { children: React.ReactNode; action?: 
   );
 }
 
-const barColors = ["hsl(217 91% 56%)", "hsl(40 95% 55%)", "hsl(40 95% 55%)", "hsl(217 91% 56%)", "hsl(217 91% 56%)"];
+const barColors = ["hsl(155 55% 28%)", "hsl(40 95% 55%)", "hsl(40 95% 55%)", "hsl(155 55% 28%)", "hsl(155 55% 28%)"];
 
 export default function Idc() {
   const [tab, setTab] = useState<ClassifyTab>("综合能耗");
@@ -157,7 +157,7 @@ export default function Idc() {
                 <YAxis fontSize={9} stroke="hsl(var(--muted-foreground))" />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Bar dataKey="a" stackId="x" fill="hsl(152 65% 50%)" />
-                <Bar dataKey="b" stackId="x" fill="hsl(217 91% 56%)" />
+                <Bar dataKey="b" stackId="x" fill="hsl(155 55% 28%)" />
                 <Bar dataKey="c" stackId="x" fill="hsl(40 95% 55%)" />
                 <Bar dataKey="dd" stackId="x" fill="hsl(0 75% 60%)" />
               </BarChart>
