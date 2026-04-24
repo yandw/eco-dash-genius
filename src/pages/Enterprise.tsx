@@ -4,16 +4,17 @@ import { PlaceholderPage } from "@/components/PlaceholderPage";
 export default function Enterprise() {
   return (
     <PlaceholderPage
+      side="gov"
       title="企业管理"
-      subtitle="企业组织架构 / 厂区 / 部门信息维护"
+      subtitle="纳入监管的重点用能企业名录与档案管理"
       icon={Building2}
       features={[
-        "企业基础信息维护",
-        "组织架构与部门管理",
-        "厂区 / 车间 / 工序建模",
-        "产品与产能信息",
-        "用能边界划分",
-        "联系人与责任人管理",
+        "重点用能企业名录维护",
+        "企业基础信息核查",
+        "用能边界 / 厂区登记",
+        "产品产能信息备案",
+        "企业账户与联系人管理",
+        "企业等级 / 标签分类",
       ]}
     />
   );

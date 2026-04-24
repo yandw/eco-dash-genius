@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +22,13 @@ import PortalGreenMfg from "./pages/portal/PortalGreenMfg.tsx";
 import PortalScenarios from "./pages/portal/PortalScenarios.tsx";
 import PortalLogin from "./pages/portal/PortalLogin.tsx";
 import PortalRegister from "./pages/portal/PortalRegister.tsx";
+import EntDashboard from "./pages/ent/EntDashboard.tsx";
+import EntReportYearly from "./pages/ent/EntReportYearly.tsx";
+import EntEnergyQuota from "./pages/ent/EntEnergyQuota.tsx";
+import EntProfile from "./pages/ent/EntProfile.tsx";
+import EntArchives from "./pages/ent/EntArchives.tsx";
+import EntDownloads from "./pages/ent/EntDownloads.tsx";
+import EntSystem from "./pages/ent/EntSystem.tsx";
 
 const queryClient = new QueryClient();
 
@@ -32,18 +39,32 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/report-monthly" element={<ReportMonthly />} />
-          <Route path="/report-yearly" element={<ReportYearly />} />
-          <Route path="/energy-quota" element={<EnergyQuota />} />
-          <Route path="/archives" element={<Archives />} />
-          <Route path="/dual-control" element={<DualControl />} />
-          <Route path="/assets" element={<Assets />} />
-          <Route path="/green-mfg" element={<GreenMfg />} />
-          <Route path="/benchmark" element={<Benchmark />} />
-          <Route path="/enterprise" element={<Enterprise />} />
-          <Route path="/system" element={<System />} />
-          {/* Portal routes */}
+          {/* 默认进入门户 */}
+          <Route path="/" element={<Navigate to="/portal" replace />} />
+
+          {/* 政府监管侧 */}
+          <Route path="/gov" element={<Index />} />
+          <Route path="/gov/report-monthly" element={<ReportMonthly />} />
+          <Route path="/gov/report-yearly" element={<ReportYearly />} />
+          <Route path="/gov/energy-quota" element={<EnergyQuota />} />
+          <Route path="/gov/archives" element={<Archives />} />
+          <Route path="/gov/dual-control" element={<DualControl />} />
+          <Route path="/gov/assets" element={<Assets />} />
+          <Route path="/gov/green-mfg" element={<GreenMfg />} />
+          <Route path="/gov/benchmark" element={<Benchmark />} />
+          <Route path="/gov/enterprise" element={<Enterprise />} />
+          <Route path="/gov/system" element={<System />} />
+
+          {/* 企业服务侧 */}
+          <Route path="/ent" element={<EntDashboard />} />
+          <Route path="/ent/report-yearly" element={<EntReportYearly />} />
+          <Route path="/ent/energy-quota" element={<EntEnergyQuota />} />
+          <Route path="/ent/profile" element={<EntProfile />} />
+          <Route path="/ent/archives" element={<EntArchives />} />
+          <Route path="/ent/downloads" element={<EntDownloads />} />
+          <Route path="/ent/system" element={<EntSystem />} />
+
+          {/* 门户 */}
           <Route path="/portal" element={<PortalHome />} />
           <Route path="/portal/news" element={<PortalNews />} />
           <Route path="/portal/news/:id" element={<PortalNewsDetail />} />
@@ -51,7 +72,7 @@ const App = () => (
           <Route path="/portal/scenarios" element={<PortalScenarios />} />
           <Route path="/portal/login" element={<PortalLogin />} />
           <Route path="/portal/register" element={<PortalRegister />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

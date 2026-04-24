@@ -4,15 +4,16 @@ import { PlaceholderPage } from "@/components/PlaceholderPage";
 export default function EnergyQuota() {
   return (
     <PlaceholderPage
+      side="gov"
       title="能源限额报告"
-      subtitle="按工序 / 产品 / 部门的能源限额管理"
+      subtitle="对企业单位产品能耗限额执行情况监管审核"
       icon={Gauge}
       features={[
         "限额指标制定与下发",
-        "实时限额执行进度",
-        "超限预警与责任归属",
+        "企业限额执行情况监测",
+        "超限企业预警与督办",
         "单位产品综合能耗对比",
-        "限额完成度排名",
+        "区县 / 行业限额完成度排名",
         "历史限额执行档案",
       ]}
     />

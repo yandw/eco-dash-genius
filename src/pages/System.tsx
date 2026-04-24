@@ -4,6 +4,7 @@ import { PlaceholderPage } from "@/components/PlaceholderPage";
 export default function System() {
   return (
     <PlaceholderPage
+      side="gov"
       title="系统管理"
       subtitle="账户、权限、字典、日志与系统参数配置"
       icon={Settings}
