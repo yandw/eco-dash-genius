@@ -5,34 +5,25 @@ import {
   CalendarDays,
   Gauge,
   Leaf,
-  ClipboardCheck,
-  BarChart3,
   Cloud,
-  Database,
   Cpu,
+  Database,
   Zap,
 } from "lucide-react";
-import cube from "@/assets/portal/cube-3d.png";
 
 const govItems = [
-  { label: "月报填写", desc: "XXXXXX", icon: FileText },
-  { label: "年报填写", desc: "XXXXXX", icon: CalendarDays },
-  { label: "限额填报", desc: "XXXXXX", icon: Gauge },
-  { label: "绿色制造申报", desc: "XXXXXX", icon: Leaf },
-  { label: "双控考核", desc: "XXXXXX", icon: ClipboardCheck },
-  { label: "数据分析", desc: "XXXXXX", icon: BarChart3 },
+  { label: "月报填写", desc: "在线填写月度报表，自动校验", icon: FileText },
+  { label: "年报填写", desc: "年度数据汇总与报送", icon: CalendarDays },
+  { label: "限额填报", desc: "能耗限额指标统一申报", icon: Gauge },
+  { label: "绿色制造申报", desc: "绿色工厂/园区一站式申报", icon: Leaf },
 ];
 
 const enterpriseItems = [
-  { label: "能耗填报", desc: "XXXXXX", icon: FileText },
-  { label: "碳排放核算", desc: "XXXXXX", icon: Cloud },
-  { label: "节能诊断", desc: "XXXXXX", icon: Cpu },
-  { label: "数据中心", desc: "XXXXXX", icon: Database },
-  { label: "绿电采购", desc: "XXXXXX", icon: Zap },
-  { label: "对标分析", desc: "XXXXXX", icon: BarChart3 },
+  { label: "能耗填报", desc: "智能采集，自动汇总", icon: FileText },
+  { label: "碳排放核算", desc: "符合国家方法学的核算工具", icon: Cloud },
+  { label: "节能诊断", desc: "AI 智能识别节能潜力", icon: Cpu },
+  { label: "数据中心", desc: "实时监测设备能耗", icon: Database },
 ];
-
-const orbitIcons = [Cloud, Database, Cpu, Zap, Leaf, BarChart3];
 
 export function BusinessFunctions() {
   const [side, setSide] = useState<"gov" | "ent">("gov");
@@ -41,14 +32,17 @@ export function BusinessFunctions() {
   return (
     <section className="py-14 bg-secondary/40">
       <div className="max-w-[1400px] mx-auto px-6">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-foreground">业务功能</h2>
+        <h2 className="portal-section-title">业务功能</h2>
+
+        <div className="flex justify-center mb-2">
           <div className="inline-flex rounded-full bg-card border border-border p-1">
             <button
               onClick={() => setSide("gov")}
               className={cn(
                 "px-5 py-1.5 text-xs rounded-full transition-all",
-                side === "gov" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                side === "gov"
+                  ? "bg-primary text-primary-foreground shadow"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               政府侧
@@ -57,67 +51,35 @@ export function BusinessFunctions() {
               onClick={() => setSide("ent")}
               className={cn(
                 "px-5 py-1.5 text-xs rounded-full transition-all",
-                side === "ent" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                side === "ent"
+                  ? "bg-primary text-primary-foreground shadow"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               企业侧
             </button>
           </div>
         </div>
+        <span className="portal-section-divider" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          {/* 左侧功能列表 */}
-          <div className="portal-card p-6 grid grid-cols-2 gap-4">
-            {items.map((it) => (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mt-4">
+          {items.map((it) => {
+            const Icon = it.icon;
+            return (
               <div
                 key={it.label}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent transition-colors cursor-pointer"
+                className="portal-card p-6 flex flex-col items-center text-center cursor-pointer"
               >
-                <div className="h-11 w-11 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center text-white shrink-0">
-                  <it.icon className="h-5 w-5" />
+                <div className="portal-icon-badge mb-4">
+                  <Icon className="h-5 w-5" />
                 </div>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold text-foreground truncate">{it.label}</div>
-                  <div className="text-xs text-muted-foreground">{it.desc}</div>
-                </div>
+                <h3 className="text-sm font-semibold text-foreground">{it.label}</h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {it.desc}
+                </p>
               </div>
-            ))}
-          </div>
-
-          {/* 右侧立方体 + 轨道 */}
-          <div className="relative h-[400px] flex items-center justify-center">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="h-72 w-72 rounded-full border border-primary/20 absolute" />
-              <div className="h-96 w-96 rounded-full border border-primary/10 absolute" />
-            </div>
-
-            <img
-              src={cube}
-              alt="数据立方体"
-              loading="lazy"
-              width={768}
-              height={768}
-              className="relative z-10 w-64 h-64 object-contain portal-float drop-shadow-2xl"
-            />
-
-            {orbitIcons.map((Icon, i) => {
-              const angle = (i / orbitIcons.length) * Math.PI * 2;
-              const radius = 170;
-              const x = Math.cos(angle) * radius;
-              const y = Math.sin(angle) * radius;
-              return (
-                <div
-                  key={i}
-                  className="absolute h-12 w-12 rounded-full bg-card border border-primary/30 flex items-center justify-center shadow-lg z-20"
-                  style={{
-                    transform: `translate(${x}px, ${y}px)`,
-                  }}
-                >
-                  <Icon className="h-5 w-5 text-primary" />
-                </div>
-              );
-            })}
-          </div>
+            );
+          })}
         </div>
       </div>
     </section>
