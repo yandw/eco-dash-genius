@@ -208,7 +208,7 @@ export default function Decade() {
           </div>
 
           {/* 能效强度变化 */}
-          <div className="panel p-3 flex-1">
+          <div className="panel p-3">
             <div className="text-sm font-semibold mb-2">能效强度变化</div>
             <PanelHeader title="综合能耗强度(等价值)" />
             <div className="text-[10px] text-muted-foreground mb-1">tce/万元</div>
