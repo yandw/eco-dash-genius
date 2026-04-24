@@ -5,6 +5,16 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import ReportMonthly from "./pages/ReportMonthly.tsx";
+import ReportYearly from "./pages/ReportYearly.tsx";
+import EnergyQuota from "./pages/EnergyQuota.tsx";
+import Archives from "./pages/Archives.tsx";
+import DualControl from "./pages/DualControl.tsx";
+import Assets from "./pages/Assets.tsx";
+import GreenMfg from "./pages/GreenMfg.tsx";
+import Benchmark from "./pages/Benchmark.tsx";
+import Enterprise from "./pages/Enterprise.tsx";
+import System from "./pages/System.tsx";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +26,16 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/report-monthly" element={<ReportMonthly />} />
+          <Route path="/report-yearly" element={<ReportYearly />} />
+          <Route path="/energy-quota" element={<EnergyQuota />} />
+          <Route path="/archives" element={<Archives />} />
+          <Route path="/dual-control" element={<DualControl />} />
+          <Route path="/assets" element={<Assets />} />
+          <Route path="/green-mfg" element={<GreenMfg />} />
+          <Route path="/benchmark" element={<Benchmark />} />
+          <Route path="/enterprise" element={<Enterprise />} />
+          <Route path="/system" element={<System />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
