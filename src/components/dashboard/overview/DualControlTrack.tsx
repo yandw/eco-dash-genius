@@ -39,7 +39,7 @@ export function DualControlTrack() {
           })}
           {/* 三角底座 */}
           <svg viewBox="0 0 100 30" className="w-full h-6 mt-1">
-            <polygon points="0,30 100,30 50,0" fill="hsl(217 91% 56% / 0.3)" />
+            <polygon points="0,30 100,30 50,0" fill="hsl(150 60% 45% / 0.3)" />
             <polygon points="20,30 80,30 50,0" fill="hsl(155 55% 28%)" />
           </svg>
         </div>

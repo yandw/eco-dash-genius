@@ -304,7 +304,7 @@ export default function DualTrack() {
                 <YAxis yAxisId="R" orientation="right" fontSize={10} stroke="hsl(var(--muted-foreground))" label={{ value: "万tCO2e", position: "insideTopRight", fontSize: 9, fill: "hsl(var(--muted-foreground))", offset: -5 }} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 10 }} iconSize={10} />
-                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(217 91% 65%)" radius={[3, 3, 0, 0]} barSize={18} />
+                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(150 60% 45%)" radius={[3, 3, 0, 0]} barSize={18} />
                 <Line yAxisId="R" type="monotone" dataKey="carbon" name="碳排放量" stroke="hsl(40 95% 55%)" strokeWidth={2} dot={{ r: 3, fill: "hsl(40 95% 55%)" }} />
               </ComposedChart>
             </ResponsiveContainer>
@@ -328,7 +328,7 @@ export default function DualTrack() {
                 <YAxis yAxisId="R" orientation="right" fontSize={10} stroke="hsl(var(--muted-foreground))" label={{ value: "万tCO2e", position: "insideTopRight", fontSize: 9, fill: "hsl(var(--muted-foreground))", offset: -5 }} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 10 }} iconSize={10} />
-                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(217 91% 65%)" radius={[3, 3, 0, 0]} barSize={14} />
+                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(150 60% 45%)" radius={[3, 3, 0, 0]} barSize={14} />
                 <Line yAxisId="R" type="monotone" dataKey="carbon" name="碳排放量" stroke="hsl(40 95% 55%)" strokeWidth={2} dot={{ r: 2.5, fill: "hsl(40 95% 55%)" }} />
               </ComposedChart>
             </ResponsiveContainer>

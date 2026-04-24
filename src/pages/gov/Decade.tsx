@@ -216,8 +216,8 @@ export default function Decade() {
               <LineChart data={intensity} margin={{ top: 5, right: 10, left: -15, bottom: 0 }}>
                 <defs>
                   <linearGradient id="intensityArea" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(217 91% 60%)" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="hsl(217 91% 60%)" stopOpacity={0} />
+                    <stop offset="0%" stopColor="hsl(150 60% 45%)" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="hsl(150 60% 45%)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
