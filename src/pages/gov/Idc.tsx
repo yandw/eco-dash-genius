@@ -140,7 +140,7 @@ export default function Idc() {
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] mb-2">
               {[
                 { l: "1.0~1.3", c: "hsl(152 65% 50%)" },
-                { l: "1.3~1.5", c: "hsl(155 55% 28%)" },
+                { l: "1.3~1.5", c: "hsl(217 91% 56%)" },
                 { l: "1.5~1.7", c: "hsl(40 95% 55%)" },
                 { l: ">1.7", c: "hsl(0 75% 60%)" },
               ].map((it) => (
