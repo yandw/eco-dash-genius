@@ -1,27 +1,40 @@
 import { Link } from "react-router-dom";
-import heroBg from "@/assets/portal/hero-bg.jpg";
+import { ArrowRight } from "lucide-react";
+import heroBg from "@/assets/portal/hero-green.jpg";
 
 export function HeroBanner() {
   return (
-    <section className="relative h-[520px] overflow-hidden">
+    <section className="relative h-[480px] overflow-hidden">
       <img
         src={heroBg}
         alt="工业绿色转型"
         className="absolute inset-0 w-full h-full object-cover"
         width={1920}
-        height={768}
+        height={900}
       />
       <div className="absolute inset-0 portal-hero-overlay" />
-      <div className="relative z-10 max-w-[1400px] mx-auto h-full flex flex-col items-center justify-center px-6 pt-16 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold text-white tracking-wide mb-4 drop-shadow-lg">
-          聚焦"双碳"战略，领航工业绿色转型新格局
+
+      <div className="relative z-10 max-w-[1400px] mx-auto h-full flex flex-col justify-center px-10 pt-14">
+        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-wide leading-tight drop-shadow-lg">
+          聚焦"双碳"战略
         </h1>
-        <p className="text-xl md:text-3xl text-white/95 font-medium tracking-wider mb-12 drop-shadow">
-          推动制造业全面绿色低碳转型
+        <h2 className="text-3xl md:text-5xl font-bold tracking-wide leading-tight mt-2 drop-shadow-lg">
+          <span className="text-white/95">领航</span>
+          <span className="bg-gradient-to-r from-emerald-200 to-emerald-400 bg-clip-text text-transparent">
+            工业绿色转型
+          </span>
+        </h2>
+        <p className="text-sm md:text-base text-white/90 max-w-xl mt-5 leading-relaxed drop-shadow">
+          推动制造业全面绿色低碳转型，构建工业能碳数智空间，赋能企业可持续发展。
         </p>
-        <div className="flex flex-wrap justify-center gap-5">
-          <Link to="/gov" className="portal-glass-btn">政府管理侧</Link>
-          <Link to="/ent" className="portal-glass-btn">企业服务侧</Link>
+
+        <div className="flex flex-wrap gap-3 mt-8">
+          <Link to="/gov" className="portal-cta-primary">
+            政府管理侧 <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link to="/ent" className="portal-cta-ghost">
+            企业服务侧 <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>

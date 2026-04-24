@@ -1,46 +1,48 @@
-/* 门户站点 — 浅色蓝调科技风
+/* 门户站点 — 浅色绿色生态风
    仅在 .portal-theme 包裹下生效，避免污染深色后台
 */
 
 .portal-theme {
-  /* 重写语义令牌为浅色蓝调 */
-  --background: 210 40% 98%;
-  --foreground: 220 40% 15%;
+  /* 重写语义令牌为浅色绿色 */
+  --background: 150 20% 98%;
+  --foreground: 160 30% 12%;
 
   --card: 0 0% 100%;
-  --card-foreground: 220 40% 15%;
+  --card-foreground: 160 30% 12%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 220 40% 15%;
+  --popover-foreground: 160 30% 12%;
 
-  --primary: 217 91% 56%;
+  --primary: 155 55% 28%;
   --primary-foreground: 0 0% 100%;
-  --primary-glow: 210 100% 70%;
+  --primary-glow: 150 55% 45%;
 
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 220 40% 20%;
+  --secondary: 150 25% 96%;
+  --secondary-foreground: 160 30% 18%;
 
-  --muted: 210 30% 95%;
-  --muted-foreground: 215 16% 47%;
+  --muted: 150 20% 95%;
+  --muted-foreground: 160 12% 45%;
 
-  --accent: 210 90% 96%;
-  --accent-foreground: 217 91% 40%;
+  --accent: 150 40% 94%;
+  --accent-foreground: 155 55% 28%;
 
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 217 91% 56%;
+  --border: 150 20% 90%;
+  --input: 150 20% 90%;
+  --ring: 155 55% 35%;
 
   /* 门户专属 */
-  --portal-blue-1: 217 91% 56%;
-  --portal-blue-2: 210 100% 65%;
-  --portal-blue-deep: 222 60% 18%;
-  --portal-blue-bg: 210 50% 97%;
+  --portal-green-deep: 160 50% 20%;
+  --portal-green-mid: 155 55% 32%;
+  --portal-green-soft: 150 40% 94%;
+  --portal-bg: 150 20% 97%;
 
-  --portal-gradient-hero: linear-gradient(135deg, hsl(217 91% 56%), hsl(200 100% 60%));
-  --portal-gradient-card-blue: linear-gradient(135deg, hsl(217 91% 56%), hsl(210 100% 50%));
-  --portal-shadow-card: 0 4px 24px -8px hsl(217 91% 56% / 0.15);
-  --portal-shadow-hover: 0 12px 32px -8px hsl(217 91% 56% / 0.25);
-  --portal-footer-bg: linear-gradient(135deg, hsl(222 60% 14%), hsl(217 60% 18%));
+  --portal-gradient-hero: linear-gradient(135deg, hsl(160 55% 28%), hsl(150 60% 40%));
+  --portal-gradient-card-blue: linear-gradient(135deg, hsl(160 55% 28%), hsl(150 60% 40%));
+  --portal-gradient-card-green: linear-gradient(135deg, hsl(160 55% 28%), hsl(150 60% 40%));
+  --portal-shadow-card: 0 6px 20px -10px hsl(160 50% 20% / 0.15);
+  --portal-shadow-hover: 0 14px 32px -10px hsl(160 50% 20% / 0.22);
+  --portal-shadow-float: 0 10px 36px -8px hsl(160 50% 20% / 0.18);
+  --portal-footer-bg: hsl(150 22% 96%);
 
   background: hsl(var(--background));
   color: hsl(var(--foreground));
@@ -52,13 +54,26 @@
   box-shadow: var(--portal-shadow-card);
 }
 .portal-theme .portal-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: var(--portal-shadow-hover);
 }
 
 .portal-theme .portal-section-title {
-  @apply text-2xl font-bold text-center mb-8;
+  @apply text-2xl md:text-3xl font-bold text-center mb-2;
   color: hsl(var(--foreground));
+}
+.portal-theme .portal-section-sub {
+  @apply text-sm text-center mb-10;
+  color: hsl(var(--muted-foreground));
+}
+
+.portal-theme .portal-section-divider {
+  display: block;
+  width: 36px;
+  height: 3px;
+  border-radius: 999px;
+  background: hsl(var(--primary));
+  margin: 8px auto 24px;
 }
 
 .portal-theme .portal-gradient-text {
@@ -70,35 +85,44 @@
 
 .portal-theme .portal-hero-overlay {
   background: linear-gradient(
-    135deg,
-    hsl(217 91% 30% / 0.55),
-    hsl(210 100% 40% / 0.35)
+    180deg,
+    hsl(160 50% 10% / 0.35) 0%,
+    hsl(160 50% 10% / 0.15) 50%,
+    hsl(160 50% 10% / 0.55) 100%
   );
 }
 
-.portal-theme .portal-glass-btn {
-  @apply px-8 py-3 rounded-full text-white font-medium transition-all duration-300;
-  background: hsl(255 100% 100% / 0.15);
-  border: 1px solid hsl(255 100% 100% / 0.4);
-  backdrop-filter: blur(8px);
+.portal-theme .portal-cta-primary {
+  @apply px-6 py-2.5 rounded-md text-white font-medium text-sm transition-all duration-300 inline-flex items-center gap-2;
+  background: hsl(var(--primary));
+  box-shadow: 0 6px 18px -6px hsl(var(--primary) / 0.5);
 }
-.portal-theme .portal-glass-btn:hover {
-  background: hsl(255 100% 100% / 0.25);
-  transform: translateY(-2px);
+.portal-theme .portal-cta-primary:hover {
+  background: hsl(var(--primary-glow));
+  transform: translateY(-1px);
+}
+
+.portal-theme .portal-cta-ghost {
+  @apply px-6 py-2.5 rounded-md font-medium text-sm transition-all duration-300 inline-flex items-center gap-2;
+  background: hsl(0 0% 100% / 0.85);
+  color: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary) / 0.4);
+  backdrop-filter: blur(6px);
+}
+.portal-theme .portal-cta-ghost:hover {
+  background: hsl(0 0% 100%);
+  transform: translateY(-1px);
+}
+
+.portal-theme .portal-icon-badge {
+  @apply h-12 w-12 rounded-full flex items-center justify-center;
+  background: hsl(var(--accent));
+  color: hsl(var(--primary));
 }
 
 .portal-theme .portal-footer {
   background: var(--portal-footer-bg);
-  position: relative;
-  overflow: hidden;
-}
-.portal-theme .portal-footer::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(ellipse at bottom left, hsl(217 91% 56% / 0.2), transparent 60%);
-  pointer-events: none;
+  border-top: 1px solid hsl(var(--border));
 }
 
 @keyframes portal-float {
@@ -108,3 +132,7 @@
 .portal-theme .portal-float {
   animation: portal-float 4s ease-in-out infinite;
 }
+
+/* 横向滚动隐藏滚动条 */
+.portal-theme .no-scrollbar::-webkit-scrollbar { display: none; }
+.portal-theme .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
