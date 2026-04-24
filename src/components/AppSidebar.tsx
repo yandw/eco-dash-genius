@@ -105,16 +105,16 @@ export function AppSidebar({ side = "gov" }: Props) {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-2 py-3">
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-primary shadow-glow">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-accent shadow-glow">
             {isGov ? (
-              <ShieldCheck className="h-5 w-5 text-primary-foreground" />
+              <ShieldCheck className="h-5 w-5 text-sidebar-accent-foreground" />
             ) : (
-              <Activity className="h-5 w-5 text-primary-foreground" />
+              <Activity className="h-5 w-5 text-sidebar-accent-foreground" />
             )}
           </div>
           {!collapsed && (
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold text-gradient">
+              <span className="text-sm font-semibold text-sidebar-foreground">
                 {isGov ? "政府监管" : "企业服务"}
               </span>
               <span className="text-[10px] tracking-wider text-sidebar-foreground/60">
