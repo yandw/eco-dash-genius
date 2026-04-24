@@ -11,6 +11,10 @@ import {
   Building2,
   Settings,
   Activity,
+  FileEdit,
+  Download,
+  ShieldCheck,
+  Inbox,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -26,36 +30,62 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-export const navItems = [
-  { title: "全景监测", url: "/", icon: LayoutDashboard },
-  { title: "节能月度报告", url: "/report-monthly", icon: FileBarChart },
-  { title: "节能年度报告", url: "/report-yearly", icon: CalendarRange },
-  { title: "能源限额报告", url: "/energy-quota", icon: Gauge },
-  { title: "节能管理档案", url: "/archives", icon: FolderArchive },
-  { title: "双控考核管理", url: "/dual-control", icon: ClipboardCheck },
-  { title: "固定资产管理", url: "/assets", icon: Boxes },
-  { title: "绿色制造管理", url: "/green-mfg", icon: Leaf },
-  { title: "设备对标管理", url: "/benchmark", icon: Crosshair },
-  { title: "企业管理", url: "/enterprise", icon: Building2 },
-  { title: "系统管理", url: "/system", icon: Settings },
+export type UserSide = "gov" | "ent";
+
+const govItems = [
+  { title: "全景监测", url: "/gov", icon: LayoutDashboard },
+  { title: "节能月度报告", url: "/gov/report-monthly", icon: FileBarChart },
+  { title: "节能年度报告", url: "/gov/report-yearly", icon: CalendarRange },
+  { title: "能源限额报告", url: "/gov/energy-quota", icon: Gauge },
+  { title: "节能管理档案", url: "/gov/archives", icon: FolderArchive },
+  { title: "双控考核管理", url: "/gov/dual-control", icon: ClipboardCheck },
+  { title: "固定资产管理", url: "/gov/assets", icon: Boxes },
+  { title: "绿色制造管理", url: "/gov/green-mfg", icon: Leaf },
+  { title: "设备对标管理", url: "/gov/benchmark", icon: Crosshair },
+  { title: "企业管理", url: "/gov/enterprise", icon: Building2 },
+  { title: "系统管理", url: "/gov/system", icon: Settings },
 ];
 
-export function AppSidebar() {
+const entItems = [
+  { title: "我的工作台", url: "/ent", icon: LayoutDashboard },
+  { title: "年度报告填报", url: "/ent/report-yearly", icon: CalendarRange },
+  { title: "限额报告填报", url: "/ent/energy-quota", icon: Gauge },
+  { title: "企业设置", url: "/ent/profile", icon: Building2 },
+  { title: "节能档案", url: "/ent/archives", icon: FolderArchive },
+  { title: "文件下载", url: "/ent/downloads", icon: Download },
+  { title: "系统管理", url: "/ent/system", icon: Settings },
+];
+
+export const navItems = govItems;
+
+interface Props {
+  side?: UserSide;
+}
+
+export function AppSidebar({ side = "gov" }: Props) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+  const items = side === "gov" ? govItems : entItems;
+  const isGov = side === "gov";
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-2 py-3">
           <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-primary shadow-glow">
-            <Activity className="h-5 w-5 text-primary-foreground" />
+            {isGov ? (
+              <ShieldCheck className="h-5 w-5 text-primary-foreground" />
+            ) : (
+              <Activity className="h-5 w-5 text-primary-foreground" />
+            )}
           </div>
           {!collapsed && (
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold text-gradient">节能降碳</span>
+              <span className="text-sm font-semibold text-gradient">
+                {isGov ? "政府监管" : "企业服务"}
+              </span>
               <span className="text-[10px] tracking-wider text-sidebar-foreground/60">
-                数智管理平台
+                {isGov ? "节能降碳数智平台" : "能碳填报与管理"}
               </span>
             </div>
           )}
@@ -71,7 +101,7 @@ export function AppSidebar() {
           )}
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {items.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <NavLink

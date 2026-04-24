@@ -1,17 +1,19 @@
 import { LucideIcon } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
+import type { UserSide } from "@/components/AppSidebar";
 
 interface PlaceholderPageProps {
   title: string;
   subtitle: string;
   icon: LucideIcon;
   features: string[];
+  side?: UserSide;
 }
 
-export function PlaceholderPage({ title, subtitle, icon: Icon, features }: PlaceholderPageProps) {
+export function PlaceholderPage({ title, subtitle, icon: Icon, features, side }: PlaceholderPageProps) {
   return (
-    <AppLayout title={title} subtitle={subtitle}>
+    <AppLayout title={title} subtitle={subtitle} side={side}>
       <div className="panel-glow p-10 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-glow opacity-50 pointer-events-none" />
         <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
