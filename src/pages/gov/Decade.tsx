@@ -186,7 +186,7 @@ export default function Decade() {
         {/* ===== 右列 ===== */}
         <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">
           {/* 能耗总量及预测 */}
-          <div className="panel p-3 flex-1">
+          <div className="panel p-3">
             <div className="text-sm font-semibold mb-2">能耗总量及预测</div>
             <PanelHeader title="重点用能单位综合能耗（吨标煤）" />
             <ResponsiveContainer width="100%" height={240}>
