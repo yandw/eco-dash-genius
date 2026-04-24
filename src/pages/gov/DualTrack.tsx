@@ -1,5 +1,4 @@
 import { AppLayout } from "@/components/AppLayout";
-import { MonitoringTabs } from "@/components/MonitoringTabs";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Bar, BarChart, Legend } from "recharts";
 import { Progress } from "@/components/ui/progress";
 
@@ -18,7 +17,6 @@ const districts = ["浦东", "闵行", "嘉定", "宝山", "松江", "金山", "
 export default function DualTrack() {
   return (
     <AppLayout side="gov" title="全景监测" subtitle="双控跟踪 · 能耗双控 / 碳排双控月度进度">
-      <MonitoringTabs />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {[

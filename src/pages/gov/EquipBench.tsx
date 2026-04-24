@@ -1,5 +1,4 @@
 import { AppLayout } from "@/components/AppLayout";
-import { MonitoringTabs } from "@/components/MonitoringTabs";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 
@@ -28,7 +27,6 @@ const overList = [
 export default function EquipBench() {
   return (
     <AppLayout side="gov" title="全景监测" subtitle="设备对标 · 重点用能设备能效水平">
-      <MonitoringTabs />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         <div className="panel p-5 lg:col-span-2">
           <h3 className="text-sm font-semibold mb-3">主要设备能效对标 (实际 vs 国标先进值)</h3>

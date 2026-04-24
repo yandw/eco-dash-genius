@@ -1,5 +1,4 @@
 import { AppLayout } from "@/components/AppLayout";
-import { MonitoringTabs } from "@/components/MonitoringTabs";
 import { Server, Zap, HardDrive, Activity } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from "recharts";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +22,6 @@ const idcList = [
 export default function Idc() {
   return (
     <AppLayout side="gov" title="全景监测" subtitle="IDC 监察 · 数据中心 PUE 与能耗">
-      <MonitoringTabs />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         {[

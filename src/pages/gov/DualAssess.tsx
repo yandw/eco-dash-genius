@@ -1,5 +1,4 @@
 import { AppLayout } from "@/components/AppLayout";
-import { MonitoringTabs } from "@/components/MonitoringTabs";
 import { Badge } from "@/components/ui/badge";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
 
@@ -27,7 +26,6 @@ const levelColor: Record<string, string> = {
 export default function DualAssess() {
   return (
     <AppLayout side="gov" title="全景监测" subtitle="双控考核 · 各区县考核结果与排行">
-      <MonitoringTabs />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="panel p-5">
           <h3 className="text-sm font-semibold mb-3">考核维度评分</h3>
