@@ -2,38 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 节能降碳数智管理平台 - 浅色蓝调科技风设计系统
-   与门户站点保持一致的视觉风格
+/* 节能降碳数智管理平台 - 浅色生态绿设计系统
+   与门户站点（portal.css）保持一致的视觉风格
    所有颜色必须为 HSL 格式
 */
 
 @layer base {
   :root {
-    /* 浅色蓝调底色 */
-    --background: 210 40% 98%;
-    --foreground: 222 47% 18%;
+    /* 浅色生态绿底色 */
+    --background: 150 20% 98%;
+    --foreground: 160 30% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 18%;
+    --card-foreground: 160 30% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 18%;
+    --popover-foreground: 160 30% 12%;
 
-    /* 主色：科技蓝（与门户一致） */
-    --primary: 217 91% 56%;
+    /* 主色：生态深绿（与门户一致） */
+    --primary: 155 55% 28%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 210 100% 70%;
+    --primary-glow: 150 55% 45%;
 
-    /* 次要：青蓝 */
-    --secondary: 200 90% 50%;
+    /* 次要：明亮草绿，用于图表对比序列 */
+    --secondary: 150 60% 40%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 30% 95%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 150 20% 95%;
+    --muted-foreground: 160 12% 45%;
 
-    --accent: 210 90% 96%;
-    --accent-foreground: 217 91% 40%;
+    --accent: 150 40% 94%;
+    --accent-foreground: 155 55% 28%;
 
+    /* 告警语义色保留，确保业务可读性 */
     --destructive: 0 75% 58%;
     --destructive-foreground: 0 0% 100%;
 
@@ -43,37 +44,37 @@
     --success: 152 65% 42%;
     --success-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 91% 56%;
+    --border: 150 20% 90%;
+    --input: 150 20% 90%;
+    --ring: 155 55% 35%;
 
     --radius: 0.625rem;
 
-    /* 渐变 */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 56%), hsl(200 100% 60%));
-    --gradient-secondary: linear-gradient(135deg, hsl(200 90% 55%), hsl(220 90% 65%));
-    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(217 91% 60% / 0.18), transparent 70%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
-    --gradient-grid: linear-gradient(hsl(214 32% 88% / 0.7) 1px, transparent 1px),
-                     linear-gradient(90deg, hsl(214 32% 88% / 0.7) 1px, transparent 1px);
+    /* 渐变 — 生态绿系 */
+    --gradient-primary: linear-gradient(135deg, hsl(160 55% 28%), hsl(150 60% 40%));
+    --gradient-secondary: linear-gradient(135deg, hsl(150 55% 35%), hsl(155 55% 28%));
+    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(150 55% 45% / 0.18), transparent 70%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(150 25% 97%));
+    --gradient-grid: linear-gradient(hsl(150 18% 88% / 0.7) 1px, transparent 1px),
+                     linear-gradient(90deg, hsl(150 18% 88% / 0.7) 1px, transparent 1px);
 
-    /* 阴影/光效 */
-    --shadow-glow: 0 0 24px hsl(217 91% 56% / 0.25);
-    --shadow-card: 0 4px 24px -8px hsl(217 91% 56% / 0.12);
-    --shadow-elevated: 0 12px 32px -8px hsl(217 91% 56% / 0.18), 0 0 1px hsl(217 91% 56% / 0.2);
+    /* 阴影/光效 — 与门户阴影同源 */
+    --shadow-glow: 0 0 24px hsl(155 55% 35% / 0.22);
+    --shadow-card: 0 6px 20px -10px hsl(160 50% 20% / 0.15);
+    --shadow-elevated: 0 14px 32px -10px hsl(160 50% 20% / 0.22), 0 0 1px hsl(160 50% 20% / 0.18);
 
     /* 过渡 */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Sidebar — 浅色 */
+    /* Sidebar — 白底浅绿强调 */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 30% 30%;
-    --sidebar-primary: 217 91% 56%;
+    --sidebar-foreground: 160 25% 25%;
+    --sidebar-primary: 155 55% 28%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 90% 96%;
-    --sidebar-accent-foreground: 217 91% 45%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 217 91% 56%;
+    --sidebar-accent: 150 40% 94%;
+    --sidebar-accent-foreground: 155 55% 28%;
+    --sidebar-border: 150 20% 90%;
+    --sidebar-ring: 155 55% 35%;
   }
 }
 
@@ -86,8 +87,8 @@
     @apply bg-background text-foreground;
     font-feature-settings: "cv11", "ss01";
     background-image:
-      radial-gradient(ellipse at top, hsl(217 91% 60% / 0.08), transparent 60%),
-      radial-gradient(ellipse at bottom right, hsl(200 90% 60% / 0.06), transparent 60%);
+      radial-gradient(ellipse at top, hsl(150 55% 45% / 0.08), transparent 60%),
+      radial-gradient(ellipse at bottom right, hsl(155 55% 28% / 0.06), transparent 60%);
     background-attachment: fixed;
   }
 }

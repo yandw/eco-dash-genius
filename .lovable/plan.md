@@ -1,80 +1,79 @@
-# 门户首页参照新图重塑
+## 目标
 
-参照上传的浅色风格示意图，将门户首页从"科技蓝主调"重塑为"绿色生态主调"，整体偏向更克制、留白更大的现代企业站点风格。仅改造门户站点（`portal-theme` 作用域），**完全不影响后台监管/企业看板**的深色科技风。
+将 `/gov/*` 与 `/ent/*` 全部后台页面（侧边栏、顶部栏、面板、KPI 卡、图表配色、按钮、徽章等）的视觉风格，统一为门户首页 `/portal` 的"浅色生态绿"风格，保持布局/字段/交互完全不变，仅替换配色与质感。
 
-## 主要视觉差异（图 vs 现状）
+## 设计思路
 
-| 维度 | 现状 | 新图 |
-|---|---|---|
-| 主色 | 蓝 `217 91% 56%` | 深绿 `155 55% 25%` + 强调绿 `150 60% 40%` |
-| Hero 蒙版 | 蓝色渐变 | 透明/淡黑，露出工业绿色照片 |
-| 卡片 | 蓝色 icon + 蓝渐变高亮卡 | 绿色圆形 icon 徽章，白卡平面化 |
-| 场景招商 | 一个大的蓝渐变拼块 | 多张深色照片卡片横向滚动（金融/汽车/铝/房地产） |
-| 业务功能 | 左列表+右 3D 球 | 单行 4 个简洁白卡（月报/年报/限额/绿色制造申报） |
-| 绿色制造 | 6 个等高白卡 | 大图拼接（绿色工厂大图 + 零碳园区/示范单位/绿色供应链） |
-| 数字条 | 5 列文字 | 5 列 + 浮起白条样式 |
+后台所有页面（`AppLayout`、`AppSidebar`、各种 `panel`、`KpiCard`、图表）都通过 HSL 设计令牌（`--primary` / `--accent` / `--sidebar-*` / `--gradient-*` 等）取色。因此 **不需要逐个页面改样式**，只需把 `src/index.css` 中的全局令牌从"科技蓝"切换到"生态绿"，整套后台界面会自动迁移到门户同款风格。
 
-## 改造内容
+门户绿生态参考调色（取自 `src/styles/portal.css`）：
+- 主色 deep green：`155 55% 28%`
+- 主色亮绿：`150 55% 45%`
+- 背景：`150 20% 98%`
+- 前景：`160 30% 12%`
+- 弱色文本：`160 12% 45%`
+- 强调底：`150 40% 94%`
+- 边框：`150 20% 90%`
 
-### 1. 主题令牌切换（`src/styles/portal.css`）
-- `--primary` 改为绿色 `155 55% 28%`，`--primary-glow` `150 60% 45%`
-- `--accent` 浅绿 `150 40% 95%`
-- 新增 `--portal-green-dark / --portal-green-mid / --portal-green-soft`
-- `--portal-gradient-card-blue` 重命名语义为 `--portal-gradient-card-green`（保留旧变量名做向后兼容值替换为绿色）
-- Hero overlay 从蓝渐变改为 `linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45))`
+## 修改清单
 
-### 2. Header（`PortalHeader.tsx`）
-- 顶部高度变小 (h-14)、白底 + 细线
-- Logo 文案前加小图标（保持）；导航变细、激活态用绿色下划线
-- 右侧"登录"改为绿色实心圆角胶囊按钮
+### 1. 重写 `src/index.css` 设计令牌
 
-### 3. HeroBanner
-- 高度 ≈ 420px
-- 标题分两行："聚焦"双碳"战略" / "领航工业绿色转型"（第二行用绿色描边发光）
-- 副标题文本更克制
-- 两个 CTA 按钮：左 "政府管理侧"（实心深绿） / 右 "企业服务侧"（白底绿字描边）
-- StatsBar 改为浮起白色圆角条，叠加在 hero 底部 -translate-y-1/2
+把 `:root` 内的颜色令牌改为门户绿生态调色，包括：
+- `--background / --foreground / --card / --popover`
+- `--primary / --primary-foreground / --primary-glow`（主色由 217 蓝 改为 155 深绿）
+- `--secondary`（改为绿色调辅色）
+- `--muted / --muted-foreground / --accent / --accent-foreground`
+- `--border / --input / --ring`
+- `--success` 保持绿调；`--warning` 橙、`--destructive` 红保留以维持告警语义
+- `--gradient-primary / --gradient-secondary / --gradient-glow / --gradient-card`：改为绿色渐变
+- `--gradient-grid`：网格线改为浅绿灰，避免蓝色感
+- `--shadow-glow / --shadow-card / --shadow-elevated`：阴影色改为绿色 HSL（与 `portal-shadow-card` 同源）
+- `body` 背景径向辉光由蓝紫改为绿色
 
-### 4. AgentGrid → 保持 5 个能力卡，但样式改为：
-- 白卡，顶部圆形浅绿底 icon 徽章
-- 卡片更紧凑，去掉蓝渐变高亮卡（图中 5 个均为同款白卡）
-- 标题居中
+### 2. 侧边栏令牌（同样在 `src/index.css`）
 
-### 5. GreenMfgGrid → "现代绿色生态制造体系"
-- 改为左大右组合的大图拼贴布局：
-  - 左侧大卡（占 6 列）："绿色工厂"（深色图）
-  - 右上整宽："零碳园区"
-  - 右下两小图："示范单位" / "绿色供应链"
-- 每张卡片左下角文字（白色标题 + 一行说明）
+- `--sidebar-background`：白
+- `--sidebar-foreground`：深绿灰
+- `--sidebar-primary`：与 `--primary` 一致
+- `--sidebar-accent` / `--sidebar-accent-foreground`：浅绿底 + 深绿字
+- `--sidebar-border` / `--sidebar-ring`：绿调
 
-### 6. ScenarioTabs → "场景招商"
-- 改为横向滚动的四张图卡（普惠金融/汽车制造/铝型材/房地产）
-- 每卡顶部小圆图标徽章，底部"了解此行业 →"
-- 右侧两个圆形分页按钮（保留视觉占位即可）
+效果：左侧菜单选中态、悬停态自动变成"白底+浅绿块+深绿字+左侧绿色竖线"，与门户的绿色 logo / 按钮呼应。
 
-### 7. BusinessFunctions → "业务功能"
-- 移除右侧 3D 立方体 + 轨道
-- 中央 toggle: 政府侧 / 企业侧（保留）
-- 4 个简洁白卡横排：月报填写 / 年报填写 / 限额填报 / 绿色制造申报（政府侧）
-- 卡片样式：顶部小绿色 icon、标题、灰色一行说明
+### 3. AppLayout 顶部栏微调（`src/components/AppLayout.tsx`）
 
-### 8. NewsCarousel → "要闻动态"
-- 左侧大图卡（带"专题"角标）+ 右侧 3 条文字列表（带小缩略图）
-- 视觉简化：白底，标题黑、来源/时间灰
+- "退出"链接 hover 颜色由 `text-primary`（蓝）→ 自然变绿（沿用 `--primary`，无需改文件即可生效）
+- 头像渐变背景 `bg-gradient-primary` 已改为绿色渐变（通过令牌生效）
+- 状态指示点 `glow-dot` 自动跟随 `--primary` 变绿
+- 仅需要补一个极小调整：右上角时间数字 `text-primary` 在浅色绿底下视觉权重已合适，无需改
 
-### 9. Footer
-- 浅灰底（替换深色渐变），左 logo+地址、右"相关链接 / 友情链接"两列
-- 底部版权细线分隔
+> 该文件**实质上不需要改 JSX**，全部通过令牌完成迁移。
 
-## 技术细节
+### 4. PlaceholderPage / panel 类（无需改）
 
-- 仅改 `src/styles/portal.css` 与 `src/components/portal/*` 下 8 个组件，不动路由、不动后台。
-- 不引入新依赖；图片复用 `src/assets/portal/` 已有的 hero-bg、news-1~3、cube-3d（cube 不再使用，可保留文件）。
-- 绿色 HSL 通过 `--primary` 等语义令牌切换，子组件不写死颜色，符合设计令牌规范。
-- 不修改 `tailwind.config.ts`（继续使用 `bg-primary` / `text-primary` 等）。
+- `src/pages/gov/EquipBench.tsx`、`DualAssess.tsx` 中"待设计"占位的 `bg-primary/10` 图标背景会自动变成浅绿
+- `src/components/PlaceholderPage.tsx` 的 `bg-gradient-glow` 自动跟随新绿色渐变
+- 所有 `.panel` 卡片由于 `--gradient-card` 改色，会呈现极浅的绿白渐变，质感与门户卡片一致
 
-## 不在本次范围
+### 5. 图表配色（`src/components/dashboard/*` 与 `src/components/dashboard/overview/*`）
 
-- 后台 `/gov` `/ent` 看板的深色风格（不变）
-- 登录/注册/详情等次级页面（不变；样式由主题令牌自动跟随）
-- 新图中"场景招商"右侧的真实大图素材采购（用现有图片或纯色占位）
+绝大多数图表使用 `hsl(var(--primary))` / `hsl(var(--secondary))` / `--success` / `--warning` / `--destructive` 取色，将自动迁移成绿色主、辅色绿、橙告警、红超标的生态配色。
+
+仅检查并保留以下硬编码语义色，不做改动：
+- IDC 地图四色圆点（绿/蓝/橙/红）：业务语义，保持不变
+- 告警等级红/橙：保持
+- 趋势对比中"对比基准"的次色若硬编码为蓝，将在实施阶段统一替换为 `hsl(var(--secondary))`，使其跟随新绿调
+
+## 不在范围内
+
+- 门户 `/portal` 已是绿生态，无需调整
+- 不修改任何业务字段、表格列、路由、交互逻辑
+- 不修改组件结构，仅做配色与质感的令牌级迁移
+- 不改变深色/浅色模式（继续浅色）
+
+## 预期效果
+
+- 进入 `/gov` 与 `/ent` 任何页面，整体由"蓝色科技风" → "浅色生态绿"
+- 顶部栏、侧边栏、KPI 卡、图表、按钮、徽章、占位页风格与门户首页完全统一
+- 无需逐页改动，单点修改令牌即可全站生效，后续也便于维护
