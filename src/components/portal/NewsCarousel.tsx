@@ -4,13 +4,27 @@ import news1 from "@/assets/portal/news-1.jpg";
 import news2 from "@/assets/portal/news-2.jpg";
 import news3 from "@/assets/portal/news-3.jpg";
 
-export const newsList = [
+export interface NewsItem {
+  id: string;
+  title: string;
+  category: string;
+  date: string;
+  image: string;
+  /** 兼容旧引用 */
+  img: string;
+  summary: string;
+  feature?: boolean;
+}
+
+export const newsList: NewsItem[] = [
   {
     id: "n1",
     title: "上海市工业和通信业能碳数智平台正式上线运行，助力高质量绿色低碳转型",
     category: "专题",
     date: "2026-04-23",
     image: news1,
+    img: news1,
+    summary: "平台聚合全市能碳数据，构建一体化数智底座，助力工业绿色转型。",
     feature: true,
   },
   {
@@ -19,6 +33,8 @@ export const newsList = [
     category: "新闻",
     date: "2026-04-18",
     image: news2,
+    img: news2,
+    summary: "聚焦节能减排、综合利用与绿色制造体系建设，研究部署 2026 年重点任务。",
   },
   {
     id: "n3",
@@ -26,6 +42,8 @@ export const newsList = [
     category: "新闻",
     date: "2026-04-15",
     image: news3,
+    img: news3,
+    summary: "覆盖钢铁、化工、电子等多个行业的能效领跑标杆企业名单出炉。",
   },
   {
     id: "n4",
@@ -33,6 +51,8 @@ export const newsList = [
     category: "新闻",
     date: "2026-04-10",
     image: news1,
+    img: news1,
+    summary: "AI Agent 协同帮助出口企业一键完成碳边境调节机制合规申报。",
   },
 ];
 
