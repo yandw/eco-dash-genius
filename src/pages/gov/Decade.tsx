@@ -177,8 +177,10 @@ export default function Decade() {
         </div>
 
         {/* ===== 中列：地图 ===== */}
-        <div className="col-span-12 lg:col-span-6 min-h-[760px]">
-          <DecadeShanghaiMap onEnterpriseClick={(e) => setEnterprise(e)} />
+        <div className="col-span-12 lg:col-span-6">
+          <div className="h-[760px]">
+            <DecadeShanghaiMap onEnterpriseClick={(e) => setEnterprise(e)} />
+          </div>
         </div>
 
         {/* ===== 右列 ===== */}
