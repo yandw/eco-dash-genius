@@ -29,6 +29,11 @@ import EntProfile from "./pages/ent/EntProfile.tsx";
 import EntArchives from "./pages/ent/EntArchives.tsx";
 import EntDownloads from "./pages/ent/EntDownloads.tsx";
 import EntSystem from "./pages/ent/EntSystem.tsx";
+import Decade from "./pages/gov/Decade.tsx";
+import DualTrack from "./pages/gov/DualTrack.tsx";
+import DualAssess from "./pages/gov/DualAssess.tsx";
+import Idc from "./pages/gov/Idc.tsx";
+import EquipBench from "./pages/gov/EquipBench.tsx";
 
 const queryClient = new QueryClient();
 
@@ -42,8 +47,13 @@ const App = () => (
           {/* 默认进入门户 */}
           <Route path="/" element={<Navigate to="/portal" replace />} />
 
-          {/* 政府监管侧 */}
+          {/* 政府监管侧 - 全景监测二级 */}
           <Route path="/gov" element={<Index />} />
+          <Route path="/gov/decade" element={<Decade />} />
+          <Route path="/gov/dual-track" element={<DualTrack />} />
+          <Route path="/gov/dual-assess" element={<DualAssess />} />
+          <Route path="/gov/idc" element={<Idc />} />
+          <Route path="/gov/equip-bench" element={<EquipBench />} />
           <Route path="/gov/report-monthly" element={<ReportMonthly />} />
           <Route path="/gov/report-yearly" element={<ReportYearly />} />
           <Route path="/gov/energy-quota" element={<EnergyQuota />} />
