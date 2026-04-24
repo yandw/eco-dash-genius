@@ -4,16 +4,17 @@ import { PlaceholderPage } from "@/components/PlaceholderPage";
 export default function Benchmark() {
   return (
     <PlaceholderPage
+      side="gov"
       title="设备对标管理"
-      subtitle="重点用能设备对标行业先进 / 同类设备"
+      subtitle="行业重点用能设备能效对标与监管"
       icon={Crosshair}
       features={[
-        "设备能效对标库",
-        "同类设备能效排名",
-        "对标差距分析",
+        "行业设备能效对标库",
+        "同类设备能效排名分析",
+        "落后设备识别与公示",
         "节能改造潜力评估",
-        "对标行动计划跟踪",
-        "对标成效复盘",
+        "对标整改任务下发",
+        "对标成效跟踪复盘",
       ]}
     />
   );

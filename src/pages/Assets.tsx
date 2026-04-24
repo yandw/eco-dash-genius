@@ -4,16 +4,17 @@ import { PlaceholderPage } from "@/components/PlaceholderPage";
 export default function Assets() {
   return (
     <PlaceholderPage
+      side="gov"
       title="固定资产管理"
-      subtitle="用能设备资产台账与全生命周期管理"
+      subtitle="重点用能设备资产监管与全生命周期追溯"
       icon={Boxes}
       features={[
-        "资产卡片与分类台账",
-        "设备能效等级标识",
-        "维保 / 检修记录",
-        "折旧与残值管理",
-        "设备调拨与报废流程",
-        "二维码资产盘点",
+        "重点用能设备清单监管",
+        "设备能效等级核查",
+        "高耗能落后设备淘汰追踪",
+        "设备维保 / 检修监督",
+        "资产调拨与报废备案",
+        "设备能效抽检任务派发",
       ]}
     />
   );
