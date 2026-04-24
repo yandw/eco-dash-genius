@@ -1,5 +1,4 @@
 import { AppLayout } from "@/components/AppLayout";
-import { MonitoringTabs } from "@/components/MonitoringTabs";
 import {
   Bar,
   BarChart,
@@ -34,7 +33,6 @@ const totalForecast = Array.from({ length: 15 }).map((_, i) => ({
 export default function Decade() {
   return (
     <AppLayout side="gov" title="全景监测" subtitle="十年节能 · 重点用能单位历年趋势">
-      <MonitoringTabs />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="panel p-5">
           <h3 className="text-sm font-semibold mb-3">企业数量与能耗等级 · 2010—2024</h3>

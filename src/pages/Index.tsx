@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
-import { MonitoringTabs } from "@/components/MonitoringTabs";
 import { TopKpiBar } from "@/components/dashboard/overview/TopKpiBar";
 import { DecadeGlance } from "@/components/dashboard/overview/DecadeGlance";
 import { DualControlTrack } from "@/components/dashboard/overview/DualControlTrack";
@@ -14,7 +13,6 @@ const Index = () => {
 
   return (
     <AppLayout side="gov" title="全景监测" subtitle="上海市工业和通信业重点用能单位能耗和碳排放管理平台">
-      <MonitoringTabs />
 
       {/* 三栏主体：左 / 中(上 KPI + 下地图) / 右 */}
       <div className="grid grid-cols-12 gap-4 min-h-[calc(100vh-220px)]">
