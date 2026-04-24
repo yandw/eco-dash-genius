@@ -146,8 +146,8 @@ export function AppSidebar({ side = "gov" }: Props) {
                         <NavLink
                           to={item.url}
                           end
-                          className="hover:bg-sidebar-accent/60"
-                          activeClassName="!bg-sidebar-accent !text-sidebar-accent-foreground font-medium border-l-2 border-primary"
+                          className="rounded-md hover:bg-sidebar-accent/30 hover:text-sidebar-foreground"
+                          activeClassName="!bg-sidebar-accent !text-sidebar-accent-foreground font-medium"
                         >
                           <item.icon className="h-4 w-4 shrink-0" />
                           {!collapsed && <span className="truncate">{item.title}</span>}
