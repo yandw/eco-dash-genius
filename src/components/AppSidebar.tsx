@@ -163,7 +163,7 @@ export function AppSidebar({ side = "gov" }: Props) {
                     <SidebarMenuButton
                       tooltip={item.title}
                       onClick={() => setOpenMap((m) => ({ ...m, [item.title]: !isOpen }))}
-                      className={`hover:bg-sidebar-accent/60 ${childActive ? "bg-sidebar-accent/40 text-sidebar-accent-foreground font-medium" : ""}`}
+                      className={`rounded-md hover:bg-sidebar-accent/30 hover:text-sidebar-foreground ${childActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : ""}`}
                     >
                       <item.icon className="h-4 w-4 shrink-0" />
                       {!collapsed && (
@@ -184,8 +184,8 @@ export function AppSidebar({ side = "gov" }: Props) {
                               <NavLink
                                 to={c.url}
                                 end
-                                className="text-sidebar-foreground/80 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
-                                activeClassName="!bg-sidebar-accent !text-primary font-medium"
+                                className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/20"
+                                activeClassName="!text-sidebar-primary font-medium"
                               >
                                 {c.icon && <c.icon className="h-3.5 w-3.5 shrink-0" />}
                                 <span className="truncate">{c.title}</span>
