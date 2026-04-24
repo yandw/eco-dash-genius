@@ -19,10 +19,10 @@ import { Building2, Factory, TrendingDown, Award, Flame, Zap, Leaf, Wind } from 
 
 // ===== 管理企业规模 =====
 const scaleCards = [
-  { label: "企业总数", value: 545, unit: "家", icon: Building2, color: "hsl(155 55% 28%)", bg: "hsl(217 91% 56% / 0.12)" },
+  { label: "企业总数", value: 545, unit: "家", icon: Building2, color: "hsl(155 55% 28%)", bg: "hsl(150 60% 40% / 0.12)" },
   { label: "两高", value: 98, unit: "家", icon: Flame, color: "hsl(0 75% 60%)", bg: "hsl(0 75% 60% / 0.12)" },
   { label: "限额", value: 93, unit: "家", icon: TrendingDown, color: "hsl(40 95% 55%)", bg: "hsl(40 95% 55% / 0.12)" },
-  { label: "百千家", value: 8, unit: "家", icon: Award, color: "hsl(155 55% 28%)", bg: "hsl(217 91% 56% / 0.12)" },
+  { label: "百千家", value: 8, unit: "家", icon: Award, color: "hsl(155 55% 28%)", bg: "hsl(150 60% 40% / 0.12)" },
 ];
 
 // ===== 行业分布 =====
