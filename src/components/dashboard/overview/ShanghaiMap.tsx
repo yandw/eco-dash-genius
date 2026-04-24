@@ -94,8 +94,8 @@ export function ShanghaiMap({ onDistrictClick }: Props) {
               <stop offset="100%" stopColor="hsl(200 90% 60% / 0.05)" />
             </linearGradient>
             <linearGradient id="districtHover" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(217 91% 60% / 0.4)" />
-              <stop offset="100%" stopColor="hsl(200 90% 55% / 0.2)" />
+              <stop offset="0%" stopColor="hsl(150 60% 45% / 0.4)" />
+              <stop offset="100%" stopColor="hsl(155 55% 28% / 0.2)" />
             </linearGradient>
             <filter id="glow">
               <feGaussianBlur stdDeviation="2" result="b" />

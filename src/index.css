@@ -66,15 +66,15 @@
     /* 过渡 */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Sidebar — 白底浅绿强调 */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 160 25% 25%;
-    --sidebar-primary: 155 55% 28%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 150 40% 94%;
-    --sidebar-accent-foreground: 155 55% 28%;
-    --sidebar-border: 150 20% 90%;
-    --sidebar-ring: 155 55% 35%;
+    /* Sidebar — 深色生态底 + 亮绿强调（参考 Rizz 风格） */
+    --sidebar-background: 165 35% 8%;
+    --sidebar-foreground: 150 15% 78%;
+    --sidebar-primary: 150 65% 50%;
+    --sidebar-primary-foreground: 165 35% 8%;
+    --sidebar-accent: 150 60% 45%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 165 25% 16%;
+    --sidebar-ring: 150 65% 50%;
   }
 }
 

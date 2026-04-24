@@ -19,10 +19,10 @@ import { Building2, Factory, TrendingDown, Award, Flame, Zap, Leaf, Wind } from 
 
 // ===== 管理企业规模 =====
 const scaleCards = [
-  { label: "企业总数", value: 545, unit: "家", icon: Building2, color: "hsl(155 55% 28%)", bg: "hsl(217 91% 56% / 0.12)" },
+  { label: "企业总数", value: 545, unit: "家", icon: Building2, color: "hsl(155 55% 28%)", bg: "hsl(150 60% 40% / 0.12)" },
   { label: "两高", value: 98, unit: "家", icon: Flame, color: "hsl(0 75% 60%)", bg: "hsl(0 75% 60% / 0.12)" },
   { label: "限额", value: 93, unit: "家", icon: TrendingDown, color: "hsl(40 95% 55%)", bg: "hsl(40 95% 55% / 0.12)" },
-  { label: "百千家", value: 8, unit: "家", icon: Award, color: "hsl(155 55% 28%)", bg: "hsl(217 91% 56% / 0.12)" },
+  { label: "百千家", value: 8, unit: "家", icon: Award, color: "hsl(155 55% 28%)", bg: "hsl(150 60% 40% / 0.12)" },
 ];
 
 // ===== 行业分布 =====
@@ -304,7 +304,7 @@ export default function DualTrack() {
                 <YAxis yAxisId="R" orientation="right" fontSize={10} stroke="hsl(var(--muted-foreground))" label={{ value: "万tCO2e", position: "insideTopRight", fontSize: 9, fill: "hsl(var(--muted-foreground))", offset: -5 }} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 10 }} iconSize={10} />
-                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(217 91% 65%)" radius={[3, 3, 0, 0]} barSize={18} />
+                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(150 60% 45%)" radius={[3, 3, 0, 0]} barSize={18} />
                 <Line yAxisId="R" type="monotone" dataKey="carbon" name="碳排放量" stroke="hsl(40 95% 55%)" strokeWidth={2} dot={{ r: 3, fill: "hsl(40 95% 55%)" }} />
               </ComposedChart>
             </ResponsiveContainer>
@@ -328,7 +328,7 @@ export default function DualTrack() {
                 <YAxis yAxisId="R" orientation="right" fontSize={10} stroke="hsl(var(--muted-foreground))" label={{ value: "万tCO2e", position: "insideTopRight", fontSize: 9, fill: "hsl(var(--muted-foreground))", offset: -5 }} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 10 }} iconSize={10} />
-                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(217 91% 65%)" radius={[3, 3, 0, 0]} barSize={14} />
+                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(150 60% 45%)" radius={[3, 3, 0, 0]} barSize={14} />
                 <Line yAxisId="R" type="monotone" dataKey="carbon" name="碳排放量" stroke="hsl(40 95% 55%)" strokeWidth={2} dot={{ r: 2.5, fill: "hsl(40 95% 55%)" }} />
               </ComposedChart>
             </ResponsiveContainer>

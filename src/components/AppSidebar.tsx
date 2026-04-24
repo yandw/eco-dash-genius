@@ -105,16 +105,16 @@ export function AppSidebar({ side = "gov" }: Props) {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-2 py-3">
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-primary shadow-glow">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-accent shadow-glow">
             {isGov ? (
-              <ShieldCheck className="h-5 w-5 text-primary-foreground" />
+              <ShieldCheck className="h-5 w-5 text-sidebar-accent-foreground" />
             ) : (
-              <Activity className="h-5 w-5 text-primary-foreground" />
+              <Activity className="h-5 w-5 text-sidebar-accent-foreground" />
             )}
           </div>
           {!collapsed && (
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold text-gradient">
+              <span className="text-sm font-semibold text-sidebar-foreground">
                 {isGov ? "政府监管" : "企业服务"}
               </span>
               <span className="text-[10px] tracking-wider text-sidebar-foreground/60">
@@ -146,8 +146,8 @@ export function AppSidebar({ side = "gov" }: Props) {
                         <NavLink
                           to={item.url}
                           end
-                          className="hover:bg-sidebar-accent/60"
-                          activeClassName="!bg-sidebar-accent !text-sidebar-accent-foreground font-medium border-l-2 border-primary"
+                          className="rounded-md hover:bg-sidebar-accent/30 hover:text-sidebar-foreground"
+                          activeClassName="!bg-sidebar-accent !text-sidebar-accent-foreground font-medium"
                         >
                           <item.icon className="h-4 w-4 shrink-0" />
                           {!collapsed && <span className="truncate">{item.title}</span>}
@@ -163,7 +163,7 @@ export function AppSidebar({ side = "gov" }: Props) {
                     <SidebarMenuButton
                       tooltip={item.title}
                       onClick={() => setOpenMap((m) => ({ ...m, [item.title]: !isOpen }))}
-                      className={`hover:bg-sidebar-accent/60 ${childActive ? "bg-sidebar-accent/40 text-sidebar-accent-foreground font-medium" : ""}`}
+                      className={`rounded-md hover:bg-sidebar-accent/30 hover:text-sidebar-foreground ${childActive ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" : ""}`}
                     >
                       <item.icon className="h-4 w-4 shrink-0" />
                       {!collapsed && (
@@ -184,8 +184,8 @@ export function AppSidebar({ side = "gov" }: Props) {
                               <NavLink
                                 to={c.url}
                                 end
-                                className="text-sidebar-foreground/80 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
-                                activeClassName="!bg-sidebar-accent !text-primary font-medium"
+                                className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/20"
+                                activeClassName="!text-sidebar-primary font-medium"
                               >
                                 {c.icon && <c.icon className="h-3.5 w-3.5 shrink-0" />}
                                 <span className="truncate">{c.title}</span>
