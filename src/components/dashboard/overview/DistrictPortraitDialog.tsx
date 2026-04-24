@@ -139,8 +139,8 @@ export function DistrictPortraitDialog({ open, onOpenChange, districtName }: Pro
                 <BarChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(217 91% 60%)" />
-                      <stop offset="100%" stopColor="hsl(200 90% 70%)" />
+                      <stop offset="0%" stopColor="hsl(150 60% 45%)" />
+                      <stop offset="100%" stopColor="hsl(155 55% 30%)" />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
