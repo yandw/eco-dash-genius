@@ -1,58 +1,20 @@
 import { AppLayout } from "@/components/AppLayout";
-import { Badge } from "@/components/ui/badge";
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
-
-const radar = [
-  { k: "能耗强度", a: 92 },
-  { k: "碳排强度", a: 86 },
-  { k: "总量控制", a: 78 },
-  { k: "节能技改", a: 88 },
-  { k: "数据上报", a: 95 },
-  { k: "在线监测", a: 82 },
-];
-
-const ranking = ["浦东新区", "闵行区", "嘉定区", "宝山区", "松江区", "金山区", "奉贤区", "青浦区"].map((d, i) => ({
-  d,
-  score: 95 - i * 2.5,
-  level: i < 2 ? "优秀" : i < 5 ? "良好" : "合格",
-}));
-
-const levelColor: Record<string, string> = {
-  优秀: "bg-success/15 text-success border-success/40",
-  良好: "bg-primary/15 text-primary border-primary/40",
-  合格: "bg-warning/15 text-warning border-warning/40",
-};
+import { ClipboardCheck } from "lucide-react";
 
 export default function DualAssess() {
   return (
-    <AppLayout side="gov" title="全景监测" subtitle="双控考核 · 各区县考核结果与排行">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="panel p-5">
-          <h3 className="text-sm font-semibold mb-3">考核维度评分</h3>
-          <ResponsiveContainer width="100%" height={320}>
-            <RadarChart data={radar}>
-              <PolarGrid stroke="hsl(var(--border))" />
-              <PolarAngleAxis dataKey="k" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-              <Radar dataKey="a" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
-              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11 }} />
-            </RadarChart>
-          </ResponsiveContainer>
+    <AppLayout side="gov" title="双控考核" subtitle="能耗双控 / 碳排双控考核结果">
+      <div className="panel p-12 flex flex-col items-center justify-center text-center min-h-[60vh]">
+        <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-5">
+          <ClipboardCheck className="h-10 w-10 text-primary" />
         </div>
-
-        <div className="panel p-5">
-          <h3 className="text-sm font-semibold mb-3">各区考核排行</h3>
-          <div className="space-y-2">
-            {ranking.map((r, i) => (
-              <div key={r.d} className="flex items-center gap-3 p-2 rounded border border-border/60 bg-card hover:border-primary/40">
-                <div className={`h-7 w-7 rounded flex items-center justify-center text-xs font-bold ${i < 3 ? "bg-gradient-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-                  {i + 1}
-                </div>
-                <span className="text-sm font-medium flex-1">{r.d}</span>
-                <Badge className={`text-[10px] border ${levelColor[r.level]}`}>{r.level}</Badge>
-                <span className="text-sm font-bold text-primary tabular-nums w-12 text-right">{r.score.toFixed(1)}</span>
-              </div>
-            ))}
-          </div>
+        <h2 className="text-xl font-semibold mb-2">双控考核看板</h2>
+        <p className="text-sm text-muted-foreground max-w-md">
+          该模块正在规划设计中，将围绕能耗双控与碳排双控的考核指标、完成度与排名等维度提供可视化分析。
+        </p>
+        <div className="mt-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted/40 text-xs text-muted-foreground">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+          待设计 · Coming Soon
         </div>
       </div>
     </AppLayout>
