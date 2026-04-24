@@ -13,7 +13,7 @@ export interface IdcDot extends IdcInfo {
 
 const bandColor: Record<IdcDot["band"], string> = {
   "1.0~1.3": "hsl(152 65% 50%)",
-  "1.3~1.5": "hsl(155 55% 28%)",
+  "1.3~1.5": "hsl(217 91% 56%)",
   "1.5~1.7": "hsl(40 95% 55%)",
   ">1.7": "hsl(0 75% 60%)",
 };
