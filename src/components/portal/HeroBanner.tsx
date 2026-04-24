@@ -20,8 +20,8 @@ export function HeroBanner() {
           推动制造业全面绿色低碳转型
         </p>
         <div className="flex flex-wrap justify-center gap-5">
-          <Link to="/" className="portal-glass-btn">政府管理侧</Link>
-          <Link to="/" className="portal-glass-btn">企业服务侧</Link>
+          <Link to="/gov" className="portal-glass-btn">政府管理侧</Link>
+          <Link to="/ent" className="portal-glass-btn">企业服务侧</Link>
         </div>
       </div>
     </section>
