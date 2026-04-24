@@ -13,7 +13,7 @@ export interface IdcDot extends IdcInfo {
 
 const bandColor: Record<IdcDot["band"], string> = {
   "1.0~1.3": "hsl(152 65% 50%)",
-  "1.3~1.5": "hsl(217 91% 56%)",
+  "1.3~1.5": "hsl(155 55% 28%)",
   "1.5~1.7": "hsl(40 95% 55%)",
   ">1.7": "hsl(0 75% 60%)",
 };
@@ -140,7 +140,7 @@ export function IdcShanghaiMap({ onIdcClick }: Props) {
         <svg viewBox="0 0 800 800" className="w-full h-full">
           <defs>
             <linearGradient id="idcDFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(217 91% 70% / 0.12)" />
+              <stop offset="0%" stopColor="hsl(150 55% 55% / 0.12)" />
               <stop offset="100%" stopColor="hsl(200 90% 60% / 0.04)" />
             </linearGradient>
             <filter id="idcDotGlow">
@@ -154,7 +154,7 @@ export function IdcShanghaiMap({ onIdcClick }: Props) {
 
           {DISTRICTS.map((d) => (
             <g key={d.id}>
-              <path d={d.d} fill="url(#idcDFill)" stroke="hsl(217 91% 56%)" strokeWidth={1} strokeOpacity={0.5} />
+              <path d={d.d} fill="url(#idcDFill)" stroke="hsl(155 55% 28%)" strokeWidth={1} strokeOpacity={0.5} />
               <text x={d.cx} y={d.cy} textAnchor="middle" dominantBaseline="middle" fontSize={10} fill="hsl(var(--muted-foreground))" className="pointer-events-none select-none">
                 {d.name}
               </text>

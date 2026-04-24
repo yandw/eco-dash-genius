@@ -90,7 +90,7 @@ export function ShanghaiMap({ onDistrictClick }: Props) {
         <svg viewBox="0 0 800 800" className="w-full h-full">
           <defs>
             <linearGradient id="districtFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(217 91% 70% / 0.15)" />
+              <stop offset="0%" stopColor="hsl(150 55% 55% / 0.15)" />
               <stop offset="100%" stopColor="hsl(200 90% 60% / 0.05)" />
             </linearGradient>
             <linearGradient id="districtHover" x1="0" y1="0" x2="0" y2="1">
@@ -112,7 +112,7 @@ export function ShanghaiMap({ onDistrictClick }: Props) {
               <path
                 d={d.d}
                 fill="url(#districtFill)"
-                stroke="hsl(217 91% 56%)"
+                stroke="hsl(155 55% 28%)"
                 strokeWidth={1.2}
                 strokeOpacity={0.7}
                 onClick={() => onDistrictClick(d)}

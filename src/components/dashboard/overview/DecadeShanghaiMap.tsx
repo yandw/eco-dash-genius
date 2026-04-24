@@ -16,7 +16,7 @@ export interface EnterpriseDot {
 
 const levelColor: Record<EnterpriseDot["level"], string> = {
   万家: "hsl(152 65% 50%)",
-  千家: "hsl(217 91% 56%)",
+  千家: "hsl(155 55% 28%)",
   百家: "hsl(40 95% 55%)",
   排放: "hsl(0 75% 60%)",
 };
@@ -129,7 +129,7 @@ export function DecadeShanghaiMap({ onEnterpriseClick }: Props) {
         <svg viewBox="0 0 800 800" className="w-full h-full">
           <defs>
             <linearGradient id="dFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(217 91% 70% / 0.12)" />
+              <stop offset="0%" stopColor="hsl(150 55% 55% / 0.12)" />
               <stop offset="100%" stopColor="hsl(200 90% 60% / 0.04)" />
             </linearGradient>
             <filter id="dotGlow">
@@ -147,7 +147,7 @@ export function DecadeShanghaiMap({ onEnterpriseClick }: Props) {
               <path
                 d={d.d}
                 fill="url(#dFill)"
-                stroke="hsl(217 91% 56%)"
+                stroke="hsl(155 55% 28%)"
                 strokeWidth={1}
                 strokeOpacity={0.5}
               />

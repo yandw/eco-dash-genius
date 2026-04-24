@@ -1,6 +1,6 @@
 const layers = [
   { label: "企业级", count: "1,200", pct: "78.13%", color: "hsl(152 65% 50%)" },
-  { label: "集团级", count: "200", pct: "13.02%", color: "hsl(217 91% 56%)" },
+  { label: "集团级", count: "200", pct: "13.02%", color: "hsl(155 55% 28%)" },
   { label: "园区级", count: "100", pct: "6.51%", color: "hsl(40 95% 60%)" },
   { label: "区级", count: "16", pct: "1.04%", color: "hsl(0 70% 60%)" },
   { label: "市级", count: "20", pct: "1.30%", color: "hsl(280 60% 60%)" },

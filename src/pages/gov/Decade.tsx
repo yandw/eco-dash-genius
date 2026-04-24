@@ -49,7 +49,7 @@ const mixYearData = Array.from({ length: 12 }).map((_, i) => {
 
 // === 2012年能源消费结构 (环形) ===
 const mixDonut = [
-  { name: "电力", value: 39.81, color: "hsl(217 91% 56%)" },
+  { name: "电力", value: 39.81, color: "hsl(155 55% 28%)" },
   { name: "煤品", value: 29.73, color: "hsl(220 10% 55%)" },
   { name: "油品", value: 24.02, color: "hsl(40 95% 55%)" },
   { name: "天然气", value: 6.35, color: "hsl(32 95% 60%)" },
@@ -104,7 +104,7 @@ export default function Decade() {
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 9 }} iconSize={8} />
                 <Bar dataKey="5k~50k" stackId="a" fill="hsl(152 65% 50%)" />
-                <Bar dataKey="50k~500k" stackId="a" fill="hsl(217 91% 56%)" />
+                <Bar dataKey="50k~500k" stackId="a" fill="hsl(155 55% 28%)" />
                 <Bar dataKey="500k~5000k" stackId="a" fill="hsl(40 95% 55%)" />
                 <Bar dataKey="5000k~" stackId="a" fill="hsl(0 75% 60%)" />
               </BarChart>
@@ -125,7 +125,7 @@ export default function Decade() {
                 <Bar dataKey="煤品" stackId="b" fill="hsl(220 10% 55%)" />
                 <Bar dataKey="油品" stackId="b" fill="hsl(40 95% 55%)" />
                 <Bar dataKey="天然气" stackId="b" fill="hsl(32 95% 60%)" />
-                <Bar dataKey="电力" stackId="b" fill="hsl(217 91% 56%)" />
+                <Bar dataKey="电力" stackId="b" fill="hsl(155 55% 28%)" />
                 <Bar dataKey="其他" stackId="b" fill="hsl(152 65% 50%)" />
               </BarChart>
             </ResponsiveContainer>
@@ -199,7 +199,7 @@ export default function Decade() {
                 <defs>
                   <linearGradient id="totalBar" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="hsl(200 90% 65%)" />
-                    <stop offset="100%" stopColor="hsl(217 91% 70%)" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="hsl(150 55% 55%)" stopOpacity={0.3} />
                   </linearGradient>
                 </defs>
                 <Bar dataKey="v" name="综合能耗等价值" fill="url(#totalBar)" radius={[3, 3, 0, 0]} />
