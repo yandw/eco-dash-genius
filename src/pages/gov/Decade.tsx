@@ -133,19 +133,19 @@ export default function Decade() {
           </div>
 
           {/* 2012年能源消费结构 */}
-          <div className="panel p-3 flex-1 min-h-[260px]">
+          <div className="panel p-3">
             <div className="text-sm font-semibold mb-2">2012年能源消费结构</div>
             <PanelHeader title="占比明细" />
-            <div className="grid grid-cols-2 gap-2 items-center h-[calc(100%-44px)]">
-              <div className="relative h-full min-h-[160px]">
-                <ResponsiveContainer width="100%" height="100%">
+            <div className="grid grid-cols-2 gap-2 items-center">
+              <div className="relative h-[160px]">
+                <ResponsiveContainer width="100%" height={160}>
                   <PieChart>
                     <Pie
                       data={mixDonut}
                       dataKey="value"
                       nameKey="name"
-                      innerRadius="60%"
-                      outerRadius="90%"
+                      innerRadius={42}
+                      outerRadius={66}
                       paddingAngle={2}
                       stroke="none"
                     >
@@ -177,14 +177,16 @@ export default function Decade() {
         </div>
 
         {/* ===== 中列：地图 ===== */}
-        <div className="col-span-12 lg:col-span-6 min-h-[760px]">
-          <DecadeShanghaiMap onEnterpriseClick={(e) => setEnterprise(e)} />
+        <div className="col-span-12 lg:col-span-6">
+          <div className="h-[760px]">
+            <DecadeShanghaiMap onEnterpriseClick={(e) => setEnterprise(e)} />
+          </div>
         </div>
 
         {/* ===== 右列 ===== */}
         <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">
           {/* 能耗总量及预测 */}
-          <div className="panel p-3 flex-1">
+          <div className="panel p-3">
             <div className="text-sm font-semibold mb-2">能耗总量及预测</div>
             <PanelHeader title="重点用能单位综合能耗（吨标煤）" />
             <ResponsiveContainer width="100%" height={240}>
@@ -206,7 +208,7 @@ export default function Decade() {
           </div>
 
           {/* 能效强度变化 */}
-          <div className="panel p-3 flex-1">
+          <div className="panel p-3">
             <div className="text-sm font-semibold mb-2">能效强度变化</div>
             <PanelHeader title="综合能耗强度(等价值)" />
             <div className="text-[10px] text-muted-foreground mb-1">tce/万元</div>
