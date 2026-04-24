@@ -1,0 +1,110 @@
+/* 门户站点 — 浅色蓝调科技风
+   仅在 .portal-theme 包裹下生效，避免污染深色后台
+*/
+
+.portal-theme {
+  /* 重写语义令牌为浅色蓝调 */
+  --background: 210 40% 98%;
+  --foreground: 220 40% 15%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 220 40% 15%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 40% 15%;
+
+  --primary: 217 91% 56%;
+  --primary-foreground: 0 0% 100%;
+  --primary-glow: 210 100% 70%;
+
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 220 40% 20%;
+
+  --muted: 210 30% 95%;
+  --muted-foreground: 215 16% 47%;
+
+  --accent: 210 90% 96%;
+  --accent-foreground: 217 91% 40%;
+
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 217 91% 56%;
+
+  /* 门户专属 */
+  --portal-blue-1: 217 91% 56%;
+  --portal-blue-2: 210 100% 65%;
+  --portal-blue-deep: 222 60% 18%;
+  --portal-blue-bg: 210 50% 97%;
+
+  --portal-gradient-hero: linear-gradient(135deg, hsl(217 91% 56%), hsl(200 100% 60%));
+  --portal-gradient-card-blue: linear-gradient(135deg, hsl(217 91% 56%), hsl(210 100% 50%));
+  --portal-shadow-card: 0 4px 24px -8px hsl(217 91% 56% / 0.15);
+  --portal-shadow-hover: 0 12px 32px -8px hsl(217 91% 56% / 0.25);
+  --portal-footer-bg: linear-gradient(135deg, hsl(222 60% 14%), hsl(217 60% 18%));
+
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  min-height: 100vh;
+}
+
+.portal-theme .portal-card {
+  @apply bg-card rounded-xl border border-border/60 transition-all duration-300;
+  box-shadow: var(--portal-shadow-card);
+}
+.portal-theme .portal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--portal-shadow-hover);
+}
+
+.portal-theme .portal-section-title {
+  @apply text-2xl font-bold text-center mb-8;
+  color: hsl(var(--foreground));
+}
+
+.portal-theme .portal-gradient-text {
+  background: var(--portal-gradient-hero);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.portal-theme .portal-hero-overlay {
+  background: linear-gradient(
+    135deg,
+    hsl(217 91% 30% / 0.55),
+    hsl(210 100% 40% / 0.35)
+  );
+}
+
+.portal-theme .portal-glass-btn {
+  @apply px-8 py-3 rounded-full text-white font-medium transition-all duration-300;
+  background: hsl(255 100% 100% / 0.15);
+  border: 1px solid hsl(255 100% 100% / 0.4);
+  backdrop-filter: blur(8px);
+}
+.portal-theme .portal-glass-btn:hover {
+  background: hsl(255 100% 100% / 0.25);
+  transform: translateY(-2px);
+}
+
+.portal-theme .portal-footer {
+  background: var(--portal-footer-bg);
+  position: relative;
+  overflow: hidden;
+}
+.portal-theme .portal-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at bottom left, hsl(217 91% 56% / 0.2), transparent 60%);
+  pointer-events: none;
+}
+
+@keyframes portal-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.portal-theme .portal-float {
+  animation: portal-float 4s ease-in-out infinite;
+}

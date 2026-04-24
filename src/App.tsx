@@ -15,6 +15,13 @@ import GreenMfg from "./pages/GreenMfg.tsx";
 import Benchmark from "./pages/Benchmark.tsx";
 import Enterprise from "./pages/Enterprise.tsx";
 import System from "./pages/System.tsx";
+import PortalHome from "./pages/portal/PortalHome.tsx";
+import PortalNews from "./pages/portal/PortalNews.tsx";
+import PortalNewsDetail from "./pages/portal/PortalNewsDetail.tsx";
+import PortalGreenMfg from "./pages/portal/PortalGreenMfg.tsx";
+import PortalScenarios from "./pages/portal/PortalScenarios.tsx";
+import PortalLogin from "./pages/portal/PortalLogin.tsx";
+import PortalRegister from "./pages/portal/PortalRegister.tsx";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +43,14 @@ const App = () => (
           <Route path="/benchmark" element={<Benchmark />} />
           <Route path="/enterprise" element={<Enterprise />} />
           <Route path="/system" element={<System />} />
+          {/* Portal routes */}
+          <Route path="/portal" element={<PortalHome />} />
+          <Route path="/portal/news" element={<PortalNews />} />
+          <Route path="/portal/news/:id" element={<PortalNewsDetail />} />
+          <Route path="/portal/green-mfg" element={<PortalGreenMfg />} />
+          <Route path="/portal/scenarios" element={<PortalScenarios />} />
+          <Route path="/portal/login" element={<PortalLogin />} />
+          <Route path="/portal/register" element={<PortalRegister />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
