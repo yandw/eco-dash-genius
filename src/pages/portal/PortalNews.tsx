@@ -41,7 +41,7 @@ export default function PortalNews() {
   return (
     <PortalLayout headerVariant="transparent">
       {/* Hero */}
-      <section className="relative h-[360px] overflow-hidden bg-gradient-to-br from-[hsl(217_91%_56%)] to-[hsl(210_100%_60%)]">
+      <section className="relative h-[360px] overflow-hidden bg-gradient-to-br from-[hsl(160_55%_28%)] to-[hsl(150_60%_40%)]">
         <div className="absolute inset-0 opacity-30 pointer-events-none"
           style={{
             backgroundImage:
