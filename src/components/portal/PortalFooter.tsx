@@ -36,7 +36,7 @@ export function PortalFooter() {
               <a
                 key={l.label}
                 href={l.href}
-                className="hover:text-[hsl(150_65%_60%)] transition-colors"
+                className="hover:text-[hsl(210_100%_70%)] transition-colors"
               >
                 {l.label}
               </a>
