@@ -36,6 +36,7 @@ import DualAssess from "./pages/gov/DualAssess.tsx";
 import Idc from "./pages/gov/Idc.tsx";
 import EquipBench from "./pages/gov/EquipBench.tsx";
 import GovPosts from "./pages/gov/Posts.tsx";
+import GovPostDetail from "./pages/gov/GovPostDetail.tsx";
 import GovArchiveDetail from "./pages/gov/GovArchiveDetail.tsx";
 import EntPosts from "./pages/ent/EntPosts.tsx";
 
@@ -64,6 +65,7 @@ const App = () => (
           <Route path="/gov/archives" element={<Archives />} />
           <Route path="/gov/archives/:entId/:year" element={<GovArchiveDetail />} />
           <Route path="/gov/posts" element={<GovPosts />} />
+          <Route path="/gov/posts/:entId" element={<GovPostDetail />} />
           <Route path="/gov/dual-control" element={<DualControl />} />
           <Route path="/gov/assets" element={<Assets />} />
           <Route path="/gov/green-mfg" element={<GreenMfg />} />
