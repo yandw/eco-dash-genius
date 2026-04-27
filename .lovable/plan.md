@@ -1,79 +1,63 @@
-## 目标
+## Goal
 
-将 `/gov/*` 与 `/ent/*` 全部后台页面（侧边栏、顶部栏、面板、KPI 卡、图表配色、按钮、徽章等）的视觉风格，统一为门户首页 `/portal` 的"浅色生态绿"风格，保持布局/字段/交互完全不变，仅替换配色与质感。
+Repaint the portal's color basal tone to match the reference site (Shanghai Academy of Development & Reform):
 
-## 设计思路
+- Deep navy blue (`#0A2A5E` ~ `hsl(217 80% 20%)`) as the primary brand surface
+- Bright sky blue (`hsl(210 100% 55%)`) as the accent / CTA
+- White text on the navy hero / nav / footer
+- Clean white cards with light blue accents in the body
+- Hero image switches from green factory to a **Shanghai skyline + Huangpu river** photo (Bund / Pudong)
 
-后台所有页面（`AppLayout`、`AppSidebar`、各种 `panel`、`KpiCard`、图表）都通过 HSL 设计令牌（`--primary` / `--accent` / `--sidebar-*` / `--gradient-*` 等）取色。因此 **不需要逐个页面改样式**，只需把 `src/index.css` 中的全局令牌从"科技蓝"切换到"生态绿"，整套后台界面会自动迁移到门户同款风格。
+Affects only the **portal** (`/portal`, `/portal/green-mfg`, `/portal/scenarios`, `/portal/news`). Government and Enterprise backends are unchanged.
 
-门户绿生态参考调色（取自 `src/styles/portal.css`）：
-- 主色 deep green：`155 55% 28%`
-- 主色亮绿：`150 55% 45%`
-- 背景：`150 20% 98%`
-- 前景：`160 30% 12%`
-- 弱色文本：`160 12% 45%`
-- 强调底：`150 40% 94%`
-- 边框：`150 20% 90%`
+## Scope
 
-## 修改清单
+### 1. Portal token rewrite — `src/styles/portal.css`
+Rewrite the `.portal-theme { … }` HSL tokens:
+- `--background` → very light cool gray `210 25% 98%`
+- `--foreground` → near-black navy `217 35% 15%`
+- `--primary` → deep navy `217 80% 22%` (was deep green)
+- `--primary-glow` → bright sky `210 100% 55%`
+- `--accent` → soft blue `210 60% 95%`
+- `--accent-foreground` → primary navy
+- `--ring`, `--border`, `--muted` → cool gray-blue tones
+- Portal-specific:
+  - `--portal-gradient-hero` → `linear-gradient(135deg, hsl(217 80% 22%), hsl(210 90% 45%))`
+  - `--portal-gradient-card-blue/green` → unified navy→sky-blue
+  - `--portal-shadow-*` → tinted with navy instead of green
+- `.portal-footer-dark` → keep dark, but switch base to navy: `linear-gradient(180deg, hsl(217 60% 12%) 0%, hsl(217 70% 7%) 100%)`
+- `.portal-hero-overlay` → navy-tinted dark gradient (not green)
+- `.portal-icon-badge` → light blue background, navy icon
+- Footer hover green accents (`hsl(150 ...)`) → swapped to bright blue (`hsl(210 100% 65%)`)
 
-### 1. 重写 `src/index.css` 设计令牌
+### 2. Hero image regeneration
+Replace `src/assets/portal/hero-green.jpg` with a **Shanghai skyline at golden hour** photo (Bund + Pudong, Oriental Pearl Tower, Huangpu river) generated via Gemini image model, then update `HeroBanner.tsx`:
+- Rename import to `hero-shanghai.jpg`
+- Hero gradient text: emerald gradient → bright sky-blue gradient (`from-sky-200 to-sky-400`)
+- Subtitle copy unchanged
 
-把 `:root` 内的颜色令牌改为门户绿生态调色，包括：
-- `--background / --foreground / --card / --popover`
-- `--primary / --primary-foreground / --primary-glow`（主色由 217 蓝 改为 155 深绿）
-- `--secondary`（改为绿色调辅色）
-- `--muted / --muted-foreground / --accent / --accent-foreground`
-- `--border / --input / --ring`
-- `--success` 保持绿调；`--warning` 橙、`--destructive` 红保留以维持告警语义
-- `--gradient-primary / --gradient-secondary / --gradient-glow / --gradient-card`：改为绿色渐变
-- `--gradient-grid`：网格线改为浅绿灰，避免蓝色感
-- `--shadow-glow / --shadow-card / --shadow-elevated`：阴影色改为绿色 HSL（与 `portal-shadow-card` 同源）
-- `body` 背景径向辉光由蓝紫改为绿色
+### 3. Module hero gradients (sub-pages)
+In `PortalGreenMfg.tsx`, `PortalScenarios.tsx`, `PortalNews.tsx`:
+- Change inline `bg-gradient-to-br from-[hsl(160_55%_28%)] to-[hsl(150_60%_40%)]` → `from-[hsl(217_80%_22%)] to-[hsl(210_85%_45%)]`
 
-### 2. 侧边栏令牌（同样在 `src/index.css`）
+### 4. Footer accents — `PortalFooter.tsx`
+- Leaf icon container: keep dark, but icon color becomes bright blue
+- Hover link color: green → bright blue (`hsl(210 100% 65%)`)
+- Brand text & layout unchanged
 
-- `--sidebar-background`：白
-- `--sidebar-foreground`：深绿灰
-- `--sidebar-primary`：与 `--primary` 一致
-- `--sidebar-accent` / `--sidebar-accent-foreground`：浅绿底 + 深绿字
-- `--sidebar-border` / `--sidebar-ring`：绿调
+### 5. Header — `PortalHeader.tsx`
+- No structural changes. Because tokens change, the solid header automatically picks up navy primary; transparent header still uses white-on-image. Login button uses `bg-primary` → now navy, which matches reference.
 
-效果：左侧菜单选中态、悬停态自动变成"白底+浅绿块+深绿字+左侧绿色竖线"，与门户的绿色 logo / 按钮呼应。
+### 6. Stats bar / Agent grid / Business functions / News carousel
+No code changes — they consume `--primary`, `--accent`, `--card`, etc. Re-tinting tokens is enough. Hover and icon badges automatically become blue.
 
-### 3. AppLayout 顶部栏微调（`src/components/AppLayout.tsx`）
+### 7. Optional asset re-tint check
+Existing portal photos (factory, supply chain, news) are real-world photography and remain visually compatible with a blue theme — no regeneration needed. Only the hero is regenerated because it's the dominant brand surface.
 
-- "退出"链接 hover 颜色由 `text-primary`（蓝）→ 自然变绿（沿用 `--primary`，无需改文件即可生效）
-- 头像渐变背景 `bg-gradient-primary` 已改为绿色渐变（通过令牌生效）
-- 状态指示点 `glow-dot` 自动跟随 `--primary` 变绿
-- 仅需要补一个极小调整：右上角时间数字 `text-primary` 在浅色绿底下视觉权重已合适，无需改
+## Result
 
-> 该文件**实质上不需要改 JSX**，全部通过令牌完成迁移。
-
-### 4. PlaceholderPage / panel 类（无需改）
-
-- `src/pages/gov/EquipBench.tsx`、`DualAssess.tsx` 中"待设计"占位的 `bg-primary/10` 图标背景会自动变成浅绿
-- `src/components/PlaceholderPage.tsx` 的 `bg-gradient-glow` 自动跟随新绿色渐变
-- 所有 `.panel` 卡片由于 `--gradient-card` 改色，会呈现极浅的绿白渐变，质感与门户卡片一致
-
-### 5. 图表配色（`src/components/dashboard/*` 与 `src/components/dashboard/overview/*`）
-
-绝大多数图表使用 `hsl(var(--primary))` / `hsl(var(--secondary))` / `--success` / `--warning` / `--destructive` 取色，将自动迁移成绿色主、辅色绿、橙告警、红超标的生态配色。
-
-仅检查并保留以下硬编码语义色，不做改动：
-- IDC 地图四色圆点（绿/蓝/橙/红）：业务语义，保持不变
-- 告警等级红/橙：保持
-- 趋势对比中"对比基准"的次色若硬编码为蓝，将在实施阶段统一替换为 `hsl(var(--secondary))`，使其跟随新绿调
-
-## 不在范围内
-
-- 门户 `/portal` 已是绿生态，无需调整
-- 不修改任何业务字段、表格列、路由、交互逻辑
-- 不修改组件结构，仅做配色与质感的令牌级迁移
-- 不改变深色/浅色模式（继续浅色）
-
-## 预期效果
-
-- 进入 `/gov` 与 `/ent` 任何页面，整体由"蓝色科技风" → "浅色生态绿"
-- 顶部栏、侧边栏、KPI 卡、图表、按钮、徽章、占位页风格与门户首页完全统一
-- 无需逐页改动，单点修改令牌即可全站生效，后续也便于维护
+- Portal home: navy + bright-blue hero of Shanghai skyline, white "上海市工业和通信业能碳数智空间" headline, blue CTA
+- Solid sub-page headers: navy gradient banners
+- Cards / sections: white background, blue accent dividers and icon badges
+- Footer: deep navy dark surface with blue hover accents
+- Backends (gov / ent): completely untouched

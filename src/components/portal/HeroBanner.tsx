@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import heroBg from "@/assets/portal/hero-green.jpg";
+import heroBg from "@/assets/portal/hero-shanghai.jpg";
 
 export function HeroBanner() {
   return (
     <section className="relative h-[480px] overflow-hidden">
       <img
         src={heroBg}
-        alt="工业绿色转型"
+        alt="上海城市天际线"
         className="absolute inset-0 w-full h-full object-cover"
         width={1920}
         height={900}
@@ -20,7 +20,7 @@ export function HeroBanner() {
         </h1>
         <h2 className="text-3xl md:text-5xl font-bold tracking-wide leading-tight mt-2 drop-shadow-lg">
           <span className="text-white/95">领航</span>
-          <span className="bg-gradient-to-r from-emerald-200 to-emerald-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-sky-200 to-sky-400 bg-clip-text text-transparent">
             工业绿色转型
           </span>
         </h2>
