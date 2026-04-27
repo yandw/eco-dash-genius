@@ -7,7 +7,7 @@ export function HeroBanner() {
     <section className="relative h-[480px] overflow-hidden">
       <img
         src={heroBg}
-        alt="工业绿色转型"
+        alt="上海城市天际线"
         className="absolute inset-0 w-full h-full object-cover"
         width={1920}
         height={900}
