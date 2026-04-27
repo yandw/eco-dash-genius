@@ -1,63 +1,113 @@
-## Goal
+## 重塑「节能档案」模块 — 企业填报 + 政府审核
 
-Repaint the portal's color basal tone to match the reference site (Shanghai Academy of Development & Reform):
+参照截图重新设计两端体验。保留旧界面的"截屏式"信息字段，但在交互、排版、状态可视化、审核闭环上彻底升级，符合新平台的"深蓝 + 亮蓝"科技感主题。
 
-- Deep navy blue (`#0A2A5E` ~ `hsl(217 80% 20%)`) as the primary brand surface
-- Bright sky blue (`hsl(210 100% 55%)`) as the accent / CTA
-- White text on the navy hero / nav / footer
-- Clean white cards with light blue accents in the body
-- Hero image switches from green factory to a **Shanghai skyline + Huangpu river** photo (Bund / Pudong)
+---
 
-Affects only the **portal** (`/portal`, `/portal/green-mfg`, `/portal/scenarios`, `/portal/news`). Government and Enterprise backends are unchanged.
+### 一、企业侧 — 节能档案列表页 `/ent/archives`
 
-## Scope
+代替现有的"分类卡片 + 文件列表"。新版以"年度档案"为单位组织。
 
-### 1. Portal token rewrite — `src/styles/portal.css`
-Rewrite the `.portal-theme { … }` HSL tokens:
-- `--background` → very light cool gray `210 25% 98%`
-- `--foreground` → near-black navy `217 35% 15%`
-- `--primary` → deep navy `217 80% 22%` (was deep green)
-- `--primary-glow` → bright sky `210 100% 55%`
-- `--accent` → soft blue `210 60% 95%`
-- `--accent-foreground` → primary navy
-- `--ring`, `--border`, `--muted` → cool gray-blue tones
-- Portal-specific:
-  - `--portal-gradient-hero` → `linear-gradient(135deg, hsl(217 80% 22%), hsl(210 90% 45%))`
-  - `--portal-gradient-card-blue/green` → unified navy→sky-blue
-  - `--portal-shadow-*` → tinted with navy instead of green
-- `.portal-footer-dark` → keep dark, but switch base to navy: `linear-gradient(180deg, hsl(217 60% 12%) 0%, hsl(217 70% 7%) 100%)`
-- `.portal-hero-overlay` → navy-tinted dark gradient (not green)
-- `.portal-icon-badge` → light blue background, navy icon
-- Footer hover green accents (`hsl(150 ...)`) → swapped to bright blue (`hsl(210 100% 65%)`)
+布局
+- 顶部 KPI 行：当前申报年度、已提交档案数、待退回整改、累计归档年份
+- 工具栏：状态筛选（全部 / 草稿 / 已提交 / 已通过 / 已退回）+ 年度筛选 + 搜索 + 「新建年度档案」主按钮
+- 卡片网格（替代纯表格）：每张卡 = 一个年度档案
+  - 左上角年度大字 `2024`，右上角状态徽章（草稿=灰 / 待审核=蓝 / 已通过=绿 / 已退回=红）
+  - 中部：完成度进度条（5 个 tab 完成情况，例如 4/5）
+  - 元信息：创建时间、最近更新、审核人 / 退回原因摘要
+  - 操作按钮：编辑 / 提交 / 撤回 / 查看审核意见
 
-### 2. Hero image regeneration
-Replace `src/assets/portal/hero-green.jpg` with a **Shanghai skyline at golden hour** photo (Bund + Pudong, Oriental Pearl Tower, Huangpu river) generated via Gemini image model, then update `HeroBanner.tsx`:
-- Rename import to `hero-shanghai.jpg`
-- Hero gradient text: emerald gradient → bright sky-blue gradient (`from-sky-200 to-sky-400`)
-- Subtitle copy unchanged
+### 二、企业侧 — 档案详情填报页 `/ent/archives/:year`
 
-### 3. Module hero gradients (sub-pages)
-In `PortalGreenMfg.tsx`, `PortalScenarios.tsx`, `PortalNews.tsx`:
-- Change inline `bg-gradient-to-br from-[hsl(160_55%_28%)] to-[hsl(150_60%_40%)]` → `from-[hsl(217_80%_22%)] to-[hsl(210_85%_45%)]`
+替代现有的 5-tab 平铺表单。新结构：
 
-### 4. Footer accents — `PortalFooter.tsx`
-- Leaf icon container: keep dark, but icon color becomes bright blue
-- Hover link color: green → bright blue (`hsl(210 100% 65%)`)
-- Brand text & layout unchanged
+```text
+┌──────────────────────────────────────────────────────────┐
+│ 顶栏：2024 节能档案 · 测试企业    [保存草稿][提交审核][返回] │
+│      状态徽章 · 上次保存时间 · 审核进度时间轴               │
+├──────────┬───────────────────────────────────────────────┤
+│ 左侧步骤 │ 右侧表单内容                                    │
+│ 导航     │                                                │
+│ ① 基本信息 ✓                                              │
+│ ② 主要产品 ✓                                              │
+│ ③ 用能设备 (自动同步)                                     │
+│ ④ 能源审计 ⚠ 3条                                          │
+│ ⑤ 改造计划 !                                              │
+└──────────┴───────────────────────────────────────────────┘
+```
 
-### 5. Header — `PortalHeader.tsx`
-- No structural changes. Because tokens change, the solid header automatically picks up navy primary; transparent header still uses white-on-image. Login button uses `bg-primary` → now navy, which matches reference.
+关键改进
+- 由 tab 改为左侧"步骤导航"，每步显示完成 / 异常 / 必填缺失图标；右侧大区域填写
+- 顶部贴一条**审核状态时间轴**（草稿 → 已提交 → 中心审核 → 通过 / 退回），退回时直接展开"退回原因 + 中心人员意见"红色卡片
+- 每个表单分区采用「卡片 + 字段网格」，标签在上字段在下，必填红星，行内校验
+- 步骤①基本信息：保留原字段（企业名称 / 信用代码 / 省份 / 行业 / 编号 / 所在地 / 能源管理岗位人员…），并新增「同步企业信息」「同步岗位备案负责人」按钮（解决原系统中红字提示要去其他页面修改的痛点）
+- 步骤②产品情况：表格 + 行内编辑 + 「+ 添加产品」+ Excel 批量导入；自动提示是否触发能耗限额
+- 步骤③用能设备：保留"系统自动导入，无需重复填报"提示，但用蓝色信息条而非红字，并提供与"设备对标"模块的跳转
+- 步骤④能源审计：列表 + 新建对话框，附件支持拖拽上传与预览
+- 步骤⑤改造计划：列表 + 新建对话框；提供项目模板与字段说明
+- 右下浮动「保存草稿」按钮 + 提交前的完整性校验弹窗（列出未填项可点击跳转）
 
-### 6. Stats bar / Agent grid / Business functions / News carousel
-No code changes — they consume `--primary`, `--accent`, `--card`, etc. Re-tinting tokens is enough. Hover and icon badges automatically become blue.
+### 三、政府侧 — 审核列表页 `/gov/archives`
 
-### 7. Optional asset re-tint check
-Existing portal photos (factory, supply chain, news) are real-world photography and remain visually compatible with a blue theme — no regeneration needed. Only the hero is regenerated because it's the dominant brand surface.
+替换当前 PlaceholderPage。参照截图 2 的"中心管理员"视图，做成可执行审核台账。
 
-## Result
+布局
+- 顶部审核 KPI：本期应报企业数、已上报数、上报率（环形进度）、待我审核、已退回、已通过
+- 筛选区：年度区间（起始 / 结束）、行业、区域、状态（待审核 / 已通过 / 已退回 / 未上报）、搜索（企业名称 / 信用代码）
+- 操作按钮：标签 / 重置 / 查询 / 导出节能档案 / 文件中心
+- 主表（沿用截图 2 的"按企业 + 年份矩阵"风格）：
+  - 列：企业名称、统一社会信用代码、行业、所属区、`2024 状态`、`2025 状态`、操作
+  - 每个年份单元格显示状态徽章（已上报蓝色"查看"、待审核黄色、已通过绿色、未上报灰色"待上报"、退回红色）
+  - 操作列：审核 / 查看历史 / 导出
+- 底部分页 + 批量勾选（批量通过 / 批量退回 / 批量提醒）
 
-- Portal home: navy + bright-blue hero of Shanghai skyline, white "上海市工业和通信业能碳数智空间" headline, blue CTA
-- Solid sub-page headers: navy gradient banners
-- Cards / sections: white background, blue accent dividers and icon badges
-- Footer: deep navy dark surface with blue hover accents
-- Backends (gov / ent): completely untouched
+### 四、政府侧 — 档案审核详情页 `/gov/archives/:enterpriseId/:year`
+
+与企业侧详情同结构，但为只读 + 审核操作：
+
+- 顶栏右侧改为：「通过」「退回（带必填意见）」「转交他人」「下载 PDF」按钮
+- 左侧步骤导航上每一步显示一个绿色 ✓ / 红色叉，供审核员逐项打钩
+- 每个字段右侧出现"标注问题"图标，点击在该字段写批注；批注汇总到退回意见
+- 底部固定的"审核意见汇总"抽屉：列出所有标注，一键生成退回原因
+- 退回后企业侧详情页对应字段会高亮红色边框 + 显示中心人员的批注气泡
+
+### 五、共用组件与样式
+
+新增/抽取
+- `ArchiveStatusBadge`：草稿 / 待审核 / 已通过 / 已退回 / 未上报 五种统一徽章
+- `ArchiveStepNav`：左侧步骤导航（含完成度图标）
+- `ArchiveTimeline`：顶部审核进度时间轴
+- `FieldAnnotation`：政府侧字段批注气泡 + 企业侧只读展示
+- `EnterpriseYearMatrix`：政府侧企业 × 年度状态矩阵表组件
+
+样式遵循已有 `.panel` / `bg-gradient-primary` / 深蓝亮蓝主题，避免引入旧版纯绿色或纯白底蓝按钮的旧风格。
+
+### 六、数据与路由
+
+- 路由新增
+  - `/ent/archives/:year` → 企业填报详情
+  - `/gov/archives/:enterpriseId/:year` → 政府审核详情
+- 使用本地 mock 数据（无后端），mock 包含若干企业、若干年度、不同状态、若干退回意见，便于演示完整流程
+- mock 文件位置：`src/mocks/archives.ts`
+
+### 七、技术细节（开发参考）
+
+- 复用 shadcn `Tabs` 改造为左侧 `vertical` 步骤导航（或自定义）
+- 状态徽章用 `Badge` + 自定义 className，颜色基于 design tokens（`primary` / `success` / `warning` / `destructive`）
+- 表单使用 `react-hook-form` + `zod`（项目已具备）
+- 审核意见弹窗用 `Dialog`，附件用 `Input type=file` + 列表展示
+- 不引入新依赖
+
+### 八、需要新建/修改的文件
+
+- 修改：`src/pages/ent/EntArchives.tsx`、`src/pages/Archives.tsx`（重写为政府审核列表）、`src/App.tsx`（新增 2 个路由）
+- 新建：
+  - `src/pages/ent/EntArchiveDetail.tsx`
+  - `src/pages/gov/GovArchiveDetail.tsx`
+  - `src/components/archives/ArchiveStatusBadge.tsx`
+  - `src/components/archives/ArchiveStepNav.tsx`
+  - `src/components/archives/ArchiveTimeline.tsx`
+  - `src/components/archives/EnterpriseYearMatrix.tsx`
+  - `src/components/archives/FieldAnnotation.tsx`
+  - `src/components/archives/steps/`（5 个步骤组件，企业/政府共用，readonly 切换）
+  - `src/mocks/archives.ts`

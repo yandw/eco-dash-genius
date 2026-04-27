@@ -27,6 +27,7 @@ import EntReportYearly from "./pages/ent/EntReportYearly.tsx";
 import EntEnergyQuota from "./pages/ent/EntEnergyQuota.tsx";
 import EntProfile from "./pages/ent/EntProfile.tsx";
 import EntArchives from "./pages/ent/EntArchives.tsx";
+import EntArchiveDetail from "./pages/ent/EntArchiveDetail.tsx";
 import EntDownloads from "./pages/ent/EntDownloads.tsx";
 import EntSystem from "./pages/ent/EntSystem.tsx";
 import Decade from "./pages/gov/Decade.tsx";
@@ -35,6 +36,7 @@ import DualAssess from "./pages/gov/DualAssess.tsx";
 import Idc from "./pages/gov/Idc.tsx";
 import EquipBench from "./pages/gov/EquipBench.tsx";
 import GovPosts from "./pages/gov/Posts.tsx";
+import GovArchiveDetail from "./pages/gov/GovArchiveDetail.tsx";
 import EntPosts from "./pages/ent/EntPosts.tsx";
 
 const queryClient = new QueryClient();
@@ -60,6 +62,7 @@ const App = () => (
           <Route path="/gov/report-yearly" element={<ReportYearly />} />
           <Route path="/gov/energy-quota" element={<EnergyQuota />} />
           <Route path="/gov/archives" element={<Archives />} />
+          <Route path="/gov/archives/:entId/:year" element={<GovArchiveDetail />} />
           <Route path="/gov/posts" element={<GovPosts />} />
           <Route path="/gov/dual-control" element={<DualControl />} />
           <Route path="/gov/assets" element={<Assets />} />
@@ -74,6 +77,7 @@ const App = () => (
           <Route path="/ent/energy-quota" element={<EntEnergyQuota />} />
           <Route path="/ent/profile" element={<EntProfile />} />
           <Route path="/ent/archives" element={<EntArchives />} />
+          <Route path="/ent/archives/:year" element={<EntArchiveDetail />} />
           <Route path="/ent/posts" element={<EntPosts />} />
           <Route path="/ent/downloads" element={<EntDownloads />} />
           <Route path="/ent/system" element={<EntSystem />} />
