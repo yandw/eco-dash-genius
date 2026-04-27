@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import heroBg from "@/assets/portal/hero-green.jpg";
+import heroBg from "@/assets/portal/hero-shanghai.jpg";
 
 export function HeroBanner() {
   return (
