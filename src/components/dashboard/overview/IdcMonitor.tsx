@@ -7,23 +7,23 @@ const dataMap: Record<(typeof tabs)[number], { label: string; pct: number; count
   综合能耗: [
     { label: "X≥50000", pct: 3.8, count: 2, color: "hsl(0 75% 60%)" },
     { label: "30000≤X<50000", pct: 22.6, count: 12, color: "hsl(40 95% 55%)" },
-    { label: "10000≤X<30000", pct: 47.2, count: 25, color: "hsl(155 55% 28%)" },
-    { label: "5000≤X<10000", pct: 15.1, count: 8, color: "hsl(150 55% 45%)" },
-    { label: "X<5000", pct: 11.3, count: 6, color: "hsl(152 65% 50%)" },
+    { label: "10000≤X<30000", pct: 47.2, count: 25, color: "hsl(217 91% 45%)" },
+    { label: "5000≤X<10000", pct: 15.1, count: 8, color: "hsl(217 80% 70%)" },
+    { label: "X<5000", pct: 11.3, count: 6, color: "hsl(265 85% 65%)" },
   ],
   机柜数量: [
     { label: "X≥10000", pct: 5.7, count: 3, color: "hsl(0 75% 60%)" },
     { label: "5000≤X<10000", pct: 18.9, count: 10, color: "hsl(40 95% 55%)" },
-    { label: "1000≤X<5000", pct: 50.9, count: 27, color: "hsl(155 55% 28%)" },
-    { label: "500≤X<1000", pct: 15.1, count: 8, color: "hsl(150 55% 45%)" },
-    { label: "X<500", pct: 9.4, count: 5, color: "hsl(152 65% 50%)" },
+    { label: "1000≤X<5000", pct: 50.9, count: 27, color: "hsl(217 91% 45%)" },
+    { label: "500≤X<1000", pct: 15.1, count: 8, color: "hsl(217 80% 70%)" },
+    { label: "X<500", pct: 9.4, count: 5, color: "hsl(265 85% 65%)" },
   ],
   PUE评价: [
     { label: "PUE≥1.8", pct: 7.5, count: 4, color: "hsl(0 75% 60%)" },
     { label: "1.5≤PUE<1.8", pct: 26.4, count: 14, color: "hsl(40 95% 55%)" },
-    { label: "1.3≤PUE<1.5", pct: 43.4, count: 23, color: "hsl(155 55% 28%)" },
-    { label: "1.2≤PUE<1.3", pct: 17.0, count: 9, color: "hsl(150 55% 45%)" },
-    { label: "PUE<1.2", pct: 5.7, count: 3, color: "hsl(152 65% 50%)" },
+    { label: "1.3≤PUE<1.5", pct: 43.4, count: 23, color: "hsl(217 91% 45%)" },
+    { label: "1.2≤PUE<1.3", pct: 17.0, count: 9, color: "hsl(217 80% 70%)" },
+    { label: "PUE<1.2", pct: 5.7, count: 3, color: "hsl(265 85% 65%)" },
   ],
 };
 

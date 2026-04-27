@@ -26,10 +26,10 @@ interface Props {
 }
 
 const TABS = [
-  { key: "PUE", label: "PUE", unit: "", color: "hsl(155 55% 28%)" },
-  { key: "上架率", label: "上架率(%)", unit: "%", color: "hsl(155 55% 28%)" },
+  { key: "PUE", label: "PUE", unit: "", color: "hsl(217 91% 45%)" },
+  { key: "上架率", label: "上架率(%)", unit: "%", color: "hsl(217 91% 45%)" },
   { key: "电耗", label: "电耗(万kWh)", unit: "万kWh", color: "hsl(40 95% 55%)" },
-  { key: "综合能耗", label: "综合能耗(当量tce)", unit: "tce", color: "hsl(152 65% 50%)" },
+  { key: "综合能耗", label: "综合能耗(当量tce)", unit: "tce", color: "hsl(265 85% 65%)" },
 ] as const;
 
 const tooltipStyle = {
@@ -110,9 +110,9 @@ export function IdcPortraitDialog({ open, onOpenChange, idc }: Props) {
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { label: "综合能耗", value: "1.0", unit: "万tce", icon: Flame, color: "hsl(155 55% 28%)" },
+                  { label: "综合能耗", value: "1.0", unit: "万tce", icon: Flame, color: "hsl(217 91% 45%)" },
                   { label: "总电能消耗", value: "3,317.6", unit: "万kwh", icon: Zap, color: "hsl(40 95% 55%)" },
-                  { label: "PUE", value: idc.pue.toFixed(1), unit: "", icon: Gauge, color: "hsl(155 55% 28%)" },
+                  { label: "PUE", value: idc.pue.toFixed(1), unit: "", icon: Gauge, color: "hsl(217 91% 45%)" },
                 ].map((it) => {
                   const Icon = it.icon;
                   return (

@@ -2,8 +2,8 @@ export function DualControlTrack() {
   // 金字塔三层
   const pyramid = [
     { label: "百家", value: 1, color: "hsl(40 95% 60%)" },
-    { label: "千家", value: 1, color: "hsl(150 60% 40%)" },
-    { label: "万家", value: 98, color: "hsl(155 55% 28%)" },
+    { label: "千家", value: 1, color: "hsl(217 91% 55%)" },
+    { label: "万家", value: 98, color: "hsl(217 91% 45%)" },
   ];
 
   // 行业环 - 汽车制造 13%
@@ -39,8 +39,8 @@ export function DualControlTrack() {
           })}
           {/* 三角底座 */}
           <svg viewBox="0 0 100 30" className="w-full h-6 mt-1">
-            <polygon points="0,30 100,30 50,0" fill="hsl(150 60% 45% / 0.3)" />
-            <polygon points="20,30 80,30 50,0" fill="hsl(155 55% 28%)" />
+            <polygon points="0,30 100,30 50,0" fill="hsl(217 91% 55% / 0.3)" />
+            <polygon points="20,30 80,30 50,0" fill="hsl(217 91% 45%)" />
           </svg>
         </div>
 

@@ -84,7 +84,7 @@ function PanelTitle({ children, action }: { children: React.ReactNode; action?: 
   );
 }
 
-const barColors = ["hsl(155 55% 28%)", "hsl(40 95% 55%)", "hsl(40 95% 55%)", "hsl(155 55% 28%)", "hsl(155 55% 28%)"];
+const barColors = ["hsl(217 91% 45%)", "hsl(40 95% 55%)", "hsl(40 95% 55%)", "hsl(217 91% 45%)", "hsl(217 91% 45%)"];
 
 export default function Idc() {
   const [tab, setTab] = useState<ClassifyTab>("综合能耗");
@@ -139,7 +139,7 @@ export default function Idc() {
             <PanelTitle action={<button className="text-[10px] text-primary hover:underline">查看详情</button>}>IDC区县分析</PanelTitle>
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] mb-2">
               {[
-                { l: "1.0~1.3", c: "hsl(152 65% 50%)" },
+                { l: "1.0~1.3", c: "hsl(265 85% 65%)" },
                 { l: "1.3~1.5", c: "hsl(217 91% 56%)" },
                 { l: "1.5~1.7", c: "hsl(40 95% 55%)" },
                 { l: ">1.7", c: "hsl(0 75% 60%)" },
@@ -156,8 +156,8 @@ export default function Idc() {
                 <XAxis dataKey="d" fontSize={8} stroke="hsl(var(--muted-foreground))" angle={-45} textAnchor="end" height={50} interval={0} />
                 <YAxis fontSize={9} stroke="hsl(var(--muted-foreground))" />
                 <Tooltip contentStyle={tooltipStyle} />
-                <Bar dataKey="a" stackId="x" fill="hsl(152 65% 50%)" />
-                <Bar dataKey="b" stackId="x" fill="hsl(155 55% 28%)" />
+                <Bar dataKey="a" stackId="x" fill="hsl(265 85% 65%)" />
+                <Bar dataKey="b" stackId="x" fill="hsl(217 91% 45%)" />
                 <Bar dataKey="c" stackId="x" fill="hsl(40 95% 55%)" />
                 <Bar dataKey="dd" stackId="x" fill="hsl(0 75% 60%)" />
               </BarChart>
@@ -218,7 +218,7 @@ export default function Idc() {
                     {i + 1}
                   </span>
                   <span className="flex-1 truncate">{it.name}</span>
-                  <div className="w-12 h-1 rounded bg-gradient-to-r from-emerald-300 to-emerald-500" />
+                  <div className="w-12 h-1 rounded bg-gradient-to-r from-sky-300 to-sky-500" />
                   <span className="tabular-nums w-12 text-right text-muted-foreground">{it.v.toFixed(3)}</span>
                 </div>
               ))}

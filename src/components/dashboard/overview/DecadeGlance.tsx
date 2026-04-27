@@ -37,8 +37,8 @@ function GaugeChart({ value }: { value: number }) {
 
   // 颜色分段：0-0.25 绿,0.25-0.5 蓝,0.5-0.75 黄,0.75-1 红
   const arcs = [
-    { from: -90, to: -45, color: "hsl(152 65% 55%)" },
-    { from: -45, to: 0, color: "hsl(150 60% 45%)" },
+    { from: -90, to: -45, color: "hsl(265 85% 65%)" },
+    { from: -45, to: 0, color: "hsl(217 91% 55%)" },
     { from: 0, to: 45, color: "hsl(40 95% 55%)" },
     { from: 45, to: 90, color: "hsl(0 75% 60%)" },
   ];
