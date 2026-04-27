@@ -1,105 +1,245 @@
-import { FolderArchive, Upload, Search, FileText } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  FileText,
+  Plus,
+  Search,
+  Calendar,
+  CheckCircle2,
+  AlertOctagon,
+  Clock,
+  ArrowRight,
+  History,
+  Pencil,
+  Send,
+} from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-const categories = [
-  { name: "节能管理制度", count: 12, color: "text-primary bg-primary/10" },
-  { name: "节能技改项目", count: 8, color: "text-success bg-success/10" },
-  { name: "能源审计报告", count: 5, color: "text-secondary bg-secondary/10" },
-  { name: "培训与考核记录", count: 23, color: "text-warning bg-warning/10" },
-  { name: "计量器具档案", count: 47, color: "text-primary bg-primary/10" },
-  { name: "其他文件", count: 16, color: "text-muted-foreground bg-muted" },
-];
-
-const files = [
-  { name: "2024年度能源审计报告.pdf", type: "审计报告", size: "4.2 MB", date: "2025-01-12", status: "已归档" },
-  { name: "节能技改项目-余热回收装置可研报告.docx", type: "技改项目", size: "1.8 MB", date: "2024-12-08", status: "已归档" },
-  { name: "能源管理体系内审记录.pdf", type: "管理制度", size: "860 KB", date: "2024-11-25", status: "已归档" },
-  { name: "重点用能设备能效检测报告.pdf", type: "计量器具", size: "2.1 MB", date: "2024-11-10", status: "已归档" },
-  { name: "节能法规培训记录-2024Q4.xlsx", type: "培训记录", size: "320 KB", date: "2024-10-20", status: "已归档" },
-];
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ArchiveStatusBadge } from "@/components/archives/ArchiveStatusBadge";
+import {
+  enterprises,
+  CURRENT_ENT_ID,
+  ARCHIVE_STEPS,
+  ArchiveStatus,
+} from "@/mocks/archives";
 
 export default function EntArchives() {
+  const ent = enterprises.find((e) => e.id === CURRENT_ENT_ID)!;
+  const [statusFilter, setStatusFilter] = useState<"all" | ArchiveStatus>("all");
+  const [keyword, setKeyword] = useState("");
+
+  const years = useMemo(
+    () =>
+      ent.years.filter(
+        (y) =>
+          (statusFilter === "all" || y.status === statusFilter) &&
+          String(y.year).includes(keyword.trim()),
+      ),
+    [ent.years, statusFilter, keyword],
+  );
+
+  const kpi = useMemo(() => {
+    const total = ent.years.length;
+    const submitted = ent.years.filter((y) =>
+      ["submitted", "approved"].includes(y.status),
+    ).length;
+    const rejected = ent.years.filter((y) => y.status === "rejected").length;
+    const approved = ent.years.filter((y) => y.status === "approved").length;
+    return { total, submitted, rejected, approved };
+  }, [ent.years]);
+
   return (
-    <AppLayout side="ent" title="节能档案" subtitle="企业内部节能管理文件的统一归档与检索">
-      {/* 分类卡片 */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
-        {categories.map((c) => (
-          <div key={c.name} className="panel p-4 hover:border-primary/40 cursor-pointer transition-all">
-            <div className={`h-9 w-9 rounded-lg ${c.color} flex items-center justify-center mb-2`}>
-              <FolderArchive className="h-4 w-4" />
-            </div>
-            <div className="text-xs text-muted-foreground mb-1">{c.name}</div>
-            <div className="text-xl font-bold font-mono">{c.count}</div>
-          </div>
-        ))}
+    <AppLayout
+      side="ent"
+      title="节能档案"
+      subtitle="按年度填报本企业节能管理档案，提交后由经信委进行审核"
+    >
+      {/* KPI */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+        <KpiCard
+          label="累计归档年度"
+          value={kpi.total}
+          unit="年"
+          icon={Calendar}
+          tone="primary"
+        />
+        <KpiCard
+          label="已提交"
+          value={kpi.submitted}
+          unit="份"
+          icon={Send}
+          tone="primary"
+        />
+        <KpiCard
+          label="已通过"
+          value={kpi.approved}
+          unit="份"
+          icon={CheckCircle2}
+          tone="success"
+        />
+        <KpiCard
+          label="待整改退回"
+          value={kpi.rejected}
+          unit="份"
+          icon={AlertOctagon}
+          tone="danger"
+        />
       </div>
 
-      {/* 工具栏 + 列表 */}
-      <div className="panel p-5">
-        <div className="flex flex-wrap items-center gap-3 mb-4">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input placeholder="按文件名 / 编号搜索..." className="pl-8 h-9" />
-          </div>
-          <Button variant="outline" className="h-9">高级筛选</Button>
-          <Button className="bg-gradient-primary text-primary-foreground border-0 h-9 ml-auto">
-            <Upload className="h-3.5 w-3.5 mr-1.5" />
-            上传档案
-          </Button>
+      {/* 工具栏 */}
+      <div className="panel p-4 mb-4 flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input
+            placeholder="按年度搜索..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            className="pl-8 h-9"
+          />
         </div>
+        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
+          <SelectTrigger className="w-40 h-9">
+            <SelectValue placeholder="状态" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">全部状态</SelectItem>
+            <SelectItem value="draft">草稿</SelectItem>
+            <SelectItem value="submitted">待审核</SelectItem>
+            <SelectItem value="approved">已通过</SelectItem>
+            <SelectItem value="rejected">已退回</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          asChild
+          className="h-9 ml-auto bg-gradient-primary text-primary-foreground border-0"
+        >
+          <Link to={`/ent/archives/${new Date().getFullYear()}`}>
+            <Plus className="h-3.5 w-3.5 mr-1" />
+            新建年度档案
+          </Link>
+        </Button>
+      </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>文件名</TableHead>
-              <TableHead>分类</TableHead>
-              <TableHead>大小</TableHead>
-              <TableHead>归档日期</TableHead>
-              <TableHead>状态</TableHead>
-              <TableHead className="text-right">操作</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {files.map((f) => (
-              <TableRow key={f.name}>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-primary" />
-                    <span className="font-medium">{f.name}</span>
+      {/* 年度档案卡片 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {years.map((y) => {
+          const completedCount = Object.values(y.detail.completed).filter(Boolean).length;
+          const total = ARCHIVE_STEPS.length;
+          const pct = Math.round((completedCount / total) * 100);
+          return (
+            <Link
+              key={y.year}
+              to={`/ent/archives/${y.year}`}
+              className="panel p-5 hover:border-primary/50 hover:shadow-elevated transition-all group flex flex-col"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="text-3xl font-bold font-mono text-gradient">
+                    {y.year}
                   </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">
-                    {f.type}
-                  </Badge>
-                </TableCell>
-                <TableCell className="font-mono text-xs text-muted-foreground">{f.size}</TableCell>
-                <TableCell className="font-mono text-xs text-muted-foreground">{f.date}</TableCell>
-                <TableCell>
-                  <Badge className="bg-success/15 text-success border-success/30 border">
-                    {f.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button variant="ghost" size="sm" className="text-primary">预览</Button>
-                  <Button variant="ghost" size="sm" className="text-primary">下载</Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                  <div className="text-xs text-muted-foreground mt-1">节能档案</div>
+                </div>
+                <ArchiveStatusBadge status={y.status} />
+              </div>
+
+              <div className="mt-5">
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
+                  <span>填报完成度</span>
+                  <span className="font-mono text-foreground">
+                    {completedCount}/{total}
+                  </span>
+                </div>
+                <Progress value={pct} className="h-1.5" />
+              </div>
+
+              <div className="mt-4 space-y-1.5 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <Clock className="h-3 w-3" />
+                  创建：<span className="font-mono">{y.createdAt || "—"}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <History className="h-3 w-3" />
+                  最近更新：<span className="font-mono">{y.updatedAt || "—"}</span>
+                </div>
+                {y.reviewer && (
+                  <div className="flex items-center gap-1.5">
+                    <FileText className="h-3 w-3" />
+                    审核人：{y.reviewer}
+                  </div>
+                )}
+              </div>
+
+              {y.status === "rejected" && y.rejectReason && (
+                <div className="mt-3 rounded-md border border-destructive/30 bg-destructive/5 px-2.5 py-1.5 text-[11px] text-destructive leading-relaxed line-clamp-2">
+                  退回原因：{y.rejectReason}
+                </div>
+              )}
+
+              <div className="mt-4 pt-4 border-t border-border/60 flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">
+                  {y.status === "rejected"
+                    ? "立即整改"
+                    : y.status === "draft"
+                      ? "继续填报"
+                      : y.status === "submitted"
+                        ? "查看进度"
+                        : "查看详情"}
+                </span>
+                <span className="text-primary inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                  <Pencil className="h-3 w-3" /> 进入
+                  <ArrowRight className="h-3 w-3" />
+                </span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </AppLayout>
+  );
+}
+
+function KpiCard({
+  label,
+  value,
+  unit,
+  icon: Icon,
+  tone,
+}: {
+  label: string;
+  value: number;
+  unit: string;
+  icon: any;
+  tone: "primary" | "success" | "danger";
+}) {
+  const cls =
+    tone === "success"
+      ? "text-success bg-success/10"
+      : tone === "danger"
+        ? "text-destructive bg-destructive/10"
+        : "text-primary bg-primary/10";
+  return (
+    <div className="panel p-4 flex items-center gap-3">
+      <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${cls}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <div className="text-xs text-muted-foreground">{label}</div>
+        <div className="text-xl font-bold font-mono mt-0.5">
+          {value}
+          <span className="text-xs text-muted-foreground ml-1 font-sans font-normal">
+            {unit}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
