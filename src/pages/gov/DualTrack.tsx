@@ -19,10 +19,10 @@ import { Building2, Factory, TrendingDown, Award, Flame, Zap, Leaf, Wind } from 
 
 // ===== 管理企业规模 =====
 const scaleCards = [
-  { label: "企业总数", value: 545, unit: "家", icon: Building2, color: "hsl(155 55% 28%)", bg: "hsl(150 60% 40% / 0.12)" },
+  { label: "企业总数", value: 545, unit: "家", icon: Building2, color: "hsl(217 91% 45%)", bg: "hsl(217 91% 55% / 0.12)" },
   { label: "两高", value: 98, unit: "家", icon: Flame, color: "hsl(0 75% 60%)", bg: "hsl(0 75% 60% / 0.12)" },
   { label: "限额", value: 93, unit: "家", icon: TrendingDown, color: "hsl(40 95% 55%)", bg: "hsl(40 95% 55% / 0.12)" },
-  { label: "百千家", value: 8, unit: "家", icon: Award, color: "hsl(155 55% 28%)", bg: "hsl(150 60% 40% / 0.12)" },
+  { label: "百千家", value: 8, unit: "家", icon: Award, color: "hsl(217 91% 45%)", bg: "hsl(217 91% 55% / 0.12)" },
 ];
 
 // ===== 行业分布 =====
@@ -39,9 +39,9 @@ const industries = [
   { name: "其他", value: 4, pct: 1 },
 ];
 const industryColors = [
-  "hsl(155 55% 28%)", "hsl(150 60% 40%)", "hsl(160 55% 50%)", "hsl(155 60% 45%)",
-  "hsl(152 65% 50%)", "hsl(160 55% 30%)", "hsl(150 50% 60%)", "hsl(150 65% 38%)",
-  "hsl(155 50% 55%)", "hsl(220 15% 60%)",
+  "hsl(217 91% 45%)", "hsl(217 91% 55%)", "hsl(265 85% 70%)", "hsl(217 91% 55%)",
+  "hsl(265 85% 65%)", "hsl(217 91% 45%)", "hsl(217 80% 75%)", "hsl(217 91% 55%)",
+  "hsl(265 80% 75%)", "hsl(220 15% 60%)",
 ];
 
 // ===== 区县分布统计 =====
@@ -55,18 +55,18 @@ const districtRows = [
 
 // ===== 月度关键数据 (能碳指标) =====
 const monthlyKpi = [
-  { label: "累计碳排放量", value: "2,386.3", unit: "万tCO2", icon: Factory, color: "hsl(155 55% 28%)" },
-  { label: "累计综合能耗(等价值)", value: "954.5", unit: "万tce", icon: Flame, color: "hsl(155 55% 28%)" },
-  { label: "累计电耗", value: "97.0", unit: "亿kWh", icon: Zap, color: "hsl(155 55% 28%)" },
-  { label: "累计绿色电力/可再生/绿证消耗", value: "24.8", unit: "亿kWh", icon: Wind, color: "hsl(152 65% 50%)" },
+  { label: "累计碳排放量", value: "2,386.3", unit: "万tCO2", icon: Factory, color: "hsl(217 91% 45%)" },
+  { label: "累计综合能耗(等价值)", value: "954.5", unit: "万tce", icon: Flame, color: "hsl(217 91% 45%)" },
+  { label: "累计电耗", value: "97.0", unit: "亿kWh", icon: Zap, color: "hsl(217 91% 45%)" },
+  { label: "累计绿色电力/可再生/绿证消耗", value: "24.8", unit: "亿kWh", icon: Wind, color: "hsl(265 85% 65%)" },
 ];
 
 // ===== 年度关键数据 =====
 const yearlyKpi = [
-  { label: "累计碳排放量", value: "14,506.4", unit: "万tCO2e", icon: Factory, color: "hsl(155 55% 28%)" },
-  { label: "累计综合能耗(等价值)", value: "4,326.9", unit: "万tce", icon: Flame, color: "hsl(155 55% 28%)" },
-  { label: "累计电耗", value: "601.1", unit: "亿kWh", icon: Zap, color: "hsl(155 55% 28%)" },
-  { label: "累计绿色电力/可再生/绿证消耗", value: "80.5", unit: "亿kWh", icon: Wind, color: "hsl(152 65% 50%)" },
+  { label: "累计碳排放量", value: "14,506.4", unit: "万tCO2e", icon: Factory, color: "hsl(217 91% 45%)" },
+  { label: "累计综合能耗(等价值)", value: "4,326.9", unit: "万tce", icon: Flame, color: "hsl(217 91% 45%)" },
+  { label: "累计电耗", value: "601.1", unit: "亿kWh", icon: Zap, color: "hsl(217 91% 45%)" },
+  { label: "累计绿色电力/可再生/绿证消耗", value: "80.5", unit: "亿kWh", icon: Wind, color: "hsl(265 85% 65%)" },
 ];
 
 // 月度趋势数据
@@ -94,15 +94,15 @@ const yearlyTrend = Array.from({ length: 12 }).map((_, i) => {
 
 // 限额对标
 const quotaResults = [
-  { label: "1 优于先进值", value: 55, color: "hsl(155 55% 28%)" },
-  { label: "2 限额值至准入值之间", value: 28, color: "hsl(155 55% 28%)" },
-  { label: "3 准入值至先进值之间", value: 16, color: "hsl(155 55% 28%)" },
-  { label: "4 低于限额值", value: 1, color: "hsl(155 55% 28%)" },
+  { label: "1 优于先进值", value: 55, color: "hsl(217 91% 45%)" },
+  { label: "2 限额值至准入值之间", value: 28, color: "hsl(217 91% 45%)" },
+  { label: "3 准入值至先进值之间", value: 16, color: "hsl(217 91% 45%)" },
+  { label: "4 低于限额值", value: 1, color: "hsl(217 91% 45%)" },
 ];
 const benchResults = [
-  { label: "1 标杆水平至基准水平之间", value: 68, color: "hsl(155 55% 28%)" },
-  { label: "2 优于标杆水平", value: 32, color: "hsl(155 55% 28%)" },
-  { label: "3 低于基准水平", value: 0, color: "hsl(155 55% 28%)" },
+  { label: "1 标杆水平至基准水平之间", value: 68, color: "hsl(217 91% 45%)" },
+  { label: "2 优于标杆水平", value: 32, color: "hsl(217 91% 45%)" },
+  { label: "3 低于基准水平", value: 0, color: "hsl(217 91% 45%)" },
 ];
 
 const tooltipStyle = {
@@ -304,7 +304,7 @@ export default function DualTrack() {
                 <YAxis yAxisId="R" orientation="right" fontSize={10} stroke="hsl(var(--muted-foreground))" label={{ value: "万tCO2e", position: "insideTopRight", fontSize: 9, fill: "hsl(var(--muted-foreground))", offset: -5 }} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 10 }} iconSize={10} />
-                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(150 60% 45%)" radius={[3, 3, 0, 0]} barSize={18} />
+                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(217 91% 55%)" radius={[3, 3, 0, 0]} barSize={18} />
                 <Line yAxisId="R" type="monotone" dataKey="carbon" name="碳排放量" stroke="hsl(40 95% 55%)" strokeWidth={2} dot={{ r: 3, fill: "hsl(40 95% 55%)" }} />
               </ComposedChart>
             </ResponsiveContainer>
@@ -328,7 +328,7 @@ export default function DualTrack() {
                 <YAxis yAxisId="R" orientation="right" fontSize={10} stroke="hsl(var(--muted-foreground))" label={{ value: "万tCO2e", position: "insideTopRight", fontSize: 9, fill: "hsl(var(--muted-foreground))", offset: -5 }} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 10 }} iconSize={10} />
-                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(150 60% 45%)" radius={[3, 3, 0, 0]} barSize={14} />
+                <Bar yAxisId="L" dataKey="energy" name="综合能耗" fill="hsl(217 91% 55%)" radius={[3, 3, 0, 0]} barSize={14} />
                 <Line yAxisId="R" type="monotone" dataKey="carbon" name="碳排放量" stroke="hsl(40 95% 55%)" strokeWidth={2} dot={{ r: 2.5, fill: "hsl(40 95% 55%)" }} />
               </ComposedChart>
             </ResponsiveContainer>
