@@ -63,7 +63,7 @@ export function ArchiveStepContent({
 }
 
 /* ───────────────────── 基本信息 ───────────────────── */
-function BasicInfo({ detail, annotations, readOnly, onAnnotate }: Props) {
+function BasicInfo({ detail, annotations, readOnly, onAnnotate }: StepProps) {
   const b = detail.basic;
   return (
     <div className="space-y-8">
@@ -159,7 +159,7 @@ function BasicInfo({ detail, annotations, readOnly, onAnnotate }: Props) {
 }
 
 /* ───────────────────── 主要产品 ───────────────────── */
-function Products({ detail, annotations, readOnly }: Props) {
+function Products({ detail, annotations, readOnly }: StepProps) {
   return (
     <ArchiveSection
       title="主要产品情况"
