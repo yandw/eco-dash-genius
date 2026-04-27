@@ -94,7 +94,7 @@ export function IdcShanghaiMap({ onIdcClick }: Props) {
               <span className="text-[9px] text-muted-foreground">{k.u}</span>
             </div>
             <div className="text-[10px] text-muted-foreground mt-0.5">{k.l}</div>
-            {k.extra && <div className="text-[9px] text-emerald-500 mt-0.5">{k.extra}</div>}
+            {k.extra && <div className="text-[9px] text-sky-500 mt-0.5">{k.extra}</div>}
           </div>
         ))}
       </div>

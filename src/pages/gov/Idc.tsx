@@ -218,7 +218,7 @@ export default function Idc() {
                     {i + 1}
                   </span>
                   <span className="flex-1 truncate">{it.name}</span>
-                  <div className="w-12 h-1 rounded bg-gradient-to-r from-emerald-300 to-emerald-500" />
+                  <div className="w-12 h-1 rounded bg-gradient-to-r from-sky-300 to-sky-500" />
                   <span className="tabular-nums w-12 text-right text-muted-foreground">{it.v.toFixed(3)}</span>
                 </div>
               ))}
