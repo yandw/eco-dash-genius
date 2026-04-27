@@ -114,8 +114,12 @@ export function AppSidebar({ side = "gov" }: Props) {
 
   // 默认展开包含当前路由的父项
   const isMonitoringActive = monitoringSubPaths.includes(location.pathname);
+  const archivesActive =
+    location.pathname === (isGov ? "/gov/archives" : "/ent/archives") ||
+    location.pathname === (isGov ? "/gov/posts" : "/ent/posts");
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({
     全景监测: isMonitoringActive,
+    档案管理: archivesActive,
   });
 
   return (
