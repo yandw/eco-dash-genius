@@ -38,6 +38,13 @@ interface Props {
   onAnnotate?: (field: string) => void; // 政府侧批注
 }
 
+interface StepProps {
+  detail: ArchiveDetail;
+  annotations: FieldAnnotationItem[];
+  readOnly?: boolean;
+  onAnnotate?: (field: string) => void;
+}
+
 const annFor = (field: string, list: FieldAnnotationItem[]) =>
   list.filter((a) => a.field === field);
 
