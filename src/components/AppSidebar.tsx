@@ -21,6 +21,7 @@ import {
   LineChart,
   Award,
   Server,
+  Users,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -61,7 +62,15 @@ const govItems: NavItem[] = [
   { title: "节能月度报告", url: "/gov/report-monthly", icon: FileBarChart },
   { title: "节能年度报告", url: "/gov/report-yearly", icon: CalendarRange },
   { title: "能源限额报告", url: "/gov/energy-quota", icon: Gauge },
-  { title: "节能管理档案", url: "/gov/archives", icon: FolderArchive },
+  {
+    title: "档案管理",
+    url: "/gov/archives",
+    icon: FolderArchive,
+    children: [
+      { title: "节能档案", url: "/gov/archives", icon: FolderArchive },
+      { title: "岗位备案", url: "/gov/posts", icon: Users },
+    ],
+  },
   { title: "双控考核管理", url: "/gov/dual-control", icon: ClipboardCheck },
   { title: "固定资产管理", url: "/gov/assets", icon: Boxes },
   { title: "绿色制造管理", url: "/gov/green-mfg", icon: Leaf },
@@ -75,7 +84,15 @@ const entItems: NavItem[] = [
   { title: "年度报告填报", url: "/ent/report-yearly", icon: CalendarRange },
   { title: "限额报告填报", url: "/ent/energy-quota", icon: Gauge },
   { title: "企业设置", url: "/ent/profile", icon: Building2 },
-  { title: "节能档案", url: "/ent/archives", icon: FolderArchive },
+  {
+    title: "档案管理",
+    url: "/ent/archives",
+    icon: FolderArchive,
+    children: [
+      { title: "节能档案", url: "/ent/archives", icon: FolderArchive },
+      { title: "岗位备案", url: "/ent/posts", icon: Users },
+    ],
+  },
   { title: "文件下载", url: "/ent/downloads", icon: Download },
   { title: "系统管理", url: "/ent/system", icon: Settings },
 ];
