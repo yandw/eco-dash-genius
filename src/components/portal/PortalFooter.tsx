@@ -17,7 +17,7 @@ export function PortalFooter() {
         <div className="md:col-span-5">
           <div className="flex items-center gap-2 mb-3">
             <div className="h-8 w-8 rounded-md bg-white/10 flex items-center justify-center">
-              <Leaf className="h-4 w-4 text-[hsl(150_65%_55%)]" />
+              <Leaf className="h-4 w-4 text-[hsl(210_100%_65%)]" />
             </div>
             <span className="text-base font-semibold text-white">
               Carbon Intelligence Shanghai
