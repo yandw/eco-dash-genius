@@ -38,6 +38,8 @@ import EquipBench from "./pages/gov/EquipBench.tsx";
 import GovPosts from "./pages/gov/Posts.tsx";
 import GovPostDetail from "./pages/gov/GovPostDetail.tsx";
 import GovArchiveDetail from "./pages/gov/GovArchiveDetail.tsx";
+import NewsAdmin from "./pages/gov/NewsAdmin.tsx";
+import NewsEditor from "./pages/gov/NewsEditor.tsx";
 import EntPosts from "./pages/ent/EntPosts.tsx";
 
 const queryClient = new QueryClient();
@@ -72,6 +74,9 @@ const App = () => (
           <Route path="/gov/benchmark" element={<Benchmark />} />
           <Route path="/gov/enterprise" element={<Enterprise />} />
           <Route path="/gov/system" element={<System />} />
+          <Route path="/gov/news" element={<NewsAdmin />} />
+          <Route path="/gov/news/new" element={<NewsEditor />} />
+          <Route path="/gov/news/:id/edit" element={<NewsEditor />} />
 
           {/* 企业服务侧 */}
           <Route path="/ent" element={<EntDashboard />} />
