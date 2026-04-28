@@ -22,7 +22,9 @@ import {
   Award,
   Server,
   Users,
+  Newspaper,
 } from "lucide-react";
+import { isCityAdmin } from "@/mocks/currentUser";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -76,7 +78,17 @@ const govItems: NavItem[] = [
   { title: "绿色制造管理", url: "/gov/green-mfg", icon: Leaf },
   { title: "设备对标管理", url: "/gov/benchmark", icon: Crosshair },
   { title: "企业管理", url: "/gov/enterprise", icon: Building2 },
-  { title: "系统管理", url: "/gov/system", icon: Settings },
+  {
+    title: "系统管理",
+    url: "/gov/system",
+    icon: Settings,
+    children: [
+      { title: "系统设置", url: "/gov/system", icon: Settings },
+      ...(isCityAdmin()
+        ? [{ title: "新闻发布", url: "/gov/news", icon: Newspaper }]
+        : []),
+    ],
+  },
 ];
 
 const entItems: NavItem[] = [
