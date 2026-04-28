@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
-import { Download, Send, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Download, Send } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AssessYearPicker } from "@/components/assess/AssessYearPicker";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
 import { BqGoalTable } from "@/components/assess/BqGoalTable";
@@ -14,7 +14,6 @@ import {
   carbonGoals,
   bqGoals,
   districtGoalSummary,
-  districts,
   type CarbonGoalRow,
   type ChangeRecord,
 } from "@/mocks/assess";
@@ -23,14 +22,12 @@ import { toast } from "sonner";
 
 export default function AssessGoal() {
   const role = getCurrentRole();
+  const navigate = useNavigate();
   const [year, setYear] = useState(2026);
   const [rows, setRows] = useState<CarbonGoalRow[]>(carbonGoals);
 
   // 区级编辑
   const [editing, setEditing] = useState<CarbonGoalRow | null>(null);
-
-  // 市级下钻
-  const [drillId, setDrillId] = useState<string | null>(null);
 
   const summary = useMemo(() => {
     const total = rows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
@@ -51,11 +48,6 @@ export default function AssessGoal() {
       ),
     );
   };
-
-  const drillRows = drillId
-    ? carbonGoals.filter((r) => r.districtId === drillId)
-    : [];
-  const drillName = districts.find((d) => d.id === drillId)?.name;
 
   return (
     <AppLayout side="gov" title="目标分解" subtitle={isCity ? "全市 17 区目标分解汇总与下钻" : "本区企业碳排放目标分解"}>
@@ -104,7 +96,7 @@ export default function AssessGoal() {
                 <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold text-primary">{districtGoalSummary.reduce((s, d) => s + d.count, 0)}</div></Card>
               </div>
 
-              <DistrictListTable variant="goal" rows={districtGoalSummary} year={year} onAction={setDrillId} />
+              <DistrictListTable variant="goal" rows={districtGoalSummary} year={year} onAction={(id) => navigate(`/gov/assess/goal/district/${id}`)} />
             </>
           )}
         </TabsContent>
@@ -122,29 +114,6 @@ export default function AssessGoal() {
         onSave={handleSaveEdit}
       />
 
-      {/* 市级下钻全屏弹窗 */}
-      <Dialog open={!!drillId} onOpenChange={(v) => !v && setDrillId(null)}>
-        <DialogContent className="max-w-[95vw] w-[95vw] max-h-[92vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span>{drillName} 下属企业碳排放目标分解</span>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="h-8" onClick={() => toast.success("已导出 Excel")}>
-                  <Download className="h-3.5 w-3.5 mr-1" />导出
-                </Button>
-                <Button variant="ghost" size="sm" className="h-8" onClick={() => setDrillId(null)}>
-                  <X className="h-3.5 w-3.5 mr-1" />关闭
-                </Button>
-              </div>
-            </DialogTitle>
-          </DialogHeader>
-          {drillId === "qingpu" ? (
-            <CarbonGoalTable rows={drillRows} mode="city-view" />
-          ) : (
-            <div className="py-12 text-center text-sm text-muted-foreground">演示数据仅包含青浦区，其它区显示样式相同。</div>
-          )}
-        </DialogContent>
-      </Dialog>
     </AppLayout>
   );
 }
