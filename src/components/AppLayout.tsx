@@ -1,11 +1,12 @@
 import { Bell, Search, Sun, User, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar, UserSide } from "@/components/AppSidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { RoleSwitcher } from "@/components/assess/RoleSwitcher";
 
 interface AppLayoutProps {
   title: string;
