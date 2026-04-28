@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
-import { Download, Send, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Download, Send } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AssessYearPicker } from "@/components/assess/AssessYearPicker";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
 import { BqGoalTable } from "@/components/assess/BqGoalTable";
@@ -14,7 +14,6 @@ import {
   carbonGoals,
   bqGoals,
   districtGoalSummary,
-  districts,
   type CarbonGoalRow,
   type ChangeRecord,
 } from "@/mocks/assess";
@@ -23,14 +22,12 @@ import { toast } from "sonner";
 
 export default function AssessGoal() {
   const role = getCurrentRole();
+  const navigate = useNavigate();
   const [year, setYear] = useState(2026);
   const [rows, setRows] = useState<CarbonGoalRow[]>(carbonGoals);
 
   // 区级编辑
   const [editing, setEditing] = useState<CarbonGoalRow | null>(null);
-
-  // 市级下钻
-  const [drillId, setDrillId] = useState<string | null>(null);
 
   const summary = useMemo(() => {
     const total = rows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
