@@ -76,7 +76,7 @@ export const newsArticles: NewsArticle[] = [
   },
   {
     id: "n3",
-    title: "首批"能效领跑"示范企业名单正式发布",
+    title: "首批「能效领跑」示范企业名单正式发布",
     category: "notice",
     source: "节能中心",
     wechatUrl: "https://mp.weixin.qq.com/s/example-3",
