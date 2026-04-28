@@ -1,21 +1,150 @@
-import { Target } from "lucide-react";
-import { PlaceholderPage } from "@/components/PlaceholderPage";
+import { useMemo, useState } from "react";
+import { Download, Send, X } from "lucide-react";
+import { AppLayout } from "@/components/AppLayout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AssessYearPicker } from "@/components/assess/AssessYearPicker";
+import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
+import { BqGoalTable } from "@/components/assess/BqGoalTable";
+import { DistrictListTable } from "@/components/assess/DistrictListTable";
+import { EditWithRemarkSheet } from "@/components/assess/EditWithRemarkSheet";
+import {
+  carbonGoals,
+  bqGoals,
+  districtGoalSummary,
+  districts,
+  type CarbonGoalRow,
+  type ChangeRecord,
+} from "@/mocks/assess";
+import { getCurrentRole } from "@/mocks/currentUser";
+import { toast } from "sonner";
 
 export default function AssessGoal() {
+  const role = getCurrentRole();
+  const [year, setYear] = useState(2026);
+  const [rows, setRows] = useState<CarbonGoalRow[]>(carbonGoals);
+
+  // 区级编辑
+  const [editing, setEditing] = useState<CarbonGoalRow | null>(null);
+
+  // 市级下钻
+  const [drillId, setDrillId] = useState<string | null>(null);
+
+  const summary = useMemo(() => {
+    const total = rows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
+    const avgIntensity = (rows.filter((r) => r.intensity2026).reduce((s, r) => s + (r.intensity2026 ?? 0), 0) / Math.max(1, rows.filter((r) => r.intensity2026).length)).toFixed(3);
+    const submitted = rows.filter((r) => r.status !== "draft").length;
+    const modified = rows.filter((r) => r.status === "modified").length;
+    return { total, avgIntensity, submitted, modified, count: rows.length };
+  }, [rows]);
+
+  const isCity = role === "city_admin";
+
+  const handleSaveEdit = (id: string, patch: Partial<CarbonGoalRow>, changes: ChangeRecord[]) => {
+    setRows((prev) =>
+      prev.map((r) =>
+        r.id === id
+          ? { ...r, ...patch, changes: [...r.changes, ...changes] }
+          : r,
+      ),
+    );
+  };
+
+  const drillRows = drillId
+    ? carbonGoals.filter((r) => r.districtId === drillId)
+    : [];
+  const drillName = districts.find((d) => d.id === drillId)?.name;
+
   return (
-    <PlaceholderPage
-      side="gov"
-      title="目标分解"
-      subtitle="能耗双控 / 碳排双控目标的逐级分解与下达"
-      icon={Target}
-      features={[
-        "市级总目标设定",
-        "区县目标分解",
-        "重点用能企业目标下达",
-        "目标台账与变更记录",
-        "分解结果公示与确认",
-        "目标执行进度跟踪",
-      ]}
-    />
+    <AppLayout side="gov" title="目标分解" subtitle={isCity ? "全市 17 区目标分解汇总与下钻" : "本区企业碳排放目标分解"}>
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <AssessYearPicker year={year} onChange={setYear} />
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="h-9" onClick={() => toast.success("已导出 Excel")}>
+            <Download className="h-3.5 w-3.5 mr-1" />导出
+          </Button>
+          {!isCity && (
+            <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已批量提交至市级")}>
+              <Send className="h-3.5 w-3.5 mr-1" />批量提交
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <Tabs defaultValue="district">
+        <TabsList>
+          <TabsTrigger value="district">区下属单位碳排放目标分解</TabsTrigger>
+          <TabsTrigger value="bq">"百家"、"千家"、通信业企业碳排放目标分解</TabsTrigger>
+        </TabsList>
+
+        {/* ========= 区下属 ========= */}
+        <TabsContent value="district" className="mt-4 space-y-4">
+          {!isCity ? (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{summary.count}</div></Card>
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">已提交</div><div className="text-lg font-semibold text-success">{summary.submitted}</div></Card>
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">已修改</div><div className="text-lg font-semibold text-warning">{summary.modified}</div></Card>
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{summary.total.toLocaleString()}</div></Card>
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">平均强度</div><div className="text-lg font-semibold">{summary.avgIntensity}</div></Card>
+              </div>
+
+              <CarbonGoalTable rows={rows} mode="district-view" onEdit={setEditing} />
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">参与区数</div><div className="text-lg font-semibold">{districtGoalSummary.length}</div></Card>
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{districtGoalSummary.filter((d) => d.status === "已完成").length}</div></Card>
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">进行中</div><div className="text-lg font-semibold text-warning">{districtGoalSummary.filter((d) => d.status === "进行中").length}</div></Card>
+                <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold text-primary">{districtGoalSummary.reduce((s, d) => s + d.count, 0)}</div></Card>
+              </div>
+
+              <DistrictListTable variant="goal" rows={districtGoalSummary} year={year} onAction={setDrillId} />
+            </>
+          )}
+        </TabsContent>
+
+        {/* ========= 百千家 ========= */}
+        <TabsContent value="bq" className="mt-4">
+          <BqGoalTable rows={bqGoals} mode={isCity ? "city-view" : "district-view"} />
+        </TabsContent>
+      </Tabs>
+
+      <EditWithRemarkSheet
+        open={!!editing}
+        row={editing}
+        onClose={() => setEditing(null)}
+        onSave={handleSaveEdit}
+      />
+
+      {/* 市级下钻全屏弹窗 */}
+      <Dialog open={!!drillId} onOpenChange={(v) => !v && setDrillId(null)}>
+        <DialogContent className="max-w-[95vw] w-[95vw] max-h-[92vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>{drillName} 下属企业碳排放目标分解</span>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="h-8" onClick={() => toast.success("已导出 Excel")}>
+                  <Download className="h-3.5 w-3.5 mr-1" />导出
+                </Button>
+                <Button variant="ghost" size="sm" className="h-8" onClick={() => setDrillId(null)}>
+                  <X className="h-3.5 w-3.5 mr-1" />关闭
+                </Button>
+              </div>
+            </DialogTitle>
+          </DialogHeader>
+          {drillId === "qingpu" ? (
+            <CarbonGoalTable rows={drillRows} mode="city-view" />
+          ) : (
+            <div className="py-12 text-center text-sm text-muted-foreground">演示数据仅包含青浦区，其它区显示样式相同。</div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </AppLayout>
   );
 }
