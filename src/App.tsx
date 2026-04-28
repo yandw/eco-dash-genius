@@ -16,6 +16,7 @@ import Benchmark from "./pages/Benchmark.tsx";
 import Enterprise from "./pages/Enterprise.tsx";
 import System from "./pages/System.tsx";
 import PortalHome from "./pages/portal/PortalHome.tsx";
+import PortalHomeV2 from "./pages/portal/PortalHomeV2.tsx";
 import PortalNews from "./pages/portal/PortalNews.tsx";
 import PortalNewsDetail from "./pages/portal/PortalNewsDetail.tsx";
 import PortalGreenMfg from "./pages/portal/PortalGreenMfg.tsx";
