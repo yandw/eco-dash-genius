@@ -1,5 +1,4 @@
 import { Link, NavLink } from "react-router-dom";
-import { Leaf } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navs = [
