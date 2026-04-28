@@ -23,6 +23,7 @@ import {
   Server,
   Users,
   Newspaper,
+  Target,
 } from "lucide-react";
 import { isCityAdmin } from "@/mocks/currentUser";
 import { NavLink } from "@/components/NavLink";
@@ -73,7 +74,15 @@ const govItems: NavItem[] = [
       { title: "岗位备案", url: "/gov/posts", icon: Users },
     ],
   },
-  { title: "双控考核管理", url: "/gov/dual-control", icon: ClipboardCheck },
+  {
+    title: "考核管理",
+    url: "/gov/assess",
+    icon: ClipboardCheck,
+    children: [
+      { title: "目标分解", url: "/gov/assess/goal", icon: Target },
+      { title: "双控考核", url: "/gov/assess/dual", icon: ClipboardCheck },
+    ],
+  },
   { title: "固定资产管理", url: "/gov/assets", icon: Boxes },
   { title: "绿色制造管理", url: "/gov/green-mfg", icon: Leaf },
   { title: "设备对标管理", url: "/gov/benchmark", icon: Crosshair },
