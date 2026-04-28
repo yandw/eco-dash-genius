@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import heroBg from "@/assets/portal/hero-shanghai-bright.jpg";
 
-export function HeroBanner() {
+interface Props {
+  version?: "v1" | "v2";
+}
+
+export function HeroBanner({ version = "v1" }: Props) {
+  const isV2 = version === "v2";
   return (
     <section className="relative h-[520px] overflow-hidden">
       <img
@@ -12,7 +17,6 @@ export function HeroBanner() {
         width={1920}
         height={1080}
       />
-      {/* 更轻的渐变遮罩，保留天空亮度 */}
       <div className="absolute inset-0 bg-gradient-to-b from-sky-900/25 via-transparent to-sky-950/35" />
 
       {/* 左上角口号 */}
@@ -20,8 +24,35 @@ export function HeroBanner() {
         节约能源 · 监察有力 · 高效廉洁 · 服务社会
       </div>
 
+      {/* 右上角版本切换入口 */}
+      <div className="absolute top-20 right-10 z-10">
+        {isV2 ? (
+          <Link
+            to="/portal"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur text-white/95 text-xs md:text-sm border border-white/30 transition"
+          >
+            返回经典版
+          </Link>
+        ) : (
+          <Link
+            to="/portal/v2"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur text-white/95 text-xs md:text-sm border border-white/30 transition"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            体验新版门户
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        )}
+      </div>
+
       {/* 居中主标题 + 入口 */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
+        {isV2 && (
+          <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur text-white/95 text-[11px] md:text-xs border border-white/25">
+            <Sparkles className="h-3 w-3" />
+            Version 2 · 新版门户
+          </div>
+        )}
         <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-wider leading-tight drop-shadow-[0_4px_18px_rgba(0,0,0,0.45)]">
           上海市工业和通信业能碳数智空间
         </h1>
@@ -38,3 +69,4 @@ export function HeroBanner() {
     </section>
   );
 }
+
