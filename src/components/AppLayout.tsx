@@ -1,11 +1,12 @@
 import { Bell, Search, Sun, User, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar, UserSide } from "@/components/AppSidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { RoleSwitcher } from "@/components/assess/RoleSwitcher";
 
 interface AppLayoutProps {
   title: string;
@@ -16,6 +17,8 @@ interface AppLayoutProps {
 
 export function AppLayout({ title, subtitle, children, side = "gov" }: AppLayoutProps) {
   const [now, setNow] = useState(new Date());
+  const location = useLocation();
+  const isAssessRoute = location.pathname.includes("/assess/");
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
@@ -49,6 +52,7 @@ export function AppLayout({ title, subtitle, children, side = "gov" }: AppLayout
             </div>
 
             <div className="ml-auto flex items-center gap-3">
+              {isAssessRoute && <RoleSwitcher />}
               <div className="hidden lg:flex items-center gap-2 text-xs text-muted-foreground">
                 <span>{dateStr}</span>
                 <span className="font-mono text-primary">{timeStr}</span>

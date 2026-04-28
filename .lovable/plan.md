@@ -1,127 +1,170 @@
-## 新闻发布管理模块 设计方案
+# 考核管理模块 · 完整交互界面规划
 
-在政府侧新增 **系统管理 → 新闻发布** 二级菜单，仅市级总账号可见。后台维护"要闻动态"下三大类别（热点动态 / 企业发布 / 通知公告）的新闻条目。每条新闻通过粘贴**微信公众号文章链接**（上海市节能中心、上海经信委等公众号原文 URL）来配置，门户详情页改为直接通过 iframe 嵌入该公众号文章链接。
+围绕"目标分解"与"双控考核"两个二级菜单，按 **企业 / 区级 / 市级** 三角色构建端到端交互。
+
+- **目标分解**（碳排放指标）：① 区下属单位碳排放目标分解 ② "百家"、"千家"、通信业企业碳排放目标分解
+- **双控考核**（能耗指标）：① 区下属单位能耗目标考核 ② "百家"、"千家"、通信业企业能耗考核
 
 ---
 
-### 一、菜单与路由
+## 一、角色与权限
 
-修改 `src/components/AppSidebar.tsx` 的 `govItems`，将"系统管理"扩展为含子菜单：
+扩展 `src/mocks/currentUser.ts`，新增 `setCurrentRole`（持久化到 localStorage），在 `AppLayout` 顶部新增"切换角色"演示下拉：
+
+| role | 视野 | 主要操作 |
+|---|---|---|
+| `enterprise` | 仅本企业 | 填写/提交目标值；查看区级修改与考核结果 |
+| `district_admin` | 本区所有企业 + 自动汇总 | 查看/修改企业值（必填备注）/ 执行考核 |
+| `city_admin` | 全市 17 区 + 下钻企业 | 查看汇总、下钻、查看修改痕迹、导出 |
+
+`/gov/assess/*` 单一路由依据角色渲染区级 / 市级两套视图。
+
+---
+
+## 二、目标分解 · 碳排放（业务流程）
 
 ```text
-系统管理
- ├─ 系统设置  → /gov/system
- └─ 新闻发布  → /gov/news        (仅市级总账号可见)
+企业填报 → 区级查看/修改(必填备注+三方通知) → 自动区汇总 → 市级看板/下钻
 ```
 
-`src/App.tsx` 注册：
-- `/gov/news`            → `NewsAdmin.tsx`（列表/管理页）
-- `/gov/news/new`        → `NewsEditor.tsx`（新建）
-- `/gov/news/:id/edit`   → `NewsEditor.tsx`（编辑）
+### 1. 企业侧 `/ent/assess/goal`
 
-侧边栏渲染时通过当前登录角色（mock 一个 `currentUser.role === 'city_admin'`）控制"新闻发布"是否显示，非市级总账号自动隐藏；直接访问路由也提示"无权限"。
+- 顶部：年份选择（默认 2026）+ 状态徽标（草稿/已提交/区级已修改）
+- 若区级修改：顶部显眼黄色 Alert "区级已于 xxx 修改本企业目标值，备注：…"
+- Tab 1 **区下属单位碳排放目标分解**（参照图 1 字段）
+  - 区名称 / 统一信用代码 / 企业名称（只读）
+  - 2025 年碳排放：总量（万吨 CO₂）、单位产值碳排放
+  - 推荐值（预留 · 系统给出，只读）
+  - 2026 年碳排放目标：总量（万吨 CO₂）、强度、强度指标、强度单位
+  - 备注
+- Tab 2 **百家/千家/通信业企业碳排放目标分解**（参照图 4 简化版）
+  - 企业统一信用代码 / 企业名称（只读）
+  - 碳排放总量目标（万吨 CO₂）
+  - 强度：目标值、强度指标名称、强度指标单位
+  - 备注
+- 按钮：保存草稿 / 提交
+- 被区级改过的字段：右侧红色角标 + Hover Tooltip "原值 → 新值（修改人 / 时间 / 备注）"
 
----
+### 2. 区级 `/gov/assess/goal`
 
-### 二、列表/管理页 `NewsAdmin.tsx`
+- 顶部年份选择 + 汇总卡片（企业数 / 已提交 / 已修改 / 总量 / 平均强度）
+- Tab 1/2 同上，列表展示本区所有企业
+- 每行"编辑"打开右侧 `Sheet`：可改任意字段 + 必填【修改备注】
+- 保存后自动标记"已修改"，触发企业 + 市级通知（toast + Alert）
+- 操作：批量提交、导出 Excel
 
-顶部：
-- 4 个 KPI 卡片：总条数、本月新增、已发布、草稿
-- 主操作按钮：**+ 发布新闻**
+### 3. 市级 `/gov/assess/goal`（参照图 3 列表样式）
 
-筛选栏：
-- 类别 Tab：全部 / 热点动态 / 企业发布 / 通知公告
-- 状态：全部 / 已发布 / 草稿 / 已下架
-- 来源公众号：全部 / 上海市节能中心 / 上海经信委 / 其他
-- 关键词搜索 + 时间范围
-
-数据表格列：
-- 缩略图｜标题｜类别（彩色 Badge）｜来源公众号｜发布时间｜状态｜浏览量｜操作
-
-操作列下拉：
-- 编辑 / 预览（在站内新窗口打开门户详情）/ 置顶 / 下架 / 删除（确认弹窗）
-
-支持：批量选择 → 批量下架 / 删除；列表分页；拖拽排序（同类别内调整展示顺序）。
-
----
-
-### 三、编辑器 `NewsEditor.tsx`
-
-采用左右两栏：左侧表单，右侧实时预览卡片（与门户列表卡片样式一致）。
-
-**表单字段：**
-1. 新闻标题 *（input，最长 60 字，含字数计数）
-2. 类别 *（Select：热点动态 / 企业发布 / 通知公告）
-3. 来源公众号 *（Select：上海市节能中心 / 上海经信委 / 其他自定义输入）
-4. 微信文章链接 *（input，自动校验 `https://mp.weixin.qq.com/...`）
-   - 含一个"获取信息"按钮：mock 自动抓取公众号文章的标题/封面/摘要回填
-5. 封面图（拖拽上传 + URL 兜底；展示 16:10 预览）
-6. 摘要 *（textarea，最长 120 字）
-7. 发布时间（DatePicker，默认当前）
-8. 是否置顶（Switch）
-9. 状态（草稿 / 立即发布 单选）
-
-底部固定操作栏：取消 / 保存草稿 / 发布上线（含二次确认）。
-
----
-
-### 四、门户详情页改造（iframe 嵌入公众号原文）
-
-修改 `src/pages/portal/PortalNewsDetail.tsx`：
-- 当新闻条目存在 `wechatUrl` 时，正文区改为：
-  - 顶部保留：返回按钮、标题、类别、来源公众号、发布日期
-  - 主体：`<iframe src={wechatUrl} className="w-full h-[80vh] rounded-lg border" />`
-  - 底部："在微信中打开 ↗" 外链按钮
-- 兜底：若链接为空，回退到当前的简介+正文样式。
-
-> 说明：微信公众号正文页存在 `X-Frame-Options` 限制，真实环境通常无法直接 iframe 嵌入。本设计在前端完成 UI；后续若上线需走"微信开放平台代理"或"服务端抓取转存"。Demo 阶段先以 iframe 占位，并附带"在微信中打开"兜底入口。
-
----
-
-### 五、数据与共享组件
-
-新增 mock：`src/mocks/news.ts`
 ```text
-export type NewsCategory = 'hot' | 'enterprise' | 'notice';
-export type NewsStatus   = 'draft' | 'published' | 'offline';
-export interface NewsArticle {
-  id; title; category; source;        // source: 公众号名称
-  wechatUrl; cover; summary;
-  publishAt; pinned; status;
-  views; createdBy; updatedAt;
-}
+[2026年 ▾]
+全市汇总卡片（总量 / 平均强度 / 已完成区数 17）
+─────────────────────────────────────────
+序号 | 年份 | 单位名称 | 下属单位数量 | 状态 | 证明材料 | 操作
+ 1   | 2026 | 青浦区   | 30           | 已完成 | 下载    | 目标详情
 ```
 
-新组件目录 `src/components/news/`：
-- `NewsCategoryBadge.tsx`：类别彩色标签
-- `NewsStatusBadge.tsx`：状态标签
-- `WechatUrlInput.tsx`：URL 校验 + 抓取按钮
-- `NewsPreviewCard.tsx`：右侧实时预览
-- `NewsTable.tsx`：管理列表表格
-
-`NewsCarousel.tsx` / `PortalNews.tsx` 改为消费 `src/mocks/news.ts` 的统一数据，按 `category` 过滤渲染三大 Tab。
+点击"目标详情" → 全屏 `Dialog`（参照图 2 / 图 4）：该区企业完整目标表，含原值与修改痕迹；右上角【导出】【关闭】。
+百千家 Tab 单独一张全市统一表，带【导出】【保存】【提交】。
 
 ---
 
-### 六、权限控制（mock）
+## 三、双控考核 · 能耗（业务流程）
 
-新增 `src/mocks/currentUser.ts` 暴露 `currentRole`，默认设为 `city_admin`。
-- `AppSidebar` 根据角色显示/隐藏"新闻发布"项。
-- `NewsAdmin` 与 `NewsEditor` 入口检查角色，非 `city_admin` 渲染"无权限"占位。
+```text
+企业自评（仅查看结果）  ←  实际值/扣绿电值 自动从年报取
+                             ↓
+区级（参照图3/4/5 多tab）：目标值(取目标分解)+实际值+扣绿电值+是否达标(规则自动)+双控指标完成情况(完成/未完成)+考核结果(完成/未完成)+备注
+                             ↓
+市级（参照图2）：17区列表 → 操作"考核下属企业"下钻
+```
+
+**自动达标规则**：实际值（或扣绿电后值，以政策为准）≤ 目标值 → 达标；否则未达标。
+**双控指标完成情况**：能耗总量 + 能耗强度均达标 → 完成；任一未达标 → 未完成。
+**考核结果**：默认与"双控指标完成情况"一致；若区级人为改为"完成"但指标为"未完成"，必填备注说明原因（图 5 顶部说明）。
+
+### 1. 企业侧 `/ent/assess/dual`（参照图 1）
+
+- 面包屑：企业自评 / 重点用能单位考核结果
+- 标题：`{企业名称}目标考核结果`
+- 表头分组：能耗总量目标完成情况 / 能耗强度目标完成情况 / 备注
+- 列：序号 | 年份 | 总量(目标值/实际值/扣绿电值/是否达标) | 强度(指标/单位/目标值/实际值/扣绿电值/是否达标) | 备注
+- 历年时间轴 + 整改任务 + 申诉入口（折叠卡片，避免主表过满）
+
+### 2. 区级 `/gov/assess/dual`（参照图 3/4/5）
+
+打开后默认显示本区列表：
+- Tab 1 **区下属单位能耗目标考核**
+- Tab 2 **百家/千家/通信业企业能耗考核**
+
+每行操作"考核下属企业" → 全屏 `Dialog`：标题 `{区}下属企业能耗目标考评`
+- 顶部说明（图 5 文案）+【导出】【保存】【提交】【关闭】
+- 横向滚动大表，多级表头：
+  - 区名称 / 企业名称
+  - 能耗总量目标完成情况：目标值、实际值、扣除绿电绿证可再生能源的能耗总量、是否达标
+  - 能耗强度目标完成情况：目标值、实际值、扣除绿电绿证可再生能源的能耗强度、是否达标、强度指标名称、强度指标单位
+  - 双控指标完成情况（自动）
+  - 考核结果（可下拉改 + 与自动值不一致时强制弹出备注框）
+  - 备注
+- 单元格规则：
+  - 目标值：从"目标分解"读取（只读，灰底）
+  - 实际值 / 扣绿电值：从年报取（只读，灰底）
+  - 是否达标：自动计算（达标=绿色 Badge / 未达标=红色 Badge）
+  - 异常显示 `#VALUE!`（图 5 样式）当目标值为 0 或缺失
+
+### 3. 市级 `/gov/assess/dual`（参照图 2）
+
+- 顶部年份 + 刷新
+- 表格列：序号 | 年份 | 单位名称 | 下属单位数量 | 考评时间 | 状态（待考核/已考核）| 盖章版证明 | 操作【考核下属企业】
+- 操作 → 复用区级的考评 Dialog（市级只读模式 + 导出）
 
 ---
 
-### 七、文件清单
+## 四、共用组件（新建 `src/components/assess/`）
 
-新建：
-- `src/mocks/news.ts`、`src/mocks/currentUser.ts`
-- `src/pages/gov/NewsAdmin.tsx`、`src/pages/gov/NewsEditor.tsx`
-- `src/components/news/NewsCategoryBadge.tsx`、`NewsStatusBadge.tsx`、`WechatUrlInput.tsx`、`NewsPreviewCard.tsx`、`NewsTable.tsx`
+- `RoleSwitcher.tsx` — 顶部演示用角色切换
+- `AssessYearPicker.tsx` — 年份选择 + 刷新
+- `AssessSummaryCards.tsx` — 顶部汇总卡片
+- `CarbonGoalTable.tsx` — 碳排放目标表（图 1 字段，可编辑）
+- `EnergyGoalSubTable.tsx` — 百千家碳排放目标表（图 4 字段）
+- `EntAssessResultTable.tsx` — 企业自评结果表（图 1 样式）
+- `DistrictAssessTable.tsx` — 区级考评大表（图 5 多级表头）
+- `DistrictListTable.tsx` — 市级 17 区列表（图 2 / 图 3 样式）
+- `DistrictDrillDialog.tsx` — 市级/区级共享的下钻全屏弹窗
+- `EditWithRemarkSheet.tsx` — 编辑 + 必填备注抽屉
+- `ChangeBadge.tsx` — 修改痕迹角标 + Tooltip
+- `ChangeAlert.tsx` — 企业端"已被区级修改"黄色 Alert
+- `PassBadge.tsx` — 达标/未达标/完成/未完成彩色 Badge
 
-编辑：
-- `src/components/AppSidebar.tsx`（系统管理增加子菜单 + 角色过滤）
-- `src/App.tsx`（注册 3 条路由）
-- `src/pages/portal/PortalNewsDetail.tsx`（改为 iframe 嵌入）
-- `src/components/portal/NewsCarousel.tsx`、`src/pages/portal/PortalNews.tsx`（改为消费统一 mock，跳转使用 `wechatUrl`）
+## 五、Mock 数据 `src/mocks/assess.ts`
 
-整体延续"深海军蓝 + 亮蓝"设计基调，使用现有 `Card / Tabs / Table / Dialog / Badge` 组件。
+- 17 个区，每区 3-30 家企业（与图 2 数量对齐）
+- 字段覆盖图 1 / 图 4 / 图 5 全部列
+- 模拟 2 条"区级已修改"记录（含原值/新值/备注/修改人/时间）
+- 模拟通知列表（企业 / 市级可见）
+- 实际值 mock 从"年报"派生（直接写常量），用于自动达标判断
+
+## 六、技术要点
+
+- 多级表头：shadcn `Table` + `colSpan`/`rowSpan`，第一列粘性
+- 表单：`react-hook-form` + `zod`
+- 导出：`xlsx` 库（前端演示）
+- 路由不变，分支由 `currentUser.role` 决定
+- 通知用 `sonner` toast + 顶部 Alert 双通道
+
+## 七、文件清单
+
+**新增**
+- `src/mocks/assess.ts`
+- `src/components/assess/`（12 个组件，见上）
+
+**重写**
+- `src/pages/gov/AssessGoal.tsx`
+- `src/pages/gov/AssessDual.tsx`
+- `src/pages/ent/EntAssessGoal.tsx`
+- `src/pages/ent/EntAssessDual.tsx`
+
+**编辑**
+- `src/mocks/currentUser.ts` — 新增 role 切换与 localStorage 持久化
+- `src/components/AppLayout.tsx` — 顶部加 `RoleSwitcher`（仅 `/gov/assess/*` 与 `/ent/assess/*` 路由显示）
+
+确认后即按以上方案实现。
