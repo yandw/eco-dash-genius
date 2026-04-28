@@ -19,32 +19,41 @@ export function BqGoalTable({ rows, mode, onEdit, onChange }: Props) {
   const editable = mode === "ent-edit";
   return (
     <div className="overflow-x-auto rounded-md border border-border bg-card">
-      <table className="min-w-[1100px] w-full border-collapse text-xs">
+      <table className="min-w-[1500px] w-full border-collapse text-xs">
         <thead className="bg-muted/60 text-muted-foreground">
           <tr className="border-b border-border">
             <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border w-12">序号</th>
-            <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border">企业统一信用代码</th>
-            <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border min-w-[240px]">企业名称</th>
-            <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border">碳排放总量目标<br /><span className="text-[10px] opacity-70">（万吨CO₂）</span></th>
-            <th colSpan={3} className="px-3 py-2 font-medium border-r border-border text-center">碳排放强度目标</th>
-            <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border">备注</th>
+            <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border">区名称</th>
+            <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border">统一信用代码</th>
+            <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border min-w-[220px]">企业名称</th>
+            <th colSpan={2} className="px-3 py-2 font-medium border-r border-border text-center">2025年碳排放数据</th>
+            <th colSpan={4} className="px-3 py-2 font-medium border-r border-border text-center">2026年碳排放目标</th>
+            <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border min-w-[140px]">备注</th>
             {!editable && <th rowSpan={2} className="px-3 py-2 font-medium w-20">操作</th>}
           </tr>
           <tr className="border-b border-border">
-            <th className="px-3 py-2 font-medium border-r border-border">目标值</th>
-            <th className="px-3 py-2 font-medium border-r border-border">强度指标名称</th>
-            <th className="px-3 py-2 font-medium border-r border-border">强度指标单位</th>
+            <th className="px-3 py-2 font-medium border-r border-border">总量<br /><span className="text-[10px] opacity-70">（吨CO₂）</span></th>
+            <th className="px-3 py-2 font-medium border-r border-border">单位产值碳排放<br /><span className="text-[10px] opacity-70">（吨CO₂/万元）</span></th>
+            <th className="px-3 py-2 font-medium border-r border-border">总量推荐值<br /><span className="text-[10px] opacity-70">（万吨CO₂）</span></th>
+            <th className="px-3 py-2 font-medium border-r border-border">总量目标值<br /><span className="text-[10px] opacity-70">（万吨CO₂）</span></th>
+            <th className="px-3 py-2 font-medium border-r border-border">强度目标值</th>
+            <th className="px-3 py-2 font-medium border-r border-border">强度指标</th>
+            <th className="px-3 py-2 font-medium border-r border-border">强度单位</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((r, idx) => (
             <tr key={r.id} className={cn("border-b border-border hover:bg-accent/30", r.status === "modified" && "bg-warning/5")}>
               <td className={cn(cellRO, "border-r border-border text-center")}>{idx + 1}</td>
+              <td className={cn(cellRO, "border-r border-border")}>{r.districtName}</td>
               <td className={cn(cellRO, "border-r border-border font-mono")}>{r.creditCode}</td>
               <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
+              <td className={cn(cellRO, "border-r border-border text-right")}>{r.total2025?.toLocaleString() ?? "—"}</td>
+              <td className={cn(cellRO, "border-r border-border text-right")}>{r.intensity2025 ?? "—"}</td>
+              <td className={cn(cellRO, "border-r border-border text-right text-primary")}>{r.recommendTotal ?? "—"}</td>
               <td className={cn(editable ? cellEdit : cellRO, "border-r border-border text-right")}>
                 {editable ? (
-                  <Input value={r.totalGoal ?? ""} onChange={(e) => onChange?.(r.id, { totalGoal: e.target.value === "" ? null : Number(e.target.value) })} className="h-7 text-right text-xs" type="number" />
+                  <Input value={r.totalGoal ?? ""} onChange={(e) => onChange?.(r.id, { totalGoal: e.target.value === "" ? null : Number(e.target.value) })} className="h-7 text-right text-xs" type="number" step="0.01" />
                 ) : (
                   <span className="inline-flex items-center justify-end">
                     {r.totalGoal ?? "—"}
