@@ -19,6 +19,7 @@ export function AppLayout({ title, subtitle, children, side = "gov" }: AppLayout
   const [now, setNow] = useState(new Date());
   const location = useLocation();
   const isAssessRoute = location.pathname.includes("/assess/");
+  const showRoleSwitcher = isAssessRoute && side === "gov";
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
@@ -52,7 +53,7 @@ export function AppLayout({ title, subtitle, children, side = "gov" }: AppLayout
             </div>
 
             <div className="ml-auto flex items-center gap-3">
-              {isAssessRoute && <RoleSwitcher />}
+              {showRoleSwitcher && <RoleSwitcher side={side} />}
               <div className="hidden lg:flex items-center gap-2 text-xs text-muted-foreground">
                 <span>{dateStr}</span>
                 <span className="font-mono text-primary">{timeStr}</span>

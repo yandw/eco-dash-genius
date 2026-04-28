@@ -11,9 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCurrentRole, setCurrentRole, RoleLabel, type UserRole } from "@/mocks/currentUser";
 
-const roles: UserRole[] = ["enterprise", "district_admin", "city_admin"];
 
-export function RoleSwitcher() {
+
+export function RoleSwitcher({ side = "gov" }: { side?: "gov" | "ent" }) {
+  const allRoles: UserRole[] = ["enterprise", "district_admin", "city_admin"];
+  const roles = side === "gov" ? allRoles.filter((r) => r !== "enterprise") : allRoles;
   const [role, setRole] = useState<UserRole>(getCurrentRole());
 
   useEffect(() => {
