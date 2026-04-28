@@ -104,6 +104,7 @@ const App = () => (
 
           {/* 门户 */}
           <Route path="/portal" element={<PortalHome />} />
+          <Route path="/portal/v2" element={<PortalHomeV2 />} />
           <Route path="/portal/news" element={<PortalNews />} />
           <Route path="/portal/news/:id" element={<PortalNewsDetail />} />
           <Route path="/portal/green-mfg" element={<PortalGreenMfg />} />
