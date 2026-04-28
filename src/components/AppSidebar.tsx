@@ -148,10 +148,12 @@ export function AppSidebar({ side = "gov" }: Props) {
     location.pathname === (isGov ? "/gov/archives" : "/ent/archives") ||
     location.pathname === (isGov ? "/gov/posts" : "/ent/posts");
   const systemActive = isGov && location.pathname.startsWith("/gov/news");
+  const assessActive = location.pathname.startsWith(isGov ? "/gov/assess" : "/ent/assess");
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({
     全景监测: isMonitoringActive,
     档案管理: archivesActive,
     系统管理: systemActive,
+    考核管理: assessActive,
   });
 
   return (
