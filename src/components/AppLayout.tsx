@@ -19,6 +19,7 @@ export function AppLayout({ title, subtitle, children, side = "gov" }: AppLayout
   const [now, setNow] = useState(new Date());
   const location = useLocation();
   const isAssessRoute = location.pathname.includes("/assess/");
+  const showRoleSwitcher = isAssessRoute && side === "gov";
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
