@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { Download, Save, Send, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Download, Save, Send } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AssessYearPicker } from "@/components/assess/AssessYearPicker";
 import { DistrictListTable } from "@/components/assess/DistrictListTable";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import {
   energyAssess,
   districtAssessSummary,
-  districts,
   type EnergyAssessRow,
 } from "@/mocks/assess";
 import { getCurrentRole } from "@/mocks/currentUser";
