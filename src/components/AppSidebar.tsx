@@ -23,6 +23,7 @@ import {
   Server,
   Users,
   Newspaper,
+  Target,
 } from "lucide-react";
 import { isCityAdmin } from "@/mocks/currentUser";
 import { NavLink } from "@/components/NavLink";
@@ -73,7 +74,15 @@ const govItems: NavItem[] = [
       { title: "岗位备案", url: "/gov/posts", icon: Users },
     ],
   },
-  { title: "双控考核管理", url: "/gov/dual-control", icon: ClipboardCheck },
+  {
+    title: "考核管理",
+    url: "/gov/assess",
+    icon: ClipboardCheck,
+    children: [
+      { title: "目标分解", url: "/gov/assess/goal", icon: Target },
+      { title: "双控考核", url: "/gov/assess/dual", icon: ClipboardCheck },
+    ],
+  },
   { title: "固定资产管理", url: "/gov/assets", icon: Boxes },
   { title: "绿色制造管理", url: "/gov/green-mfg", icon: Leaf },
   { title: "设备对标管理", url: "/gov/benchmark", icon: Crosshair },
@@ -105,6 +114,15 @@ const entItems: NavItem[] = [
       { title: "岗位备案", url: "/ent/posts", icon: Users },
     ],
   },
+  {
+    title: "考核管理",
+    url: "/ent/assess",
+    icon: ClipboardCheck,
+    children: [
+      { title: "目标分解", url: "/ent/assess/goal", icon: Target },
+      { title: "双控考核", url: "/ent/assess/dual", icon: ClipboardCheck },
+    ],
+  },
   { title: "文件下载", url: "/ent/downloads", icon: Download },
   { title: "系统管理", url: "/ent/system", icon: Settings },
 ];
@@ -130,10 +148,12 @@ export function AppSidebar({ side = "gov" }: Props) {
     location.pathname === (isGov ? "/gov/archives" : "/ent/archives") ||
     location.pathname === (isGov ? "/gov/posts" : "/ent/posts");
   const systemActive = isGov && location.pathname.startsWith("/gov/news");
+  const assessActive = location.pathname.startsWith(isGov ? "/gov/assess" : "/ent/assess");
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({
     全景监测: isMonitoringActive,
     档案管理: archivesActive,
     系统管理: systemActive,
+    考核管理: assessActive,
   });
 
   return (

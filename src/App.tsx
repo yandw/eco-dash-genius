@@ -36,6 +36,10 @@ import DualAssess from "./pages/gov/DualAssess.tsx";
 import Idc from "./pages/gov/Idc.tsx";
 import EquipBench from "./pages/gov/EquipBench.tsx";
 import GovPosts from "./pages/gov/Posts.tsx";
+import AssessGoal from "./pages/gov/AssessGoal.tsx";
+import AssessDual from "./pages/gov/AssessDual.tsx";
+import EntAssessGoal from "./pages/ent/EntAssessGoal.tsx";
+import EntAssessDual from "./pages/ent/EntAssessDual.tsx";
 import GovPostDetail from "./pages/gov/GovPostDetail.tsx";
 import GovArchiveDetail from "./pages/gov/GovArchiveDetail.tsx";
 import NewsAdmin from "./pages/gov/NewsAdmin.tsx";
@@ -68,7 +72,9 @@ const App = () => (
           <Route path="/gov/archives/:entId/:year" element={<GovArchiveDetail />} />
           <Route path="/gov/posts" element={<GovPosts />} />
           <Route path="/gov/posts/:entId" element={<GovPostDetail />} />
-          <Route path="/gov/dual-control" element={<DualControl />} />
+          <Route path="/gov/dual-control" element={<AssessDual />} />
+          <Route path="/gov/assess/goal" element={<AssessGoal />} />
+          <Route path="/gov/assess/dual" element={<AssessDual />} />
           <Route path="/gov/assets" element={<Assets />} />
           <Route path="/gov/green-mfg" element={<GreenMfg />} />
           <Route path="/gov/benchmark" element={<Benchmark />} />
@@ -86,6 +92,8 @@ const App = () => (
           <Route path="/ent/archives" element={<EntArchives />} />
           <Route path="/ent/archives/:year" element={<EntArchiveDetail />} />
           <Route path="/ent/posts" element={<EntPosts />} />
+          <Route path="/ent/assess/goal" element={<EntAssessGoal />} />
+          <Route path="/ent/assess/dual" element={<EntAssessDual />} />
           <Route path="/ent/downloads" element={<EntDownloads />} />
           <Route path="/ent/system" element={<EntSystem />} />
 
