@@ -75,13 +75,11 @@ export function BqGoalTable({ rows, mode, onEdit, onChange }: Props) {
                   <Input value={r.remark} onChange={(e) => onChange?.(r.id, { remark: e.target.value })} className="h-7 text-xs" />
                 ) : r.remark ? r.remark : <span className="text-muted-foreground">—</span>}
               </td>
-              {!editable && (
+              {mode === "district-view" && (
                 <td className="px-2 py-1 text-center">
-                  {mode === "district-view" && (
-                    <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => onEdit?.(r)}>
-                      <Pencil className="h-3 w-3 mr-1" />编辑
-                    </Button>
-                  )}
+                  <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => onEdit?.(r)}>
+                    <Pencil className="h-3 w-3 mr-1" />编辑
+                  </Button>
                 </td>
               )}
             </tr>
