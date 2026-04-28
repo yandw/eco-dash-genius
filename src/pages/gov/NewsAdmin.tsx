@@ -122,7 +122,7 @@ export default function NewsAdmin() {
 
   if (!allowed) {
     return (
-      <AppLayout side="gov" title="新闻发布" breadcrumb={["系统管理", "新闻发布"]}>
+      <AppLayout side="gov" title="新闻发布" subtitle="系统管理 / 新闻发布 (仅市级总账号可用)">
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <ShieldAlert className="h-14 w-14 text-amber-500 mb-4" />
           <div className="text-lg font-semibold text-foreground mb-2">无访问权限</div>
@@ -135,7 +135,7 @@ export default function NewsAdmin() {
   }
 
   return (
-    <AppLayout side="gov" title="新闻发布" breadcrumb={["系统管理", "新闻发布"]}>
+    <AppLayout side="gov" title="新闻发布" subtitle="系统管理 / 新闻发布 (仅市级总账号可用)">
       <div className="space-y-5">
         {/* KPI */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
