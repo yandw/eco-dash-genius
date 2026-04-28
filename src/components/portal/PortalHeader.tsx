@@ -70,15 +70,6 @@ export function PortalHeader({ variant = "transparent" }: Props) {
 
         <div className="ml-auto flex items-center gap-3 text-[13px]">
           <Link
-            to="/portal/register"
-            className={cn(
-              "transition-colors",
-              isSolid ? "text-foreground/70 hover:text-primary" : "text-white/85 hover:text-white"
-            )}
-          >
-            注册
-          </Link>
-          <Link
             to="/portal/login"
             className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition shadow-sm"
           >

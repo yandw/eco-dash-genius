@@ -1,34 +1,32 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import heroBg from "@/assets/portal/hero-shanghai.jpg";
+import heroBg from "@/assets/portal/hero-shanghai-bright.jpg";
 
 export function HeroBanner() {
   return (
-    <section className="relative h-[480px] overflow-hidden">
+    <section className="relative h-[520px] overflow-hidden">
       <img
         src={heroBg}
         alt="上海城市天际线"
         className="absolute inset-0 w-full h-full object-cover"
         width={1920}
-        height={900}
+        height={1080}
       />
-      <div className="absolute inset-0 portal-hero-overlay" />
+      {/* 更轻的渐变遮罩，保留天空亮度 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-sky-900/25 via-transparent to-sky-950/35" />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto h-full flex flex-col justify-center px-10 pt-14">
-        <h1 className="text-4xl md:text-5xl font-bold text-white tracking-wide leading-tight drop-shadow-lg">
-          聚焦"双碳"战略
+      {/* 左上角口号 */}
+      <div className="absolute top-20 left-10 z-10 text-white/95 tracking-[0.25em] text-sm md:text-base font-medium drop-shadow-md">
+        节约能源 · 监察有力 · 高效廉洁 · 服务社会
+      </div>
+
+      {/* 居中主标题 + 入口 */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
+        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-wider leading-tight drop-shadow-[0_4px_18px_rgba(0,0,0,0.45)]">
+          上海市工业和通信业能碳数智空间
         </h1>
-        <h2 className="text-3xl md:text-5xl font-bold tracking-wide leading-tight mt-2 drop-shadow-lg">
-          <span className="text-white/95">领航</span>
-          <span className="bg-gradient-to-r from-sky-200 to-sky-400 bg-clip-text text-transparent">
-            工业绿色转型
-          </span>
-        </h2>
-        <p className="text-sm md:text-base text-white/90 max-w-xl mt-5 leading-relaxed drop-shadow">
-          推动制造业全面绿色低碳转型，构建工业能碳数智空间，赋能企业可持续发展。
-        </p>
 
-        <div className="flex flex-wrap gap-3 mt-8">
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-12">
           <Link to="/gov" className="portal-cta-primary">
             政府管理侧 <ArrowRight className="h-4 w-4" />
           </Link>
