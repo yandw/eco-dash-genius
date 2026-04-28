@@ -120,7 +120,7 @@ const entItems: NavItem[] = [
     icon: ClipboardCheck,
     children: [
       { title: "目标分解", url: "/ent/assess/goal", icon: Target },
-      { title: "双控考核", url: "/ent/assess/dual", icon: ClipboardCheck },
+      { title: "考核结果", url: "/ent/assess/dual", icon: ClipboardCheck },
     ],
   },
   { title: "文件下载", url: "/ent/downloads", icon: Download },

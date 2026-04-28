@@ -5,7 +5,7 @@ export default function EntAssessDual() {
   return (
     <PlaceholderPage
       side="ent"
-      title="双控考核"
+      title="考核结果"
       subtitle="本企业能耗 / 碳排双控考核结果与整改"
       icon={ClipboardCheck}
       features={[
