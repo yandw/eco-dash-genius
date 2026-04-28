@@ -27,9 +27,9 @@ export function BqGoalTable({ rows, mode, onEdit, onChange }: Props) {
             <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border">统一信用代码</th>
             <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border min-w-[220px]">企业名称</th>
             <th colSpan={2} className="px-3 py-2 font-medium border-r border-border text-center">2025年碳排放数据</th>
-            <th colSpan={4} className="px-3 py-2 font-medium border-r border-border text-center">2026年碳排放目标</th>
+            <th colSpan={5} className="px-3 py-2 font-medium border-r border-border text-center">2026年碳排放目标</th>
             <th rowSpan={2} className="px-3 py-2 font-medium border-r border-border min-w-[140px]">备注</th>
-            {!editable && <th rowSpan={2} className="px-3 py-2 font-medium w-20">操作</th>}
+            {mode === "district-view" && <th rowSpan={2} className="px-3 py-2 font-medium w-20">操作</th>}
           </tr>
           <tr className="border-b border-border">
             <th className="px-3 py-2 font-medium border-r border-border">总量<br /><span className="text-[10px] opacity-70">（吨CO₂）</span></th>
