@@ -114,6 +114,15 @@ const entItems: NavItem[] = [
       { title: "岗位备案", url: "/ent/posts", icon: Users },
     ],
   },
+  {
+    title: "考核管理",
+    url: "/ent/assess",
+    icon: ClipboardCheck,
+    children: [
+      { title: "目标分解", url: "/ent/assess/goal", icon: Target },
+      { title: "双控考核", url: "/ent/assess/dual", icon: ClipboardCheck },
+    ],
+  },
   { title: "文件下载", url: "/ent/downloads", icon: Download },
   { title: "系统管理", url: "/ent/system", icon: Settings },
 ];
