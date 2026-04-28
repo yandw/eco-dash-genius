@@ -141,8 +141,7 @@ export const carbonGoals: CarbonGoalRow[] = _qpEnts.map(([code, name, t, i], idx
 // 把第3和第7条的 total2026 同步替换为修改后的"新值"
 carbonGoals.forEach((r) => {
   r.changes.forEach((c) => {
-    // @ts-expect-error dynamic
-    r[c.field] = c.newValue;
+    (r as unknown as Record<string, unknown>)[c.field] = c.newValue;
   });
 });
 

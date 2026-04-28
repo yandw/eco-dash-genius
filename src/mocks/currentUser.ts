@@ -28,9 +28,8 @@ export const currentUser = new Proxy(
     get(_t, k) {
       _role = readRole();
       const p = RoleProfile[_role];
-      const obj = { ...p, role: _role };
-      // @ts-expect-error index
-      return obj[k];
+      const obj: Record<string, unknown> = { ...p, role: _role };
+      return obj[k as string];
     },
   },
 );
