@@ -92,10 +92,7 @@ const govItems: NavItem[] = [
     url: "/gov/system",
     icon: Settings,
     children: [
-      { title: "系统设置", url: "/gov/system", icon: Settings },
-      ...(isCityAdmin()
-        ? [{ title: "新闻发布", url: "/gov/news", icon: Newspaper }]
-        : []),
+      { title: "新闻发布", url: "/gov/news", icon: Newspaper },
     ],
   },
 ];
