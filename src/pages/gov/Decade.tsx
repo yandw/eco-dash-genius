@@ -88,7 +88,7 @@ export default function Decade() {
   const [enterprise, setEnterprise] = useState<EnterpriseInfo | null>(null);
 
   return (
-    <AppLayout side="gov" title="十年节能" subtitle="重点用能单位历年趋势 · 2010—2024">
+    <AppLayout fullscreen side="gov" title="十年节能" subtitle="重点用能单位历年趋势 · 2010—2024">
       <div className="grid grid-cols-12 gap-4">
         {/* ===== 左列 ===== */}
         <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">

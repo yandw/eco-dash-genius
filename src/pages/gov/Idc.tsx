@@ -93,7 +93,7 @@ export default function Idc() {
   const data = classifyData[tab];
 
   return (
-    <AppLayout side="gov" title="IDC监察" subtitle="数据中心能耗 / PUE / 机柜分布">
+    <AppLayout fullscreen side="gov" title="IDC监察" subtitle="数据中心能耗 / PUE / 机柜分布">
       <div className="grid grid-cols-12 gap-4">
         {/* ===== 左列 ===== */}
         <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">

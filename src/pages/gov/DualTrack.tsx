@@ -172,7 +172,7 @@ export default function DualTrack() {
   const [districtTab, setDistrictTab] = useState<"区县" | "集团">("区县");
 
   return (
-    <AppLayout side="gov" title="双控跟踪" subtitle="月度 / 年度关键数据跟踪 · 能源消耗限额管理">
+    <AppLayout fullscreen side="gov" title="双控跟踪" subtitle="月度 / 年度关键数据跟踪 · 能源消耗限额管理">
       <div className="grid grid-cols-12 gap-4">
         {/* ===== 左列 ===== */}
         <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">

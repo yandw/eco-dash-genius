@@ -200,7 +200,7 @@ export default function DualAssess() {
   const [status, setStatus] = useState<StatusKey>("全部");
 
   return (
-    <AppLayout side="gov" title="双控考核" subtitle="全市规上企业十四五能耗双控跟踪">
+    <AppLayout fullscreen side="gov" title="双控考核" subtitle="全市规上企业十四五能耗双控跟踪">
       <div className="flex flex-col gap-3">
         {/* ===== 顶部：全市能耗双控总体完成情况实时监控 ===== */}
         <div className="panel p-4">
