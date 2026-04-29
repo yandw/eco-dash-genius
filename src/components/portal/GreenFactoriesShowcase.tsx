@@ -18,7 +18,7 @@ const factories: Factory[] = [
     name: "上海法雷奥汽车电器系统有限公司",
     level: "国家级绿色工厂",
     year: "2025",
-    image: auto,
+    image: valeo,
     measures: [
       { title: "高效设备改造", desc: "照明、空压机节能改造，年节能超 138 吨标煤。" },
       { title: "光伏电站", desc: "建设 3.6MWp 分布式光伏，年发电量 389 万度。" },
@@ -30,7 +30,7 @@ const factories: Factory[] = [
     name: "上汽通用动力科技（上海）有限公司",
     level: "国家级绿色工厂",
     year: "2025",
-    image: factoryImg,
+    image: saicGm,
     measures: [
       { title: "绿色产线", desc: "奥特能超级工厂，电池制造全流程环保，污染物近零排放。" },
       { title: "能源低碳化", desc: "高比例绿电 + 余热回收，构建\"五化\"（集约/洁净/低碳/无害/资源化）范式。" },
@@ -41,7 +41,7 @@ const factories: Factory[] = [
     name: "联合汽车电子有限公司",
     level: "国家级绿色工厂",
     year: "2025",
-    image: alu,
+    image: uaes,
     measures: [
       { title: "节能技改", desc: "2024 年实施 55 项改造（空压机/锅炉升级），年节能 995 吨标煤。" },
       { title: "数智融合", desc: "清洁生产数字化平台 + 智能控制系统，自动化率 95%、数控化率 98%。" },
@@ -53,7 +53,7 @@ const factories: Factory[] = [
     name: "上海发电机厂（上海电气集团）",
     level: "国家级绿色工厂",
     year: "2025",
-    image: demo,
+    image: shanghaiElectric,
     measures: [
       { title: "低碳产品", desc: "发电机/储能机组碳足迹认证，零污染高效率。" },
       { title: "智能产线", desc: "数字样机仿真 + 智能转子产线，降低研发能耗。" },
@@ -65,7 +65,7 @@ const factories: Factory[] = [
     name: "阿克苏诺贝尔漆油（上海）有限公司",
     level: "国家级绿色工厂",
     year: "2025",
-    image: zeroPark,
+    image: akzonobel,
     measures: [
       { title: "光伏电站", desc: "光伏覆盖 45% 用电，2026 年目标 90%+。" },
       { title: "高效产线", desc: "全密闭一体化灌装线，原料浪费大幅减少。" },
@@ -76,7 +76,7 @@ const factories: Factory[] = [
     name: "书香门地集团股份有限公司",
     level: "市级绿色工厂",
     year: "2025（第二批）",
-    image: supply,
+    image: shuxiangmendi,
     measures: [
       { title: "清洁生产", desc: "低 VOCs 胶黏剂替代，废气高效处理，达标排放。" },
       { title: "资源循环", desc: "木材边角料 100% 回收利用，水重复利用率 85%+。" },
