@@ -49,7 +49,7 @@ export type UserSide = "gov" | "ent";
 type NavChild = { title: string; url: string; icon?: typeof Home };
 type NavItem = { title: string; url: string; icon: typeof Home; children?: NavChild[] };
 
-const govItems: NavItem[] = [
+export const govItems: NavItem[] = [
   {
     title: "全景监测",
     url: "/gov",
