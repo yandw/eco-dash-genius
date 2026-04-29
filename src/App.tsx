@@ -25,6 +25,7 @@ import PortalLogin from "./pages/portal/PortalLogin.tsx";
 import PortalRegister from "./pages/portal/PortalRegister.tsx";
 import EntDashboard from "./pages/ent/EntDashboard.tsx";
 import EntReportYearly from "./pages/ent/EntReportYearly.tsx";
+import EntReportMonthly from "./pages/ent/EntReportMonthly.tsx";
 import EntEnergyQuota from "./pages/ent/EntEnergyQuota.tsx";
 import EntProfile from "./pages/ent/EntProfile.tsx";
 import EntArchives from "./pages/ent/EntArchives.tsx";
