@@ -25,6 +25,7 @@ import PortalLogin from "./pages/portal/PortalLogin.tsx";
 import PortalRegister from "./pages/portal/PortalRegister.tsx";
 import EntDashboard from "./pages/ent/EntDashboard.tsx";
 import EntReportYearly from "./pages/ent/EntReportYearly.tsx";
+import EntReportMonthly from "./pages/ent/EntReportMonthly.tsx";
 import EntEnergyQuota from "./pages/ent/EntEnergyQuota.tsx";
 import EntProfile from "./pages/ent/EntProfile.tsx";
 import EntArchives from "./pages/ent/EntArchives.tsx";
@@ -91,6 +92,7 @@ const App = () => (
 
           {/* 企业服务侧 */}
           <Route path="/ent" element={<EntDashboard />} />
+          <Route path="/ent/report-monthly" element={<EntReportMonthly />} />
           <Route path="/ent/report-yearly" element={<EntReportYearly />} />
           <Route path="/ent/energy-quota" element={<EntEnergyQuota />} />
           <Route path="/ent/profile" element={<EntProfile />} />
