@@ -4,7 +4,7 @@ import { PortalTabsV2 } from "@/components/portal/PortalTabsV2";
 import { NewsCarousel } from "@/components/portal/NewsCarousel";
 import { BusinessFunctions } from "@/components/portal/BusinessFunctions";
 import { GreenMfgGrid } from "@/components/portal/GreenMfgGrid";
-import { ScenarioTabs } from "@/components/portal/ScenarioTabs";
+import { AchievementShowcase } from "@/components/portal/AchievementShowcase";
 
 export default function PortalHomeV2() {
   return (
@@ -24,7 +24,7 @@ export default function PortalHomeV2() {
       </div>
 
       <div id="scenario" className="scroll-mt-20">
-        <ScenarioTabs />
+        <AchievementShowcase />
       </div>
     </PortalLayout>
   );
