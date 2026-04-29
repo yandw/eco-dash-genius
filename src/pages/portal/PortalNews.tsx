@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { newsArticles, CATEGORY_LABELS, NewsCategory } from "@/mocks/news";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/portal/logo.png";
 
 const categories: { key: NewsCategory; label: string }[] = [
   { key: "hot", label: CATEGORY_LABELS.hot },
@@ -35,19 +34,9 @@ export default function PortalNews() {
     <PortalLayout headerVariant="solid">
       {/* Hero — 与绿色制造子页面一致的简洁风格 */}
       <section className="bg-gradient-to-br from-[hsl(217_80%_22%)] to-[hsl(210_85%_45%)] py-16">
-        <div className="max-w-[1400px] mx-auto px-6 text-white flex items-center gap-5">
-          <img
-            src={logo}
-            alt="平台 Logo"
-            className="h-14 w-14 object-contain drop-shadow"
-          />
-          <div>
-            <div className="text-xs md:text-sm tracking-[0.2em] text-white/80 mb-2">
-              上海市工业和通信业能碳数智空间
-            </div>
-            <h1 className="text-4xl font-bold mb-2">要闻动态</h1>
-            <p className="text-white/90">汇聚行业要闻，掌握工业绿色转型前沿资讯</p>
-          </div>
+        <div className="max-w-[1400px] mx-auto px-6 text-white">
+          <h1 className="text-4xl font-bold mb-2">要闻动态</h1>
+          <p className="text-white/90">汇聚行业要闻，掌握工业绿色转型前沿资讯</p>
         </div>
       </section>
 
