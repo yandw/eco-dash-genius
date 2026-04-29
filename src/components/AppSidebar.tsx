@@ -99,6 +99,7 @@ const govItems: NavItem[] = [
 
 const entItems: NavItem[] = [
   { title: "我的工作台", url: "/ent", icon: LayoutDashboard },
+  { title: "月度报告填报", url: "/ent/report-monthly", icon: FileBarChart },
   { title: "年度报告填报", url: "/ent/report-yearly", icon: CalendarRange },
   { title: "限额报告填报", url: "/ent/energy-quota", icon: Gauge },
   { title: "企业设置", url: "/ent/profile", icon: Building2 },
