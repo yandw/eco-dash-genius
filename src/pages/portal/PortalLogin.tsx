@@ -33,12 +33,6 @@ export default function PortalLogin() {
             >
               登录
             </button>
-            <div className="text-center text-xs text-muted-foreground pt-2">
-              还没有账号？{" "}
-              <Link to="/portal/register" className="text-primary hover:underline">
-                立即注册
-              </Link>
-            </div>
           </form>
         </div>
       </div>
