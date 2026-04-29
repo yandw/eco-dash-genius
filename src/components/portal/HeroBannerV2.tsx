@@ -21,12 +21,12 @@ export function HeroBannerV2() {
 
       {/* 右上角操作 */}
       <div className="absolute top-5 right-10 z-10 flex items-center gap-4 text-[13px]">
-        <Link
-          to="/portal"
+        <a
+          href="/portal"
           className="text-white/85 hover:text-white transition"
         >
           返回旧版
-        </Link>
+        </a>
         <Link
           to="/portal/login"
           className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition shadow-sm"
