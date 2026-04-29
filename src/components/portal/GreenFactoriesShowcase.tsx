@@ -1,9 +1,9 @@
-import factoryImg from "@/assets/portal/mfg-green-factory.jpg";
-import zeroPark from "@/assets/portal/mfg-zero-park.jpg";
-import demo from "@/assets/portal/mfg-demo.jpg";
-import supply from "@/assets/portal/mfg-supply.jpg";
-import alu from "@/assets/portal/scene-aluminum.jpg";
-import auto from "@/assets/portal/scene-auto.jpg";
+import valeo from "@/assets/portal/factory-valeo.jpg";
+import saicGm from "@/assets/portal/factory-saic-gm.jpg";
+import uaes from "@/assets/portal/factory-uaes.jpg";
+import shanghaiElectric from "@/assets/portal/factory-shanghai-electric.jpg";
+import akzonobel from "@/assets/portal/factory-akzonobel.jpg";
+import shuxiangmendi from "@/assets/portal/factory-shuxiangmendi.jpg";
 
 interface Factory {
   name: string;
