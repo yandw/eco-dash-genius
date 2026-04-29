@@ -49,7 +49,7 @@ export type UserSide = "gov" | "ent";
 type NavChild = { title: string; url: string; icon?: typeof Home };
 type NavItem = { title: string; url: string; icon: typeof Home; children?: NavChild[] };
 
-const govItems: NavItem[] = [
+export const govItems: NavItem[] = [
   {
     title: "全景监测",
     url: "/gov",
@@ -98,7 +98,7 @@ const govItems: NavItem[] = [
   },
 ];
 
-const entItems: NavItem[] = [
+export const entItems: NavItem[] = [
   { title: "我的工作台", url: "/ent", icon: LayoutDashboard },
   { title: "月度报告填报", url: "/ent/report-monthly", icon: FileBarChart },
   { title: "年度报告填报", url: "/ent/report-yearly", icon: CalendarRange },
