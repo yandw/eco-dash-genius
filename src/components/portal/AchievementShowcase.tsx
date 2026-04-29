@@ -32,17 +32,21 @@ export function AchievementShowcase() {
               ],
             },
           ].map((c) => (
-            <div key={c.title} className="portal-card overflow-hidden flex flex-col">
+            <Link
+              key={c.title}
+              to="/portal/scenarios"
+              className="portal-card overflow-hidden flex flex-col group hover:shadow-lg transition-shadow"
+            >
               <div className="relative h-[260px] overflow-hidden">
                 <img
                   src={c.image}
                   alt={c.title}
                   loading="lazy"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <div className="p-6 flex flex-col gap-4 flex-1">
-                <h3 className="text-xl font-bold text-foreground">{c.title}</h3>
+                <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{c.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{c.desc}</p>
                 <div className="border-t border-border/60 pt-4 mt-auto flex justify-around gap-2 text-center">
                   {c.stats.map((s) => (
@@ -53,7 +57,7 @@ export function AchievementShowcase() {
                   ))}
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
