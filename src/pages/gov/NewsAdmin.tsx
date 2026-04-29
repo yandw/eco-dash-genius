@@ -209,7 +209,11 @@ export default function NewsAdmin() {
             </TableHeader>
             <TableBody>
               {filtered.map((n) => (
-                <TableRow key={n.id} className="group">
+                <TableRow
+                  key={n.id}
+                  className="group cursor-pointer hover:bg-accent/40"
+                  onClick={() => navigate(`/gov/news/${n.id}/edit`)}
+                >
                   <TableCell>
                     <div className="h-12 w-16 rounded overflow-hidden bg-muted">
                       <img src={n.cover} alt="" className="w-full h-full object-cover" />
@@ -233,7 +237,7 @@ export default function NewsAdmin() {
                   <TableCell className="text-sm text-muted-foreground">{n.publishAt}</TableCell>
                   <TableCell><NewsStatusBadge status={n.status} /></TableCell>
                   <TableCell className="text-right text-sm tabular-nums">{n.views}</TableCell>
-                  <TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
