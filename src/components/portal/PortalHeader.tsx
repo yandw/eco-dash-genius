@@ -23,6 +23,17 @@ export function PortalHeader({ variant = "transparent" }: Props) {
       )}
     >
       <div className="max-w-[1400px] mx-auto h-16 px-6 flex items-center relative">
+        <Link to="/portal" className="absolute left-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
+          <img src={logo} alt="平台 Logo" className="h-8 w-8 object-contain drop-shadow" />
+          <span
+            className={cn(
+              "hidden lg:inline text-sm font-semibold tracking-wide",
+              isSolid ? "text-foreground" : "text-white drop-shadow"
+            )}
+          >
+            上海市工业和通信业能碳数智空间
+          </span>
+        </Link>
         <nav className="hidden md:flex items-center gap-12 mx-auto">
           {navs.map((n) => (
             <NavLink
