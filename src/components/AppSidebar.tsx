@@ -59,6 +59,7 @@ const govItems: NavItem[] = [
       { title: "双控跟踪", url: "/gov/dual-track", icon: LineChart },
       { title: "双控考核", url: "/gov/dual-assess", icon: Award },
       { title: "IDC监察", url: "/gov/idc", icon: Server },
+      { title: "设备对标", url: "/gov/equip-bench", icon: Crosshair },
     ],
   },
   { title: "节能月度报告", url: "/gov/report-monthly", icon: FileBarChart },
