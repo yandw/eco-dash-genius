@@ -87,6 +87,13 @@ export function DistrictListTable({ variant, rows, year, onAction }: Props) {
           })}
         </TableBody>
       </Table>
+      <ListPagination
+        total={rows.length}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
 }
