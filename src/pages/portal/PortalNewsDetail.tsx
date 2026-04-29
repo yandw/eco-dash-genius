@@ -42,9 +42,6 @@ export default function PortalNewsDetail() {
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
             <NewsCategoryBadge category={n.category} />
-            <span className="text-xs text-muted-foreground">
-              {CATEGORY_LABELS[n.category]}
-            </span>
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4 leading-snug">
             {n.title}
@@ -52,7 +49,6 @@ export default function PortalNewsDetail() {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground pb-4 border-b border-border">
             <span>来源：{sourceLabel}</span>
             <span>发布时间：{n.publishAt}</span>
-            <span>浏览：{n.views}</span>
           </div>
         </div>
 
@@ -74,19 +70,6 @@ export default function PortalNewsDetail() {
           )}
         </div>
 
-        {n.wechatUrl && (
-          <div className="mt-10 pt-6 border-t border-border text-sm text-muted-foreground">
-            原文链接：
-            <a
-              href={n.wechatUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-primary hover:underline ml-1"
-            >
-              在微信公众号中打开 <ExternalLink className="h-3 w-3" />
-            </a>
-          </div>
-        )}
       </article>
     </PortalLayout>
   );
