@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import expo from "@/assets/portal/mfg-demo.jpg";
 import base from "@/assets/portal/mfg-green-factory.jpg";
 
