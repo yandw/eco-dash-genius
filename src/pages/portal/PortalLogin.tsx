@@ -42,12 +42,11 @@ export default function PortalLogin() {
                   className="w-full h-11 rounded-lg bg-secondary border border-border px-4 text-sm outline-none focus:border-primary"
                 />
               </div>
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <div className="flex items-center text-xs text-muted-foreground">
                 <label className="inline-flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" className="accent-primary" />
                   记住账号
                 </label>
-                <a href="#" className="hover:text-primary">忘记密码？</a>
               </div>
               <button
                 type="button"
