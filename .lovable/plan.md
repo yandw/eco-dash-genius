@@ -1,34 +1,43 @@
 ## 目标
-将上传的 Logo 应用到门户页头部、英雄页与页脚，并按要求调整页脚文案与友情链接。
 
-## 一、Logo 接入
-- 复制 `user-uploads://image-42.png` 到 `src/assets/portal/logo.png`，作为门户统一 Logo 资源。
+- 门户页右上角：未登录显示「登录」按钮；已登录显示默认头像 + 用户名。
+- 默认演示账号：`admin` / `123456`，登录后用户名为「市级管理员」。
+- 从门户点击业务功能入口（政府侧 / 企业侧的卡片）时校验登录态：未登录则弹出提示并跳转登录页；登录后再跳转到目标业务页面。
 
-## 二、PortalHeader（`src/components/portal/PortalHeader.tsx`）
-- 在顶部导航左侧加入 Logo（约 32px 高），点击回到 `/portal`。
-- Logo 旁可加一行小号站点中文名（透明 header 时白色，solid header 时深色），保持现有导航与登录按钮位置。
+## 实施步骤
 
-## 三、英雄页（`HeroBanner.tsx` + `HeroBannerV2.tsx`）
-- 在主标题上方居中渲染 Logo（约 64–72px 高，带轻微阴影），与现有标题/口号/CTA 保持垂直节奏。
-- 不影响左上角口号与右上角操作（V2）。
+### 1. 新建简单的本地登录态管理 `src/mocks/auth.ts`
+- 用 `localStorage` 存储登录用户：`{ username, displayName }`。
+- 提供 `getCurrentUser()`、`login(username, password)`、`logout()`、`useAuth()` Hook（基于 `useSyncExternalStore` 或自定义事件，便于头部状态实时刷新）。
+- `login` 校验默认账号：`admin` / `123456` → `{ username: "admin", displayName: "市级管理员" }`，其他组合返回失败。
 
-## 四、页脚（`src/components/portal/PortalFooter.tsx`）
-- 左侧品牌区：
-  - 用真实 Logo 图替换原来的 Leaf 占位图标。
-  - 文案 "Carbon Intelligence Shanghai" 改为 "上海市工业和通信业能碳数智空间"。
-  - 下方描述改为：「赋能制造业绿色低碳转型，为可持续发展提供智能化支撑。」
-- 友情链接：
-  - 删除「上海市节能中心」一项。
-  - 其余链接补全官网地址，并加 `target="_blank" rel="noopener noreferrer"`：
-    - 国家工信部 → https://www.miit.gov.cn
-    - 国家发改委 → https://www.ndrc.gov.cn
-    - 国家节能中心 → https://www.chinanecc.cn
-    - 上海市经信委 → https://sheitc.sh.gov.cn
-    - 上海市发改委 → https://fgw.sh.gov.cn
-- 联系我们：删除「电话：XXX-XXXXX」，仅保留地址。
-- 底部版权行保持不变。
+### 2. 改造 `src/components/portal/PortalHeader.tsx`
+- 引入 `useAuth()`：
+  - 未登录：保留现有「登录」按钮。
+  - 已登录：显示默认头像（`Avatar` 组件首字母 fallback「市」）+ 用户名「市级管理员」，并提供下拉菜单（退出登录）。
 
-## 验收
-- 首页（`/portal`、`/portal/v2`）头部、英雄页、页脚均显示新 Logo。
-- 页脚品牌名/描述按要求更新，无「上海市节能中心」友情链接，无电话行。
-- 点击各友情链接在新标签页打开对应官网。
+### 3. 改造 `src/pages/portal/PortalLogin.tsx`
+- 表单受控，提交时调用 `login()`。
+- 成功：toast 提示并跳转到 `location.state.from || /portal`。
+- 失败：toast 提示「账号或密码错误」。
+- 在登录页底部加一行小字提示：演示账号 `admin / 123456`。
+
+### 4. 业务入口登录校验 `src/components/portal/BusinessFunctions.tsx`
+- 将 `<Link to={it.to}>` 改为 `<button>`，点击时：
+  - 已登录：`navigate(it.to)`。
+  - 未登录：toast 提示「请先登录」，`navigate('/portal/login', { state: { from: it.to } })`。
+
+### 5. （可选范围内）门户其他业务入口
+- 仅改造业务功能区（政府侧/企业侧卡片）。门户内的"要闻动态"、"绿色制造"等内容浏览页不做登录校验。
+
+## 技术要点
+
+- 登录态存储 key：`portal_auth_user`。
+- 头像使用 shadcn 的 `Avatar` + `AvatarFallback`，无需图片资源。
+- `useAuth` 通过 `window` 自定义事件 `portal-auth-change` 在 `login/logout` 后广播，多组件同步刷新。
+- 不接入后端，纯前端 mock，便于后续替换为 Lovable Cloud 真实鉴权。
+
+## 涉及文件
+
+- 新增：`src/mocks/auth.ts`
+- 修改：`src/components/portal/PortalHeader.tsx`、`src/pages/portal/PortalLogin.tsx`、`src/components/portal/BusinessFunctions.tsx`
