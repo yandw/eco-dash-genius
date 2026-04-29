@@ -15,12 +15,12 @@ export function HeroBannerV2() {
       <div className="absolute inset-0 bg-gradient-to-b from-sky-900/25 via-transparent to-sky-950/35" />
 
       {/* 左上角口号 */}
-      <div className="absolute top-6 left-10 z-10 text-white/95 tracking-[0.25em] text-sm md:text-base font-medium drop-shadow-md">
+      <div className="absolute top-6 left-10 z-30 text-white/95 tracking-[0.25em] text-sm md:text-base font-medium drop-shadow-md">
         节约能源 · 监察有力 · 高效廉洁 · 服务社会
       </div>
 
       {/* 右上角操作 */}
-      <div className="absolute top-5 right-10 z-10 flex items-center gap-4 text-[13px]">
+      <div className="absolute top-5 right-10 z-30 flex items-center gap-4 text-[13px]">
         <a
           href="/portal"
           className="text-white/85 hover:text-white transition"
