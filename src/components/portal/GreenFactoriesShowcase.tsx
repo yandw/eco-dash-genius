@@ -106,8 +106,8 @@ export function GreenFactoriesShowcase() {
                   />
                   <span
                     className={
-                      "absolute top-3 left-3 text-xs font-medium px-2.5 py-1 rounded-md " +
-                      (isNational ? "bg-primary/10 text-primary" : "bg-emerald-100 text-emerald-700")
+                      "absolute top-3 left-3 text-xs font-semibold px-3 py-1.5 rounded-md shadow-md backdrop-blur-sm " +
+                      (isNational ? "bg-primary text-primary-foreground" : "bg-emerald-600 text-white")
                     }
                   >
                     {f.level} · {f.year}
