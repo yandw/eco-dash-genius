@@ -62,6 +62,7 @@ import {
 } from "@/mocks/news";
 import { NewsCategoryBadge } from "@/components/news/NewsCategoryBadge";
 import { NewsStatusBadge } from "@/components/news/NewsStatusBadge";
+import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import { isCityAdmin } from "@/mocks/currentUser";
 import { toast } from "sonner";
 
@@ -73,6 +74,8 @@ export default function NewsAdmin() {
   const [source, setSource] = useState<string>("all");
   const [keyword, setKeyword] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const allowed = isCityAdmin();
 
