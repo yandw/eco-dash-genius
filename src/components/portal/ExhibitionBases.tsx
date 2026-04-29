@@ -53,12 +53,9 @@ export function ExhibitionBases() {
                   <p className="text-sm text-muted-foreground leading-relaxed mb-5">
                     {b.desc}
                   </p>
-                  <div className="flex items-center gap-2 px-4 py-3 rounded-md bg-accent border border-primary/15 text-sm text-foreground mb-3">
+                  <div className="flex items-center gap-2 px-4 py-3 rounded-md bg-accent border border-primary/15 text-sm text-foreground">
                     <MapPin className="h-4 w-4 text-primary shrink-0" />
                     <span>展厅地址：{b.address}</span>
-                  </div>
-                  <div className="px-4 py-3 rounded-md bg-primary/5 border border-primary/20 text-sm text-primary font-medium">
-                    {b.cta}
                   </div>
                 </div>
                 <div className={reverse ? "lg:order-1" : ""}>
