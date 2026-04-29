@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { isCityAdmin } from "@/mocks/currentUser";
 import { NavLink } from "@/components/NavLink";
+import logo from "@/assets/portal/logo.png";
 import {
   Sidebar,
   SidebarContent,
