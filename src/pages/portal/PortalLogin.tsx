@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 
 export default function PortalLogin() {
