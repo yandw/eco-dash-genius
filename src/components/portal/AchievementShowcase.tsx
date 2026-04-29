@@ -76,29 +76,23 @@ export function AchievementShowcase() {
   return (
     <section className="py-14 bg-secondary/40">
       <div className="max-w-[1400px] mx-auto px-6">
-        <h2 className="portal-section-title">绿色科技成果与展示基地</h2>
+        <h2 className="portal-section-title">场景招商</h2>
         <span className="portal-section-divider" />
-        <p className="portal-section-sub">
-          汇聚绿色科技创新前沿成果，搭建从赛事路演到常态化展厅的产业化落地通道
-        </p>
 
         {/* A. 顶部双卡 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {[
             {
-              tag: "年度大赛",
-              title: "绿洲成果展",
+              title: "绿色科技成果展",
               desc: "汇聚全球绿色科技创新的前沿成果，大赛技术方案及绿色项目线上展示窗口，直观呈现技术在实际场景中的应用效果。",
               image: expo,
               stats: [
                 { v: "80+", l: "展示技术" },
                 { v: "200+", l: "参与机构" },
-                { v: "5届", l: "成功举办" },
               ],
             },
             {
-              tag: "常态展厅",
-              title: "绿洲基地线下展厅",
+              title: "基地展厅",
               desc: "通过节能中心展示大厅、工博会专区、徐汇西岸常态化等展示窗口，为技术创新提供全流程的展示服务。",
               image: base,
               stats: [
@@ -116,9 +110,6 @@ export function AchievementShowcase() {
                   loading="lazy"
                   className="w-full h-full object-cover"
                 />
-                <span className="absolute left-4 bottom-4 px-3 py-1 rounded-full text-xs font-medium bg-accent text-primary">
-                  {c.tag}
-                </span>
               </div>
               <div className="p-6 flex flex-col gap-4 flex-1">
                 <h3 className="text-xl font-bold text-foreground">{c.title}</h3>
