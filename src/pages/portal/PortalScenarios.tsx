@@ -1,5 +1,5 @@
 import { PortalLayout } from "@/components/portal/PortalLayout";
-import { AchievementShowcase } from "@/components/portal/AchievementShowcase";
+import { TechAchievementsGrid } from "@/components/portal/TechAchievementsGrid";
 import { ExhibitionBases } from "@/components/portal/ExhibitionBases";
 
 export default function PortalScenarios() {
@@ -13,7 +13,7 @@ export default function PortalScenarios() {
           </p>
         </div>
       </section>
-      <AchievementShowcase />
+      <TechAchievementsGrid />
       <ExhibitionBases />
     </PortalLayout>
   );
