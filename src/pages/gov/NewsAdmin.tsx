@@ -180,8 +180,8 @@ export default function NewsAdmin() {
                 <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">全部来源</SelectItem>
-                  <SelectItem value="节能中心">节能中心</SelectItem>
-                  <SelectItem value="上海经信委">上海经信委</SelectItem>
+                  <SelectItem value="上海市节能中心">节能中心</SelectItem>
+                  <SelectItem value="上海市经信委">上海经信委</SelectItem>
                   <SelectItem value="其他">其他</SelectItem>
                 </SelectContent>
               </Select>
