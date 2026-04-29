@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/mocks/auth";
 
 import govOverview from "@/assets/portal/biz/gov-overview.jpg";
 import govMonthly from "@/assets/portal/biz/gov-monthly.jpg";
@@ -43,6 +45,17 @@ const PAGE_SIZE = 4;
 export function BusinessFunctions() {
   const [side, setSide] = useState<"gov" | "ent">("gov");
   const [page, setPage] = useState(0);
+  const navigate = useNavigate();
+  const user = useAuth();
+
+  const handleEnter = (to: string) => {
+    if (user) {
+      navigate(to);
+    } else {
+      toast.warning("请先登录后访问");
+      navigate("/portal/login", { state: { from: to } });
+    }
+  };
 
   const items = side === "gov" ? govItems : entItems;
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
@@ -110,10 +123,11 @@ export function BusinessFunctions() {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {visible.map((it) => (
-              <Link
+              <button
                 key={it.label}
-                to={it.to}
-                className="portal-card p-5 flex flex-col items-center text-center cursor-pointer group hover:-translate-y-0.5 transition-transform"
+                type="button"
+                onClick={() => handleEnter(it.to)}
+                className="portal-card p-5 flex flex-col items-center text-center cursor-pointer group hover:-translate-y-0.5 transition-transform text-left"
               >
                 <div className="mb-4 h-20 w-20 rounded-full overflow-hidden bg-muted ring-1 ring-border/60 group-hover:ring-primary/40 transition">
                   <img
@@ -131,7 +145,7 @@ export function BusinessFunctions() {
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">
                   {it.desc}
                 </p>
-              </Link>
+              </button>
             ))}
           </div>
 
