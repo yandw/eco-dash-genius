@@ -20,6 +20,7 @@ import PortalHomeV2 from "./pages/portal/PortalHomeV2.tsx";
 import PortalNews from "./pages/portal/PortalNews.tsx";
 import PortalNewsDetail from "./pages/portal/PortalNewsDetail.tsx";
 import PortalGreenMfg from "./pages/portal/PortalGreenMfg.tsx";
+import PortalGreenFactories from "./pages/portal/PortalGreenFactories.tsx";
 import PortalScenarios from "./pages/portal/PortalScenarios.tsx";
 import PortalLogin from "./pages/portal/PortalLogin.tsx";
 import PortalRegister from "./pages/portal/PortalRegister.tsx";
@@ -110,6 +111,7 @@ const App = () => (
           <Route path="/portal/news" element={<PortalNews />} />
           <Route path="/portal/news/:id" element={<PortalNewsDetail />} />
           <Route path="/portal/green-mfg" element={<PortalGreenMfg />} />
+          <Route path="/portal/green-mfg/factories" element={<PortalGreenFactories />} />
           <Route path="/portal/scenarios" element={<PortalScenarios />} />
           <Route path="/portal/login" element={<PortalLogin />} />
           <Route path="/portal/register" element={<PortalRegister />} />
