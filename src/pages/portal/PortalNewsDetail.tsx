@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { PortalLayout } from "@/components/portal/PortalLayout";
-import { newsArticles, getSourceLabel, CATEGORY_LABELS } from "@/mocks/news";
+import { newsArticles, getSourceLabel } from "@/mocks/news";
 import { NewsCategoryBadge } from "@/components/news/NewsCategoryBadge";
 
 export default function PortalNewsDetail() {
