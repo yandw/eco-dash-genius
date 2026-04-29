@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { newsArticles, CATEGORY_LABELS, NewsCategory } from "@/mocks/news";
 import { cn } from "@/lib/utils";
-import news3d from "@/assets/portal/news-3d.png";
+import logo from "@/assets/portal/logo.png";
 
 const categories: { key: NewsCategory; label: string }[] = [
   { key: "hot", label: CATEGORY_LABELS.hot },
@@ -32,31 +32,22 @@ export default function PortalNews() {
   }, [active, keyword]);
 
   return (
-    <PortalLayout headerVariant="transparent">
-      {/* Hero */}
-      <section className="relative h-[360px] overflow-hidden bg-gradient-to-br from-[hsl(217_80%_22%)] to-[hsl(210_85%_45%)]">
-        <div
-          className="absolute inset-0 opacity-30 pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-        <div className="relative max-w-[1400px] mx-auto h-full px-6 pt-16 flex items-center justify-between">
-          <div className="text-white max-w-xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">要闻动态</h1>
-            <p className="text-base md:text-lg text-white/90">
-              汇聚行业要闻，掌握工业绿色转型前沿资讯
-            </p>
-          </div>
+    <PortalLayout headerVariant="solid">
+      {/* Hero — 与绿色制造子页面一致的简洁风格 */}
+      <section className="bg-gradient-to-br from-[hsl(217_80%_22%)] to-[hsl(210_85%_45%)] py-16">
+        <div className="max-w-[1400px] mx-auto px-6 text-white flex items-center gap-5">
           <img
-            src={news3d}
-            alt=""
-            width={768}
-            height={768}
-            className="hidden md:block w-72 h-72 object-contain portal-float drop-shadow-2xl"
+            src={logo}
+            alt="平台 Logo"
+            className="h-14 w-14 object-contain drop-shadow"
           />
+          <div>
+            <div className="text-xs md:text-sm tracking-[0.2em] text-white/80 mb-2">
+              上海市工业和通信业能碳数智空间
+            </div>
+            <h1 className="text-4xl font-bold mb-2">要闻动态</h1>
+            <p className="text-white/90">汇聚行业要闻，掌握工业绿色转型前沿资讯</p>
+          </div>
         </div>
       </section>
 
