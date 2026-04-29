@@ -211,7 +211,7 @@ export default function NewsAdmin() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((n) => (
+              {paginate(filtered, page, pageSize).map((n) => (
                 <TableRow
                   key={n.id}
                   className="group cursor-pointer hover:bg-accent/40"
@@ -282,6 +282,13 @@ export default function NewsAdmin() {
               )}
             </TableBody>
           </Table>
+          <ListPagination
+            total={filtered.length}
+            page={page}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </Card>
       </div>
 
