@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const tabs = [
   { key: "home", label: "首页", target: "top" },
   { key: "green", label: "绿色制造", target: "green-mfg" },
-  { key: "scene", label: "成果展示", target: "scenario" },
+  { key: "scene", label: "场景招商", target: "scenario" },
 ];
 
 export function PortalTabsV2() {
