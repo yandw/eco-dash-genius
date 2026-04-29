@@ -138,7 +138,21 @@ const monitoringSubPaths = ["/gov", "/gov/decade", "/gov/dual-track", "/gov/dual
 export function AppSidebar({ side = "gov" }: Props) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const items = side === "gov" ? govItems : entItems;
+  const items = side === "gov"
+    ? govItems.map((it) =>
+        it.title === "系统管理"
+          ? {
+              ...it,
+              children: [
+                { title: "系统设置", url: "/gov/system", icon: Settings },
+                ...(isCityAdmin()
+                  ? [{ title: "新闻发布", url: "/gov/news", icon: Newspaper }]
+                  : []),
+              ],
+            }
+          : it,
+      )
+    : entItems;
   const isGov = side === "gov";
   const location = useLocation();
 
