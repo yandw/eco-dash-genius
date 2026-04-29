@@ -126,6 +126,14 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
           })}
         </tbody>
       </table>
+      </div>
+      <ListPagination
+        total={rows.length}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
 }
