@@ -92,6 +92,7 @@ const App = () => (
 
           {/* 企业服务侧 */}
           <Route path="/ent" element={<EntDashboard />} />
+          <Route path="/ent/report-monthly" element={<EntReportMonthly />} />
           <Route path="/ent/report-yearly" element={<EntReportYearly />} />
           <Route path="/ent/energy-quota" element={<EntEnergyQuota />} />
           <Route path="/ent/profile" element={<EntProfile />} />
