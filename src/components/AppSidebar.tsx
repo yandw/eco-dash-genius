@@ -160,11 +160,7 @@ export function AppSidebar({ side = "gov" }: Props) {
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-2 py-3">
           <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-glow overflow-hidden shrink-0">
-            <img
-              src={new URL("@/assets/portal/logo.png", import.meta.url).href}
-              alt="平台 Logo"
-              className="h-7 w-7 object-contain"
-            />
+            <img src={logo} alt="平台 Logo" className="h-7 w-7 object-contain" />
           </div>
           {!collapsed && (
             <span className="text-sm font-semibold text-sidebar-foreground truncate">
