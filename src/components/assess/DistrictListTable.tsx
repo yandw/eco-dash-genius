@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import { PassBadge } from "./PassBadge";
 import type { DistrictAssessSummary, DistrictGoalSummary } from "@/mocks/assess";
 
@@ -14,6 +16,9 @@ interface Props {
 }
 
 export function DistrictListTable({ variant, rows, year, onAction }: Props) {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const pageRows = paginate(rows, page, pageSize);
   return (
     <div className="rounded-md border border-border bg-card overflow-hidden">
       <Table>
@@ -31,12 +36,13 @@ export function DistrictListTable({ variant, rows, year, onAction }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((r, idx) => {
+          {pageRows.map((r, idx) => {
             const isAssess = variant === "assess";
             const ar = r as DistrictAssessSummary;
+            const seq = (page - 1) * pageSize + idx + 1;
             return (
               <TableRow key={r.districtId}>
-                <TableCell className="text-center text-xs text-muted-foreground">{idx + 1}</TableCell>
+                <TableCell className="text-center text-xs text-muted-foreground">{seq}</TableCell>
                 <TableCell className="text-xs">{year}年</TableCell>
                 <TableCell className="text-xs font-medium">{r.name}</TableCell>
                 <TableCell className="text-right text-xs font-mono">{r.count}</TableCell>
@@ -81,6 +87,13 @@ export function DistrictListTable({ variant, rows, year, onAction }: Props) {
           })}
         </TableBody>
       </Table>
+      <ListPagination
+        total={rows.length}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
 }

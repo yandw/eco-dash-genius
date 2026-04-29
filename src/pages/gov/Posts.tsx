@@ -14,6 +14,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { PostStatusBadge } from "@/components/posts/PostStatusBadge";
+import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import { enterpriseList, govStats, type FilingStatus } from "@/mocks/posts";
 
 const statCards = [
@@ -37,6 +38,8 @@ export default function GovPosts() {
   const [keyword, setKeyword] = useState("");
   const [county, setCounty] = useState("全部");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const filtered = enterpriseList.filter((e) => {
     if (keyword && !e.name.includes(keyword) && !e.industry.includes(keyword)) return false;
@@ -126,7 +129,7 @@ export default function GovPosts() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((e) => (
+              {paginate(filtered, page, pageSize).map((e) => (
                 <TableRow
                   key={e.id}
                   className="cursor-pointer"
@@ -177,6 +180,13 @@ export default function GovPosts() {
               )}
             </TableBody>
           </Table>
+          <ListPagination
+            total={filtered.length}
+            page={page}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
       </div>
     </AppLayout>

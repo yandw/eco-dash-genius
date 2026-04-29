@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArchiveStatus, EnterpriseArchive, ArchiveStatusLabel } from "@/mocks/archives";
 import { ArrowRight, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ListPagination, paginate } from "@/components/ui/list-pagination";
 
 interface Props {
   rows: EnterpriseArchive[];
@@ -18,9 +20,13 @@ const cellStyles: Record<ArchiveStatus, string> = {
 };
 
 export function EnterpriseYearMatrix({ rows, years, currentYear }: Props) {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const pageRows = paginate(rows, page, pageSize);
   return (
-    <div className="overflow-x-auto rounded-lg border border-border/70">
-      <table className="w-full text-sm">
+    <div className="rounded-lg border border-border/70 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
         <thead className="bg-muted/40 text-muted-foreground text-xs">
           <tr>
             <th className="text-left font-medium px-4 py-3 min-w-[260px]">企业</th>
@@ -39,7 +45,7 @@ export function EnterpriseYearMatrix({ rows, years, currentYear }: Props) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((ent, idx) => (
+          {pageRows.map((ent, idx) => (
             <tr
               key={ent.id}
               className={cn(
@@ -88,6 +94,14 @@ export function EnterpriseYearMatrix({ rows, years, currentYear }: Props) {
           ))}
         </tbody>
       </table>
+      </div>
+      <ListPagination
+        total={rows.length}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
 }

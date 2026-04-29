@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import { PassBadge } from "./PassBadge";
 import { dualResult, passByValue, type EnergyAssessRow } from "@/mocks/assess";
 import { cn } from "@/lib/utils";
@@ -14,9 +16,13 @@ const cellRO = "px-3 py-2 align-middle text-xs text-foreground/90 bg-muted/40";
 
 export function DistrictAssessTable({ rows, mode, onChange }: Props) {
   const editable = mode === "district-edit";
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const pageRows = paginate(rows, page, pageSize);
 
   return (
-    <div className="overflow-x-auto rounded-md border border-border bg-card">
+    <div className="rounded-md border border-border bg-card overflow-hidden">
+      <div className="overflow-x-auto">
       <table className="min-w-[1700px] w-full border-collapse text-xs">
         <thead className="bg-muted/60 text-muted-foreground">
           <tr className="border-b border-border">
@@ -46,16 +52,17 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r, idx) => {
+          {pageRows.map((r, idx) => {
             const totalPass = passByValue(r.totalGoal, r.totalActualNetGreen);
             const intensityPass = passByValue(r.intensityGoal, r.intensityActualNetGreen);
             const auto = dualResult(r);
             const result = r.resultOverride ?? (auto === "—" ? "" : auto);
             const intensityNetCellVal = r.intensityActualNetGreen === 0 ? "#VALUE!" : r.intensityActualNetGreen;
+            const seq = (page - 1) * pageSize + idx + 1;
 
             return (
               <tr key={r.id} className="border-b border-border hover:bg-accent/30">
-                <td className={cn(cellRO, "border-r border-border text-center")}>{idx + 1}</td>
+                <td className={cn(cellRO, "border-r border-border text-center")}>{seq}</td>
                 <td className={cn(cellRO, "border-r border-border")}>青浦区</td>
                 <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
                 <td className={cn(cellRO, "border-r border-border text-right")}>{r.totalGoal || ""}</td>
@@ -119,6 +126,14 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
           })}
         </tbody>
       </table>
+      </div>
+      <ListPagination
+        total={rows.length}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
 }
