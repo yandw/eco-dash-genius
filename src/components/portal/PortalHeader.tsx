@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const navs = [
   { to: "/portal", label: "首页", end: true },
   { to: "/portal/green-mfg", label: "绿色制造" },
-  { to: "/portal/scenarios", label: "场景招商" },
+  { to: "/portal/scenarios", label: "成果展示" },
   { to: "/portal/news", label: "要闻动态" },
 ];
 
