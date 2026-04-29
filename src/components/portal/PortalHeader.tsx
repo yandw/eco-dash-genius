@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/portal/logo.png";
 
 const navs = [
   { to: "/portal", label: "首页", end: true },
