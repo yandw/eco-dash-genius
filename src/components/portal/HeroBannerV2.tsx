@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import heroBg from "@/assets/portal/hero-shanghai-bright.jpg";
+import logo from "@/assets/portal/logo.png";
 
 export function HeroBannerV2() {
   return (
