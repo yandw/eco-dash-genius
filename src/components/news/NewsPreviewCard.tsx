@@ -5,7 +5,7 @@ import { Pin } from "lucide-react";
 interface Props {
   title: string;
   category: NewsCategory;
-  source: "节能中心" | "上海经信委" | "其他";
+  source: "上海市节能中心" | "上海市经信委" | "其他";
   sourceCustom?: string;
   cover?: string;
   summary: string;

@@ -31,7 +31,7 @@ export default function NewsEditor() {
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<NewsCategory>("hot");
-  const [source, setSource] = useState<NewsSource>("节能中心");
+  const [source, setSource] = useState<NewsSource>("上海市节能中心");
   const [sourceCustom, setSourceCustom] = useState("");
   const [wechatUrl, setWechatUrl] = useState("");
   const [cover, setCover] = useState("");
@@ -132,8 +132,8 @@ export default function NewsEditor() {
                 <Select value={source} onValueChange={(v) => setSource(v as NewsSource)}>
                   <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="节能中心">节能中心</SelectItem>
-                    <SelectItem value="上海经信委">上海经信委</SelectItem>
+                    <SelectItem value="上海市节能中心">节能中心</SelectItem>
+                    <SelectItem value="上海市经信委">上海经信委</SelectItem>
                     <SelectItem value="其他">其他（自定义）</SelectItem>
                   </SelectContent>
                 </Select>
