@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { newsArticles, CATEGORY_LABELS, NewsCategory } from "@/mocks/news";
 import { cn } from "@/lib/utils";
-import news3d from "@/assets/portal/news-3d.png";
+import logo from "@/assets/portal/logo.png";
 
 const categories: { key: NewsCategory; label: string }[] = [
   { key: "hot", label: CATEGORY_LABELS.hot },
