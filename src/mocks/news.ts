@@ -21,6 +21,7 @@ export interface NewsArticle {
   views: number;
   createdBy: string;
   updatedAt: string;
+  content?: string[];
 }
 
 export const CATEGORY_LABELS: Record<NewsCategory, string> = {
