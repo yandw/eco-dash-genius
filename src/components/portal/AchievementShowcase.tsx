@@ -114,7 +114,7 @@ export function AchievementShowcase() {
               <div className="p-6 flex flex-col gap-4 flex-1">
                 <h3 className="text-xl font-bold text-foreground">{c.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{c.desc}</p>
-                <div className={`border-t border-border/60 pt-4 mt-auto grid gap-2 text-center grid-cols-${c.stats.length}`}>
+                <div className="border-t border-border/60 pt-4 mt-auto flex justify-around gap-2 text-center">
                   {c.stats.map((s) => (
                     <div key={s.l}>
                       <div className="text-2xl font-bold text-primary">{s.v}</div>
