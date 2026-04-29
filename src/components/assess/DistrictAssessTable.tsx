@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import { PassBadge } from "./PassBadge";
 import { dualResult, passByValue, type EnergyAssessRow } from "@/mocks/assess";
 import { cn } from "@/lib/utils";
