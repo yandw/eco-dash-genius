@@ -20,7 +20,7 @@ export function HeroBannerV2() {
       </div>
 
       {/* 右上角操作 */}
-      <div className="absolute top-5 right-10 z-10 flex items-center gap-4 text-[13px]">
+      <div className="absolute top-5 right-10 z-30 flex items-center gap-4 text-[13px]">
         <a
           href="/portal"
           className="text-white/85 hover:text-white transition"
