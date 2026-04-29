@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import heroBg from "@/assets/portal/hero-shanghai-bright.jpg";
+import logo from "@/assets/portal/logo.png";
 
 export function HeroBanner() {
   return (
@@ -22,6 +23,11 @@ export function HeroBanner() {
 
       {/* 居中主标题 + 入口 */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
+        <img
+          src={logo}
+          alt="平台 Logo"
+          className="h-16 w-16 md:h-20 md:w-20 object-contain mb-6 drop-shadow-[0_4px_18px_rgba(0,0,0,0.45)]"
+        />
         <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-wider leading-tight drop-shadow-[0_4px_18px_rgba(0,0,0,0.45)]">
           上海市工业和通信业能碳数智空间
         </h1>
