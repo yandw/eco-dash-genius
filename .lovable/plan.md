@@ -1,48 +1,58 @@
-# 优化要闻动态模块
-
-## 现状问题
-
-1. 列表页（`/portal/news`）当前每条新闻除标题、简介、时间外，还展示了大封面图，且左侧还有分类侧边栏与搜索框，与需求"标题+简介+时间"不一致。
-2. 详情页（`/portal/news/:id`）当前用 `<iframe>` 嵌入微信公众号链接，由于微信对外站点禁用 iframe（X-Frame-Options），实际加载到的是微信"参数错误"提示页，体验异常。
-3. 列表页（`PortalNews.tsx`）使用的扩展数据有 id `"4"`、`"5"`，与详情页数据源 `newsArticles`（id 为 `n1`–`n7`）不匹配，点这两条会落到默认 `n1`。
-4. 列表与首页轮播分别维护新闻数据，存在重复。
+# 门户「业务功能」模块改版
 
 ## 目标
+按要求重新定义政府侧/企业侧功能入口，每个入口配示意图（AI 生成图片），点击跳转至对应模块二级页面。
 
-- 列表：每条卡片只展示「标题 + 简介 + 发布时间」，去掉封面图、分类标签和侧边栏。
-- 详情：在站内直接渲染新闻正文，不再使用 iframe，不再出现"参数错误"。
-- 数据：统一使用 `src/mocks/news.ts` 的 `newsArticles`（id 为 `n1`–`n7`），首页轮播也指向同一数据源，确保点击任何一条都能进入对应详情。
+## 一、入口与跳转映射
 
-## 改动方案
+### 政府侧（7 项）
+| 功能入口 | 跳转路由 |
+|---|---|
+| 全景监测 | `/gov` |
+| 月报审核 | `/gov/report-monthly` |
+| 年报审核 | `/gov/report-yearly` |
+| 能耗限额审核 | `/gov/energy-quota` |
+| 节能档案审核 | `/gov/archives` |
+| 碳排放目标分解 | `/gov/assess/goal` |
+| 能耗双控考核 | `/gov/assess/dual` |
 
-### 1. 列表页 `src/pages/portal/PortalNews.tsx`
-- 数据源改用 `newsArticles`（仅 `status === "published"` 的条目）。
-- 移除左侧分类侧边栏、搜索框（保留 Hero）；改为单列卡片列表。
-- 每张卡片：标题（大号、加粗）+ 简介（2 行截断）+ 右下角发布时间。无封面图、无分类徽标。
-- 卡片点击跳转 `/portal/news/{id}`。
+### 企业侧（6 项）
+| 功能入口 | 跳转路由 |
+|---|---|
+| 月报填报 | `/ent/report-monthly` |
+| 年报填报 | `/ent/report-yearly` |
+| 能耗限额填报 | `/ent/energy-quota` |
+| 碳排放目标填报 | `/ent/assess/goal` |
+| 能耗考核结果 | `/ent/assess/dual` |
+| 岗位备案 | `/ent/posts` |
 
-### 2. 详情页 `src/pages/portal/PortalNewsDetail.tsx`
-- 移除 iframe 与"在微信中打开"提示框。
-- 渲染顺序：返回按钮 → 标题 → 元信息行（来源 / 发布时间 / 浏览量）→ 封面大图 → 正文段落。
-- 正文：在 `newsArticles` 中没有 `content` 字段，新增可选 `content?: string`（段落数组或长字符串），并为 `n1`–`n6` 各补一段示例正文（围绕已有 summary 扩写 3–5 段）。原 `wechatUrl` 可保留为「原文链接」按钮，新窗口打开，但页面不再 iframe 嵌入。
-- 找不到 id 时显示"新闻不存在"占位，而不是默认回落到 n1。
+## 二、示意图
 
-### 3. 首页轮播 `src/components/portal/NewsCarousel.tsx`
-- 将本地 `newsList` 替换为从 `newsArticles` 派生（取前 4 条 published），保持现有大图 + 列表布局。
-- 链接 `to={`/portal/news/${n.id}`}` 已经匹配 `n1`–`n7` 的 id。
-- 同步导出兼容字段（如其他文件还在引用 `newsList`），保持向后兼容。
+为 13 个入口分别生成一张配图（科技感扁平插画风，统一蓝绿色调与门户主题保持一致），存放至 `src/assets/portal/biz/`：
+- gov-overview.jpg, gov-monthly.jpg, gov-yearly.jpg, gov-quota.jpg, gov-archives.jpg, gov-carbon-goal.jpg, gov-dual-assess.jpg
+- ent-monthly.jpg, ent-yearly.jpg, ent-quota.jpg, ent-carbon.jpg, ent-assess-result.jpg, ent-posts.jpg
 
-### 4. 数据 `src/mocks/news.ts`
-- 给 `NewsArticle` 增加可选字段 `content?: string[]`。
-- 为前 6 条发布状态的新闻补 3–5 段中文正文示例。
+使用 AI 图像生成（Nano banana），统一比例 4:3，风格提示词统一以保持一致性。
 
-## 涉及文件
+## 三、组件改造（`src/components/portal/BusinessFunctions.tsx`）
 
-- 修改：`src/pages/portal/PortalNews.tsx`
-- 修改：`src/pages/portal/PortalNewsDetail.tsx`
-- 修改：`src/components/portal/NewsCarousel.tsx`
-- 修改：`src/mocks/news.ts`
+- 重写 `govItems` / `enterpriseItems`：新增 `image`（导入的图片）和 `to`（跳转路由）字段；每项保留 `label` + 简短 `desc`。
+- 卡片改为「图片在上 + 文字在下」布局：
+  - 顶部 `aspect-[4/3]` 图片区（`object-cover`，hover 轻微放大）
+  - 下方标题 + 一行描述
+  - 整卡使用 `react-router-dom` 的 `Link` 包裹，hover 时卡片浮起、出现「进入 →」提示
+- 网格：政府侧 7 项使用 `grid-cols-2 md:grid-cols-3 lg:grid-cols-4`（最后一行自然换行）；企业侧 6 项同样栅格自适应。
+- 保留现有「政府侧 / 企业侧」切换 Tab 与 `portal-card` 样式风格。
 
-## 不在本次范围
+## 四、技术细节
 
-- 接入真实微信公众号文章抓取/代理（需后端，能绕过 X-Frame-Options），如需后续可单独提出。
+- 图片以 ES 模块导入，确保 Vite 打包正确（避免之前 GreenFactoriesShowcase 的命名错误）。
+- 仅修改/新增以下文件：
+  - `src/components/portal/BusinessFunctions.tsx`（重写）
+  - `src/assets/portal/biz/*.jpg`（新增 13 张图）
+- 不影响其它模块（`PortalHome.tsx`、`PortalHomeV2.tsx` 引用方式不变）。
+
+## 验收
+- `/portal` 页业务功能区显示新入口与配图
+- 切换政府/企业侧分别显示 7 / 6 个入口
+- 点击任一入口跳转到对应路由且页面可正常打开
