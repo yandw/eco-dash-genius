@@ -127,7 +127,7 @@ export default function NewsEditor() {
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="来源公众号" required>
+            <Field label="新闻来源" required>
               <div className="flex gap-2">
                 <Select value={source} onValueChange={(v) => setSource(v as NewsSource)}>
                   <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
@@ -148,11 +148,7 @@ export default function NewsEditor() {
             </Field>
           </div>
 
-          <Field
-            label="微信文章链接"
-            required
-            hint="详情页将通过 iframe 嵌入此公众号原文"
-          >
+          <Field label="微信文章链接" required>
             <WechatUrlInput
               value={wechatUrl}
               onChange={setWechatUrl}
@@ -243,10 +239,6 @@ export default function NewsEditor() {
             publishAt={publishAt}
             pinned={pinned}
           />
-          <Card className="p-3 text-[11px] text-muted-foreground leading-relaxed">
-            <div className="font-medium text-foreground mb-1">说明</div>
-            发布后，门户「要闻动态」将根据所选类别展示该新闻，详情页将通过 iframe 嵌入填写的微信公众号原文链接。
-          </Card>
         </div>
       </div>
     </AppLayout>
