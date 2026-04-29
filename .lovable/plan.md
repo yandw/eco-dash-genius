@@ -1,58 +1,34 @@
-# 门户「业务功能」模块改版
-
 ## 目标
-按要求重新定义政府侧/企业侧功能入口，每个入口配示意图（AI 生成图片），点击跳转至对应模块二级页面。
+将上传的 Logo 应用到门户页头部、英雄页与页脚，并按要求调整页脚文案与友情链接。
 
-## 一、入口与跳转映射
+## 一、Logo 接入
+- 复制 `user-uploads://image-42.png` 到 `src/assets/portal/logo.png`，作为门户统一 Logo 资源。
 
-### 政府侧（7 项）
-| 功能入口 | 跳转路由 |
-|---|---|
-| 全景监测 | `/gov` |
-| 月报审核 | `/gov/report-monthly` |
-| 年报审核 | `/gov/report-yearly` |
-| 能耗限额审核 | `/gov/energy-quota` |
-| 节能档案审核 | `/gov/archives` |
-| 碳排放目标分解 | `/gov/assess/goal` |
-| 能耗双控考核 | `/gov/assess/dual` |
+## 二、PortalHeader（`src/components/portal/PortalHeader.tsx`）
+- 在顶部导航左侧加入 Logo（约 32px 高），点击回到 `/portal`。
+- Logo 旁可加一行小号站点中文名（透明 header 时白色，solid header 时深色），保持现有导航与登录按钮位置。
 
-### 企业侧（6 项）
-| 功能入口 | 跳转路由 |
-|---|---|
-| 月报填报 | `/ent/report-monthly` |
-| 年报填报 | `/ent/report-yearly` |
-| 能耗限额填报 | `/ent/energy-quota` |
-| 碳排放目标填报 | `/ent/assess/goal` |
-| 能耗考核结果 | `/ent/assess/dual` |
-| 岗位备案 | `/ent/posts` |
+## 三、英雄页（`HeroBanner.tsx` + `HeroBannerV2.tsx`）
+- 在主标题上方居中渲染 Logo（约 64–72px 高，带轻微阴影），与现有标题/口号/CTA 保持垂直节奏。
+- 不影响左上角口号与右上角操作（V2）。
 
-## 二、示意图
-
-为 13 个入口分别生成一张配图（科技感扁平插画风，统一蓝绿色调与门户主题保持一致），存放至 `src/assets/portal/biz/`：
-- gov-overview.jpg, gov-monthly.jpg, gov-yearly.jpg, gov-quota.jpg, gov-archives.jpg, gov-carbon-goal.jpg, gov-dual-assess.jpg
-- ent-monthly.jpg, ent-yearly.jpg, ent-quota.jpg, ent-carbon.jpg, ent-assess-result.jpg, ent-posts.jpg
-
-使用 AI 图像生成（Nano banana），统一比例 4:3，风格提示词统一以保持一致性。
-
-## 三、组件改造（`src/components/portal/BusinessFunctions.tsx`）
-
-- 重写 `govItems` / `enterpriseItems`：新增 `image`（导入的图片）和 `to`（跳转路由）字段；每项保留 `label` + 简短 `desc`。
-- 卡片改为「图片在上 + 文字在下」布局：
-  - 顶部 `aspect-[4/3]` 图片区（`object-cover`，hover 轻微放大）
-  - 下方标题 + 一行描述
-  - 整卡使用 `react-router-dom` 的 `Link` 包裹，hover 时卡片浮起、出现「进入 →」提示
-- 网格：政府侧 7 项使用 `grid-cols-2 md:grid-cols-3 lg:grid-cols-4`（最后一行自然换行）；企业侧 6 项同样栅格自适应。
-- 保留现有「政府侧 / 企业侧」切换 Tab 与 `portal-card` 样式风格。
-
-## 四、技术细节
-
-- 图片以 ES 模块导入，确保 Vite 打包正确（避免之前 GreenFactoriesShowcase 的命名错误）。
-- 仅修改/新增以下文件：
-  - `src/components/portal/BusinessFunctions.tsx`（重写）
-  - `src/assets/portal/biz/*.jpg`（新增 13 张图）
-- 不影响其它模块（`PortalHome.tsx`、`PortalHomeV2.tsx` 引用方式不变）。
+## 四、页脚（`src/components/portal/PortalFooter.tsx`）
+- 左侧品牌区：
+  - 用真实 Logo 图替换原来的 Leaf 占位图标。
+  - 文案 "Carbon Intelligence Shanghai" 改为 "上海市工业和通信业能碳数智空间"。
+  - 下方描述改为：「赋能制造业绿色低碳转型，为可持续发展提供智能化支撑。」
+- 友情链接：
+  - 删除「上海市节能中心」一项。
+  - 其余链接补全官网地址，并加 `target="_blank" rel="noopener noreferrer"`：
+    - 国家工信部 → https://www.miit.gov.cn
+    - 国家发改委 → https://www.ndrc.gov.cn
+    - 国家节能中心 → https://www.chinanecc.cn
+    - 上海市经信委 → https://sheitc.sh.gov.cn
+    - 上海市发改委 → https://fgw.sh.gov.cn
+- 联系我们：删除「电话：XXX-XXXXX」，仅保留地址。
+- 底部版权行保持不变。
 
 ## 验收
-- `/portal` 页业务功能区显示新入口与配图
-- 切换政府/企业侧分别显示 7 / 6 个入口
-- 点击任一入口跳转到对应路由且页面可正常打开
+- 首页（`/portal`、`/portal/v2`）头部、英雄页、页脚均显示新 Logo。
+- 页脚品牌名/描述按要求更新，无「上海市节能中心」友情链接，无电话行。
+- 点击各友情链接在新标签页打开对应官网。
