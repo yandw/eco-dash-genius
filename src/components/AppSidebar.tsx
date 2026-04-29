@@ -85,7 +85,7 @@ const govItems: NavItem[] = [
   },
   { title: "固定资产管理", url: "/gov/assets", icon: Boxes },
   { title: "绿色制造管理", url: "/gov/green-mfg", icon: Leaf },
-  { title: "设备对标管理", url: "/gov/benchmark", icon: Crosshair },
+  
   { title: "企业管理", url: "/gov/enterprise", icon: Building2 },
   {
     title: "系统管理",
