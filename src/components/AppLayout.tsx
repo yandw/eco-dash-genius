@@ -19,11 +19,21 @@ interface AppLayoutProps {
 function findBreadcrumb(side: UserSide, pathname: string): string[] {
   const items = side === "gov" ? govItems : entItems;
 
-  // Try child match first (more specific)
+  // Try child exact match first.
   for (const item of items) {
     if (item.children) {
       const child = item.children.find((c) => c.url === pathname);
       if (child) return [item.title, child.title];
+    }
+  }
+  // Then match nested detail pages by the longest child URL. This prevents the
+  // root dashboard child (/gov) from swallowing routes such as /gov/news/:id/edit.
+  const childMatches = items
+    .flatMap((item) => (item.children ?? []).map((child) => ({ item, child })))
+    .sort((a, b) => b.child.url.length - a.child.url.length);
+  for (const { item, child } of childMatches) {
+    if (child.url !== item.url && pathname.startsWith(child.url + "/")) {
+      return [item.title, child.title];
     }
   }
   // Top-level exact match
