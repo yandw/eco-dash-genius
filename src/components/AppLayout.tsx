@@ -1,5 +1,4 @@
-import { Bell, Search, Sun, User, LogOut } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Bell, User, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar, UserSide } from "@/components/AppSidebar";
