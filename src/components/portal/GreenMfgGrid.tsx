@@ -44,7 +44,7 @@ export function GreenMfgGrid() {
   return (
     <section className="py-14 bg-secondary/40">
       <div className="max-w-[1400px] mx-auto px-6">
-        <h2 className="portal-section-title">现代绿色生态制造体系</h2>
+        <h2 className="portal-section-title">绿色制造</h2>
         <span className="portal-section-divider" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-6">
