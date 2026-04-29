@@ -1,33 +1,8 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, ArrowLeftRight } from "lucide-react";
-import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import heroBg from "@/assets/portal/hero-shanghai-bright.jpg";
 
 export function HeroBannerV2() {
-  const navigate = useNavigate();
-  const [confirmOpen, setConfirmOpen] = useState(false);
-
-  const handleConfirmBack = () => {
-    setConfirmOpen(false);
-    toast.success("已切换至旧版门户", {
-      description: "如需再次体验新版，可在旧版首页点击「体验门户 V2」",
-      duration: 2400,
-    });
-    // 留出一帧让 toast 出现，再跳转
-    setTimeout(() => navigate("/portal"), 120);
-  };
-
   return (
     <section className="relative h-[520px] overflow-hidden">
       <img
@@ -45,16 +20,13 @@ export function HeroBannerV2() {
       </div>
 
       {/* 右上角操作 */}
-      <div className="absolute top-5 right-10 z-10 flex items-center gap-3 text-[13px]">
-        <button
-          type="button"
-          onClick={() => setConfirmOpen(true)}
-          className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 text-white/90 hover:text-white border border-white/25 backdrop-blur-sm transition shadow-sm"
-          title="切换回旧版门户"
+      <div className="absolute top-5 right-10 z-10 flex items-center gap-4 text-[13px]">
+        <Link
+          to="/portal"
+          className="text-white/85 hover:text-white transition"
         >
-          <ArrowLeftRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
           返回旧版
-        </button>
+        </Link>
         <Link
           to="/portal/login"
           className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition shadow-sm"
@@ -81,23 +53,6 @@ export function HeroBannerV2() {
           </Link>
         </div>
       </div>
-
-      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>切换回旧版门户？</AlertDialogTitle>
-            <AlertDialogDescription>
-              旧版门户将作为默认入口展示。您随时可以在旧版首页点击「体验门户 V2」回到当前新版界面。
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>留在新版</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmBack}>
-              确认返回旧版
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </section>
   );
 }
