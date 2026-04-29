@@ -53,7 +53,14 @@ export function AppLayout({ title, subtitle, children, side = "gov", fullscreen 
   const showRoleSwitcher = isAssessRoute && side === "gov";
 
   const userLabel = side === "gov" ? "监管员" : "企业用户";
-  const crumbs = findBreadcrumb(side, location.pathname);
+  let crumbs = findBreadcrumb(side, location.pathname);
+  if (crumbs.length === 0) {
+    if (subtitle) {
+      crumbs = subtitle.split(/\s*[/／>›»]\s*/).filter(Boolean);
+    } else {
+      crumbs = [title];
+    }
+  }
 
   const openFullscreen = () => {
     const url = window.location.pathname + window.location.search;
