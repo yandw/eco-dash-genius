@@ -2,13 +2,14 @@ import { useMemo, useState } from "react";
 import {
   Search,
   RotateCcw,
-  Tag,
+  SlidersHorizontal,
   Download,
   AlertOctagon,
   CheckCircle2,
   Clock,
   Building2,
   TrendingUp,
+  X,
 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { EnterpriseYearMatrix } from "@/components/archives/EnterpriseYearMatrix";
+import { ArchiveFilterDrawer } from "@/components/archives/ArchiveFilterDrawer";
 import { enterprises, ArchiveStatus, ArchiveStatusLabel } from "@/mocks/archives";
+import {
+  AdvancedFilters,
+  countAdvancedFilters,
+  emptyAdvancedFilters,
+  findGroupLabel,
+} from "@/mocks/archiveFilters";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const CURRENT_YEAR = 2024;
@@ -37,11 +46,13 @@ const YEARS = [2024, 2025];
 
 export default function Archives() {
   const [keyword, setKeyword] = useState("");
-  const [district, setDistrict] = useState("all");
-  const [industry, setIndustry] = useState("all");
   const [statusFilter, setStatusFilter] = useState<"all" | ArchiveStatus>("all");
   const [exportOpen, setExportOpen] = useState(false);
   const [exportYear, setExportYear] = useState<number>(CURRENT_YEAR);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [advanced, setAdvanced] = useState<AdvancedFilters>(emptyAdvancedFilters());
+
+  const advancedCount = countAdvancedFilters(advanced);
 
   const handleExport = () => {
     const header = ["序号", "企业名称", "统一社会信用代码", "行业", "所属区", `${exportYear}年度状态`];
@@ -66,13 +77,30 @@ export default function Archives() {
     toast.success(`${exportYear} 年度节能档案已导出`);
   };
 
-  const districts = useMemo(
-    () => Array.from(new Set(enterprises.map((e) => e.district))),
-    [],
-  );
-  const industries = useMemo(
-    () => Array.from(new Set(enterprises.map((e) => e.industry))),
-    [],
+  const removeAdvanced = (groupKey: string, opt: string) => {
+    setAdvanced((prev) => ({
+      ...prev,
+      [groupKey]: (prev[groupKey] ?? []).filter((x) => x !== opt),
+    }));
+  };
+
+  const clearAll = () => {
+    setKeyword("");
+    setStatusFilter("all");
+    setAdvanced(emptyAdvancedFilters());
+  };
+
+  // 已知能与 mock 数据对接的两个维度：主管区/上级区县 → district，行业 → industry
+  const districtSelected = useMemo(() => {
+    const set = new Set<string>([
+      ...(advanced.govDistrict ?? []),
+      ...(advanced.superior ?? []),
+    ]);
+    return set;
+  }, [advanced]);
+  const industrySelected = useMemo(
+    () => new Set<string>(advanced.industry ?? []),
+    [advanced],
   );
 
   const filtered = useMemo(() => {
@@ -81,14 +109,14 @@ export default function Archives() {
         !keyword.trim() ||
         e.name.includes(keyword.trim()) ||
         e.creditCode.includes(keyword.trim());
-      const matchDistrict = district === "all" || e.district === district;
-      const matchIndustry = industry === "all" || e.industry === industry;
+      const matchDistrict = districtSelected.size === 0 || districtSelected.has(e.district);
+      const matchIndustry = industrySelected.size === 0 || industrySelected.has(e.industry);
       const matchStatus =
         statusFilter === "all" ||
         e.years.some((y) => y.year === CURRENT_YEAR && y.status === statusFilter);
       return matchKw && matchDistrict && matchIndustry && matchStatus;
     });
-  }, [keyword, district, industry, statusFilter]);
+  }, [keyword, districtSelected, industrySelected, statusFilter]);
 
   // KPI based on current year across ALL enterprises
   const kpi = useMemo(() => {
@@ -129,8 +157,9 @@ export default function Archives() {
 
       {/* 筛选区 */}
       <div className="panel p-4 mb-4 space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div className="relative md:col-span-2">
+        {/* 顶部快搜行 */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[260px] max-w-md">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
               placeholder="搜索企业名称 / 统一信用代码"
@@ -139,35 +168,7 @@ export default function Archives() {
               onChange={(e) => setKeyword(e.target.value)}
             />
           </div>
-          <Select value={district} onValueChange={setDistrict}>
-            <SelectTrigger className="h-9">
-              <SelectValue placeholder="所属区" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">全部区域</SelectItem>
-              {districts.map((d) => (
-                <SelectItem key={d} value={d}>
-                  {d}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={industry} onValueChange={setIndustry}>
-            <SelectTrigger className="h-9">
-              <SelectValue placeholder="行业" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">全部行业</SelectItem>
-              {industries.map((i) => (
-                <SelectItem key={i} value={i}>
-                  {i}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground mr-1">本期状态：</span>
+          <span className="text-xs text-muted-foreground ml-2">本期状态：</span>
           {(
             [
               { v: "all", l: "全部" },
@@ -183,8 +184,8 @@ export default function Archives() {
               size="sm"
               className={
                 statusFilter === opt.v
-                  ? "h-7 bg-gradient-primary text-primary-foreground border-0"
-                  : "h-7"
+                  ? "h-8 bg-gradient-primary text-primary-foreground border-0"
+                  : "h-8"
               }
               onClick={() => setStatusFilter(opt.v as any)}
             >
@@ -192,19 +193,28 @@ export default function Archives() {
             </Button>
           ))}
           <div className="ml-auto flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" className="h-8">
-              <Tag className="h-3.5 w-3.5 mr-1" /> 标签
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(
+                "h-8 relative",
+                advancedCount > 0 && "border-primary/50 text-primary",
+              )}
+              onClick={() => setFilterOpen(true)}
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
+              高级筛选
+              {advancedCount > 0 && (
+                <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-primary text-primary-foreground text-[10px] font-mono px-1">
+                  {advancedCount}
+                </span>
+              )}
             </Button>
             <Button
               variant="outline"
               size="sm"
               className="h-8"
-              onClick={() => {
-                setKeyword("");
-                setDistrict("all");
-                setIndustry("all");
-                setStatusFilter("all");
-              }}
+              onClick={clearAll}
             >
               <RotateCcw className="h-3.5 w-3.5 mr-1" /> 重置
             </Button>
@@ -218,7 +228,41 @@ export default function Archives() {
             </Button>
           </div>
         </div>
+
+        {/* 已选条件 chips */}
+        {advancedCount > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/60">
+            <span className="text-[11px] text-muted-foreground mr-1">已选条件：</span>
+            {Object.entries(advanced).flatMap(([gKey, opts]) =>
+              opts.map((opt) => (
+                <span
+                  key={`${gKey}-${opt}`}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent text-accent-foreground border border-primary/30 text-[11px]"
+                >
+                  <span className="text-muted-foreground">{findGroupLabel(gKey)}:</span>
+                  <span className="font-medium">{opt}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeAdvanced(gKey, opt)}
+                    className="ml-0.5 text-muted-foreground hover:text-destructive transition-colors"
+                    aria-label={`移除 ${opt}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )),
+            )}
+            <button
+              type="button"
+              onClick={() => setAdvanced(emptyAdvancedFilters())}
+              className="ml-1 text-[11px] text-muted-foreground hover:text-destructive underline-offset-2 hover:underline"
+            >
+              清空全部
+            </button>
+          </div>
+        )}
       </div>
+
 
       {/* 企业 × 年度矩阵 */}
       <EnterpriseYearMatrix rows={filtered} years={YEARS} currentYear={CURRENT_YEAR} />
@@ -271,6 +315,13 @@ export default function Archives() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ArchiveFilterDrawer
+        open={filterOpen}
+        onOpenChange={setFilterOpen}
+        value={advanced}
+        onApply={setAdvanced}
+      />
     </AppLayout>
   );
 }
