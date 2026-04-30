@@ -99,10 +99,10 @@ export default function EntPosts() {
             <PostBasicTab data={ent.basic} />
           </TabsContent>
           <TabsContent value="energy" className="mt-5">
-            <PostFilingTab data={ent.energy} type="energy" />
+            <PostFilingTab data={ent.energy} type="energy" enterpriseName={ent.basic.name} />
           </TabsContent>
           <TabsContent value="carbon" className="mt-5">
-            <PostFilingTab data={ent.carbon} type="carbon" />
+            <PostFilingTab data={ent.carbon} type="carbon" enterpriseName={ent.basic.name} />
           </TabsContent>
         </Tabs>
       </div>
