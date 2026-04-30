@@ -156,7 +156,9 @@ export function PostStaffTable({ staff: initial, readOnly }: Props) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {editingId === NEW_ID && renderEditRow()}
+            {editingId === NEW_ID && (
+              <TableRow className="bg-primary/5">{renderEditCells()}</TableRow>
+            )}
             {filtered.length === 0 && editingId !== NEW_ID ? (
               <TableRow>
                 <TableCell colSpan={readOnly ? 7 : 8} className="text-center text-xs text-muted-foreground py-8">
@@ -166,7 +168,7 @@ export function PostStaffTable({ staff: initial, readOnly }: Props) {
             ) : (
               filtered.map((s) =>
                 editingId === s.id ? (
-                  <tr key={s.id}>{renderEditRow()?.props.children}</tr>
+                  <TableRow key={s.id} className="bg-primary/5">{renderEditCells()}</TableRow>
                 ) : (
                   <TableRow key={s.id}>
                     <TableCell className="font-medium">{s.name}</TableCell>
