@@ -827,7 +827,7 @@ interface ProjectFormDialogProps {
 }
 
 function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFormDialogProps) {
-  const [form, setForm] = useState<ProjectRow>({
+  const emptyForm: ProjectRow = {
     id: "",
     name: "",
     unit: "",
@@ -840,27 +840,16 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
     energyApproval: "",
     envApproval: "",
     land: "",
-  });
+    annualSaving: "",
+    createdAt: "",
+  };
+  const [form, setForm] = useState<ProjectRow>(emptyForm);
 
   useEffect(() => {
     if (open) {
-      setForm(
-        editing ?? {
-          id: "",
-          name: "",
-          unit: "",
-          type: "改造",
-          location: "",
-          content: "",
-          invest: "",
-          duration: "",
-          approval: "",
-          energyApproval: "",
-          envApproval: "",
-          land: "",
-        },
-      );
+      setForm(editing ?? emptyForm);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editing]);
 
   const set = <K extends keyof ProjectRow>(k: K, v: ProjectRow[K]) =>
@@ -879,9 +868,13 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
       toast.error("请完整填写带 * 的必填项");
       return;
     }
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const stamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
     onSubmit({
       ...form,
       id: editing?.id ?? `proj-${Date.now()}`,
+      createdAt: editing?.createdAt || stamp,
     });
   };
 
@@ -895,7 +888,7 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
           <FieldBlock label="项目名称" required>
             <Input value={form.name} onChange={(e) => set("name", e.target.value)} />
           </FieldBlock>
-          <FieldBlock label="项目类型" required>
+          <FieldBlock label="建设性质" required>
             <Select value={form.type} onValueChange={(v) => set("type", v as ProjectRow["type"])}>
               <SelectTrigger>
                 <SelectValue />
@@ -927,6 +920,13 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
               placeholder="如 2024-06 至 2025-12"
             />
           </FieldBlock>
+          <FieldBlock label="年节能量（万吨标准煤）">
+            <Input
+              value={form.annualSaving}
+              onChange={(e) => set("annualSaving", e.target.value)}
+              placeholder="如 0.085"
+            />
+          </FieldBlock>
           <FieldBlock label="立项信息">
             <Input value={form.approval} onChange={(e) => set("approval", e.target.value)} />
           </FieldBlock>
@@ -942,7 +942,7 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
               onChange={(e) => set("envApproval", e.target.value)}
             />
           </FieldBlock>
-          <FieldBlock label="用地">
+          <FieldBlock label="用地、用海批复">
             <Input value={form.land} onChange={(e) => set("land", e.target.value)} />
           </FieldBlock>
           <div className="md:col-span-2">
