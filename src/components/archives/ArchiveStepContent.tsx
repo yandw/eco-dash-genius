@@ -329,65 +329,354 @@ function Equipments({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bo
   );
 }
 
-/* ───────────────────── 能源审计 ───────────────────── */
+/* ───────────────────── 能源审计 / 能效诊断 ───────────────────── */
 function Audits({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: boolean }) {
-  return (
-    <ArchiveSection
-      title="实施能源审计或能效诊断情况"
-      description="填写已实施的能源审计或能效诊断情况，并上传审计报告"
-      action={
-        !readOnly && (
-          <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0">
-            <Plus className="h-3.5 w-3.5 mr-1" />
-            新增审计
-          </Button>
-        )
+  const [rows, setRows] = useState<AuditRow[]>(detail.audits);
+
+  const upsert = (row: AuditRow) => {
+    setRows((rs) => {
+      const idx = rs.findIndex((r) => r.id === row.id);
+      if (idx >= 0) {
+        const next = [...rs];
+        next[idx] = row;
+        return next;
       }
-    >
-      {detail.audits.length === 0 ? (
-        <EmptyHint text="暂无审计 / 诊断记录，请新增" />
+      return [row, ...rs];
+    });
+  };
+
+  const remove = (id: string) => setRows((rs) => rs.filter((r) => r.id !== id));
+
+  return (
+    <div className="space-y-8">
+      <AuditTable
+        kind="audit"
+        title="实施能源审计情况"
+        description="填写已实施的能源审计记录，并上传审计报告"
+        rows={rows.filter((r) => r.kind === "audit")}
+        readOnly={readOnly}
+        onSave={upsert}
+        onDelete={remove}
+      />
+      <AuditTable
+        kind="diagnose"
+        title="实施能效诊断情况"
+        description="填写已实施的能效诊断记录，并上传诊断报告"
+        rows={rows.filter((r) => r.kind === "diagnose")}
+        readOnly={readOnly}
+        onSave={upsert}
+        onDelete={remove}
+      />
+    </div>
+  );
+}
+
+interface AuditTableProps {
+  kind: AuditKind;
+  title: string;
+  description: string;
+  rows: AuditRow[];
+  readOnly?: boolean;
+  onSave: (row: AuditRow) => void;
+  onDelete: (id: string) => void;
+}
+
+function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete }: AuditTableProps) {
+  const labelPrefix = kind === "audit" ? "审计" : "诊断";
+  const [keyword, setKeyword] = useState("");
+  const [query, setQuery] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<AuditRow | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const filtered = useMemo(() => {
+    const k = query.trim();
+    if (!k) return rows;
+    return rows.filter(
+      (r) => r.content.includes(k) || r.suggestion.includes(k) || r.date.includes(k),
+    );
+  }, [rows, query]);
+
+  const openCreate = () => {
+    setEditing(null);
+    setDialogOpen(true);
+  };
+  const openEdit = (row: AuditRow) => {
+    setEditing(row);
+    setDialogOpen(true);
+  };
+
+  return (
+    <ArchiveSection title={title} description={description}>
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <div className="relative flex-1 min-w-[200px] max-w-md">
+          <Input
+            placeholder="搜索时间 / 内容 / 建议"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            className="h-9"
+          />
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-9"
+          onClick={() => setQuery(keyword)}
+        >
+          查询
+        </Button>
+        {!readOnly && (
+          <Button
+            size="sm"
+            className="h-9 bg-gradient-primary text-primary-foreground border-0"
+            onClick={openCreate}
+          >
+            <Plus className="h-3.5 w-3.5 mr-1" />
+            新建
+          </Button>
+        )}
+      </div>
+
+      {filtered.length === 0 ? (
+        <EmptyHint text={`暂无${labelPrefix}记录，请新增`} />
       ) : (
-        <div className="space-y-3">
-          {detail.audits.map((a, i) => (
-            <div key={i} className="panel p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span className="font-mono">{a.date}</span>
-                    <Badge variant="outline" className="border-primary/30 text-primary text-[10px]">
-                      诊断 / 审计
-                    </Badge>
-                  </div>
-                  <div className="text-sm font-medium mt-1.5">{a.content}</div>
-                  <div className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                    <span className="text-foreground/70">建议：</span>
-                    {a.suggestion}
-                  </div>
-                </div>
-                <div className="flex gap-1">
-                  <Button variant="outline" size="sm" className="h-8">
-                    <Download className="h-3.5 w-3.5 mr-1" />
-                    {a.fileName}
-                  </Button>
+        <div className="rounded-lg border border-border/70 overflow-hidden">
+          <Table>
+            <TableHeader className="bg-muted/40">
+              <TableRow>
+                {!readOnly && (
+                  <TableHead className="w-10">
+                    <Checkbox />
+                  </TableHead>
+                )}
+                <TableHead>{labelPrefix}时间</TableHead>
+                <TableHead>{labelPrefix}内容</TableHead>
+                <TableHead>{labelPrefix}建议</TableHead>
+                <TableHead>{labelPrefix}文件</TableHead>
+                {!readOnly && <TableHead className="text-right">操作</TableHead>}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((r) => (
+                <TableRow key={r.id}>
                   {!readOnly && (
-                    <>
-                      <Button variant="ghost" size="sm" className="h-8 text-primary">
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-8 text-destructive">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </>
+                    <TableCell>
+                      <Checkbox />
+                    </TableCell>
                   )}
-                </div>
-              </div>
-            </div>
-          ))}
+                  <TableCell className="font-mono text-xs whitespace-nowrap">{r.date}</TableCell>
+                  <TableCell className="text-sm max-w-[260px]">
+                    <div className="line-clamp-2">{r.content}</div>
+                  </TableCell>
+                  <TableCell className="text-sm max-w-[260px]">
+                    <div className="line-clamp-2">{r.suggestion}</div>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="h-auto p-0 text-primary"
+                      onClick={() => toast.success(`开始下载 ${r.fileName}`)}
+                    >
+                      <Download className="h-3.5 w-3.5 mr-1" />
+                      下载文件
+                    </Button>
+                  </TableCell>
+                  {!readOnly && (
+                    <TableCell className="text-right whitespace-nowrap">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-primary"
+                        onClick={() => openEdit(r)}
+                      >
+                        <Pencil className="h-3.5 w-3.5 mr-1" />
+                        编辑
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-destructive"
+                        onClick={() => setDeletingId(r.id)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5 mr-1" />
+                        删除
+                      </Button>
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       )}
+
+      <AuditFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        kind={kind}
+        editing={editing}
+        onSubmit={(row) => {
+          onSave(row);
+          setDialogOpen(false);
+          toast.success(editing ? "已更新记录" : "已新增记录");
+        }}
+      />
+
+      <AlertDialog open={!!deletingId} onOpenChange={(o) => !o && setDeletingId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认删除该条{labelPrefix}记录？</AlertDialogTitle>
+            <AlertDialogDescription>
+              删除后将无法恢复，请确认操作。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (deletingId) {
+                  onDelete(deletingId);
+                  toast.success("已删除");
+                }
+                setDeletingId(null);
+              }}
+            >
+              确认删除
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </ArchiveSection>
   );
 }
+
+interface AuditFormDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  kind: AuditKind;
+  editing: AuditRow | null;
+  onSubmit: (row: AuditRow) => void;
+}
+
+function AuditFormDialog({ open, onOpenChange, kind, editing, onSubmit }: AuditFormDialogProps) {
+  const labelPrefix = kind === "audit" ? "审计" : "诊断";
+  const titlePrefix = kind === "audit" ? "实施能源审计情况" : "实施能效诊断情况";
+
+  const [date, setDate] = useState("");
+  const [content, setContent] = useState("");
+  const [suggestion, setSuggestion] = useState("");
+  const [fileName, setFileName] = useState("");
+
+  // Reset form when dialog opens / editing changes
+  useMemo(() => {
+    if (open) {
+      setDate(editing?.date ?? "");
+      setContent(editing?.content ?? "");
+      setSuggestion(editing?.suggestion ?? "");
+      setFileName(editing?.fileName ?? "");
+    }
+  }, [open, editing]);
+
+  const valid = date && content.trim() && suggestion.trim() && fileName.trim();
+
+  const handleSubmit = () => {
+    if (!valid) {
+      toast.error("请完整填写必填项并上传文件");
+      return;
+    }
+    onSubmit({
+      id: editing?.id ?? `${kind}-${Date.now()}`,
+      kind,
+      date,
+      content: content.trim(),
+      suggestion: suggestion.trim(),
+      fileName: fileName.trim(),
+    });
+  };
+
+  const handlePickFile = () => {
+    // mock 上传
+    const mock = `${titlePrefix.replace(/情况$/, "")}报告_${Date.now()}.pdf`;
+    setFileName(mock);
+    toast.success("文件已上传");
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>
+            {titlePrefix}（{editing ? "编辑" : "新增"}）
+          </DialogTitle>
+        </DialogHeader>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 py-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs">
+              <span className="text-destructive">*</span> {labelPrefix}时间
+            </Label>
+            <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">{labelPrefix}文件 <span className="text-destructive">*</span></Label>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9"
+                onClick={handlePickFile}
+              >
+                <Upload className="h-3.5 w-3.5 mr-1" />
+                上传文件
+              </Button>
+              <span className="text-xs text-muted-foreground truncate">
+                {fileName || "未选择文件"}
+              </span>
+            </div>
+            <div className="text-[11px] text-muted-foreground">文件类型：Pdf | Word</div>
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <Label className="text-xs">
+              <span className="text-destructive">*</span> {labelPrefix}内容
+            </Label>
+            <Textarea
+              rows={3}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder={`请描述${labelPrefix}内容`}
+            />
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <Label className="text-xs">
+              <span className="text-destructive">*</span> {labelPrefix}建议
+            </Label>
+            <Textarea
+              rows={3}
+              value={suggestion}
+              onChange={(e) => setSuggestion(e.target.value)}
+              placeholder={`请填写${labelPrefix}建议`}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            取消
+          </Button>
+          <Button
+            disabled={!valid}
+            className="bg-gradient-primary text-primary-foreground border-0"
+            onClick={handleSubmit}
+          >
+            确定
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 
 /* ───────────────────── 改造计划 ───────────────────── */
 function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: boolean }) {
