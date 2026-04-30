@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Users, Building2, CheckCircle2, AlertCircle, CircleSlash,
-  AlertTriangle, Search, Download, Eye, Filter,
+  Search, Eye, Filter,
 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ export default function GovPosts() {
       subtitle="全市重点用能单位能源与碳排放管理岗位备案信息查阅"
     >
       {/* KPI */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         {statCards.map((s) => (
           <div key={s.key} className="panel p-4">
             <div className={`h-9 w-9 rounded-lg ${s.color} flex items-center justify-center mb-2`}>
@@ -107,9 +107,6 @@ export default function GovPosts() {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" className="h-9 ml-auto">
-            <Download className="h-3.5 w-3.5 mr-1.5" /> 导出全市名册
-          </Button>
         </div>
 
         <div className="rounded-md border border-border/60 overflow-hidden">
@@ -122,7 +119,7 @@ export default function GovPosts() {
                 <TableHead>能源岗位</TableHead>
                 <TableHead>碳排岗位</TableHead>
                 <TableHead className="text-center">人员数</TableHead>
-                <TableHead>到期提醒</TableHead>
+                
                 <TableHead>最近更新</TableHead>
                 <TableHead className="text-right">操作</TableHead>
               </TableRow>
@@ -152,16 +149,6 @@ export default function GovPosts() {
                       {e.staffCount}
                     </span>
                   </TableCell>
-                  <TableCell>
-                    {e.expiringCerts > 0 ? (
-                      <span className="inline-flex items-center gap-1 text-destructive text-xs">
-                        <AlertTriangle className="h-3 w-3" />
-                        {e.expiringCerts} 张
-                      </span>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
                   <TableCell className="font-mono text-xs text-muted-foreground">{e.updatedAt}</TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" className="text-primary h-8">
@@ -172,7 +159,7 @@ export default function GovPosts() {
               ))}
               {filtered.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center text-sm text-muted-foreground py-12">
+                  <TableCell colSpan={8} className="text-center text-sm text-muted-foreground py-12">
                     没有匹配的企业
                   </TableCell>
                 </TableRow>
