@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostStatusBadge } from "@/components/posts/PostStatusBadge";
 import { PostBasicTab } from "@/components/posts/PostBasicTab";
-import { PostFilingTab } from "@/components/posts/PostFilingTab";
+import { PostFilingTab, downloadEnterprisePdf } from "@/components/posts/PostFilingTab";
 import { getEnterpriseById, enterpriseList } from "@/mocks/posts";
+import { useToast } from "@/hooks/use-toast";
 
 export default function GovPostDetail() {
   const { entId = "ENT-001" } = useParams();
