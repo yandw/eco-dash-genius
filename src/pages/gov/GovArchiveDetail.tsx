@@ -4,8 +4,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   XCircle,
-  Forward,
-  Download,
   AlertOctagon,
   MessageSquareWarning,
   Clock,
@@ -99,12 +97,6 @@ export default function GovArchiveDetail() {
             上报时间：<span className="font-mono">{yr.updatedAt}</span>
           </div>
           <div className="ml-auto flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" className="h-9">
-              <Download className="h-3.5 w-3.5 mr-1" /> 导出 PDF
-            </Button>
-            <Button variant="outline" size="sm" className="h-9">
-              <Forward className="h-3.5 w-3.5 mr-1" /> 转交
-            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -122,24 +114,6 @@ export default function GovArchiveDetail() {
             </Button>
           </div>
         </div>
-
-        {/* 标注汇总 */}
-        {annotations.length > 0 && (
-          <div className="rounded-lg border border-warning/30 bg-warning/5 px-4 py-3 mb-5">
-            <div className="text-sm font-medium text-warning flex items-center gap-2">
-              <MessageSquareWarning className="h-4 w-4" />
-              已标注 {annotations.length} 处问题（退回时将自动汇总至意见）
-            </div>
-            <ul className="mt-2 space-y-1 text-xs text-warning/90 list-disc list-inside">
-              {annotations.map((a, i) => (
-                <li key={i}>
-                  [{ARCHIVE_STEPS.find((s) => s.key === a.step)?.title}] {a.field}：
-                  {a.comment}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
 
         <ArchiveTimeline items={yr.timeline} />
       </div>
