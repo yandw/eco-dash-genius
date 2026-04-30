@@ -315,6 +315,13 @@ export default function Archives() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ArchiveFilterDrawer
+        open={filterOpen}
+        onOpenChange={setFilterOpen}
+        value={advanced}
+        onApply={setAdvanced}
+      />
     </AppLayout>
   );
 }
