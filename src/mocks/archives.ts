@@ -80,6 +80,8 @@ export interface ProjectRow {
   energyApproval: string;
   envApproval: string;
   land: string;
+  annualSaving: string;
+  createdAt: string;
 }
 
 export interface ArchiveDetail {
