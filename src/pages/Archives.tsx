@@ -4,7 +4,6 @@ import {
   RotateCcw,
   Tag,
   Download,
-  FolderOpen,
   AlertOctagon,
   CheckCircle2,
   Clock,
@@ -21,8 +20,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { EnterpriseYearMatrix } from "@/components/archives/EnterpriseYearMatrix";
-import { enterprises, ArchiveStatus } from "@/mocks/archives";
+import { enterprises, ArchiveStatus, ArchiveStatusLabel } from "@/mocks/archives";
+import { toast } from "sonner";
 
 const CURRENT_YEAR = 2024;
 const YEARS = [2024, 2025];
@@ -32,6 +40,31 @@ export default function Archives() {
   const [district, setDistrict] = useState("all");
   const [industry, setIndustry] = useState("all");
   const [statusFilter, setStatusFilter] = useState<"all" | ArchiveStatus>("all");
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportYear, setExportYear] = useState<number>(CURRENT_YEAR);
+
+  const handleExport = () => {
+    const header = ["序号", "企业名称", "统一社会信用代码", "行业", "所属区", `${exportYear}年度状态`];
+    const lines = enterprises.map((e, idx) => {
+      const yr = e.years.find((y) => y.year === exportYear);
+      const status = yr ? ArchiveStatusLabel[yr.status] : "未上报";
+      return [idx + 1, e.name, e.creditCode, e.industry, e.district, status]
+        .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+        .join(",");
+    });
+    const csv = "\uFEFF" + [header.join(","), ...lines].join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `节能档案_${exportYear}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setExportOpen(false);
+    toast.success(`${exportYear} 年度节能档案已导出`);
+  };
 
   const districts = useMemo(
     () => Array.from(new Set(enterprises.map((e) => e.district))),
@@ -175,11 +208,13 @@ export default function Archives() {
             >
               <RotateCcw className="h-3.5 w-3.5 mr-1" /> 重置
             </Button>
-            <Button variant="outline" size="sm" className="h-8">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8"
+              onClick={() => setExportOpen(true)}
+            >
               <Download className="h-3.5 w-3.5 mr-1" /> 导出节能档案
-            </Button>
-            <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0">
-              <FolderOpen className="h-3.5 w-3.5 mr-1" /> 文件中心
             </Button>
           </div>
         </div>
@@ -191,6 +226,51 @@ export default function Archives() {
       <div className="text-[11px] text-muted-foreground mt-3 px-1">
         共 {filtered.length} 家企业 · 点击单元格进入审核详情
       </div>
+
+      <Dialog open={exportOpen} onOpenChange={setExportOpen}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Download className="h-4 w-4 text-primary" />
+              导出节能档案
+            </DialogTitle>
+            <DialogDescription>
+              选择需要导出的年度，确认后浏览器将自动下载 CSV 文件。
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2">
+            <div className="text-xs text-muted-foreground mb-1.5">
+              <span className="text-destructive">*</span> 导出年度
+            </div>
+            <Select
+              value={String(exportYear)}
+              onValueChange={(v) => setExportYear(Number(v))}
+            >
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {YEARS.map((y) => (
+                  <SelectItem key={y} value={String(y)}>
+                    {y} 年度
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setExportOpen(false)}>
+              取消
+            </Button>
+            <Button
+              onClick={handleExport}
+              className="bg-gradient-primary text-primary-foreground border-0"
+            >
+              <Download className="h-3.5 w-3.5 mr-1" /> 确定
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }

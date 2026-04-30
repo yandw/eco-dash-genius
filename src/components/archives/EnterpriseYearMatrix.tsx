@@ -29,6 +29,7 @@ export function EnterpriseYearMatrix({ rows, years, currentYear }: Props) {
         <table className="w-full text-sm">
         <thead className="bg-muted/40 text-muted-foreground text-xs">
           <tr>
+            <th className="text-center font-medium px-4 py-3 w-[60px]">序号</th>
             <th className="text-left font-medium px-4 py-3 min-w-[260px]">企业</th>
             <th className="text-left font-medium px-4 py-3 min-w-[180px]">统一社会信用代码</th>
             <th className="text-left font-medium px-4 py-3">行业</th>
@@ -53,6 +54,9 @@ export function EnterpriseYearMatrix({ rows, years, currentYear }: Props) {
                 idx % 2 === 1 && "bg-muted/20",
               )}
             >
+              <td className="px-4 py-3 text-center font-mono text-xs text-muted-foreground">
+                {(page - 1) * pageSize + idx + 1}
+              </td>
               <td className="px-4 py-3 font-medium text-foreground">{ent.name}</td>
               <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                 {ent.creditCode}
