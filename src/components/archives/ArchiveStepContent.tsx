@@ -353,19 +353,9 @@ interface AuditTableProps {
 
 function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete }: AuditTableProps) {
   const labelPrefix = kind === "audit" ? "审计" : "诊断";
-  const [keyword, setKeyword] = useState("");
-  const [query, setQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AuditRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const filtered = useMemo(() => {
-    const k = query.trim();
-    if (!k) return rows;
-    return rows.filter(
-      (r) => r.content.includes(k) || r.suggestion.includes(k) || r.date.includes(k),
-    );
-  }, [rows, query]);
 
   const openCreate = () => {
     setEditing(null);
@@ -377,37 +367,23 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
   };
 
   return (
-    <ArchiveSection title={title} description={description}>
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        <div className="relative flex-1 min-w-[200px] max-w-md">
-          <Input
-            placeholder="搜索时间 / 内容 / 建议"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            className="h-9"
-          />
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-9"
-          onClick={() => setQuery(keyword)}
-        >
-          查询
-        </Button>
-        {!readOnly && (
+    <ArchiveSection
+      title={title}
+      description={description}
+      action={
+        !readOnly && (
           <Button
             size="sm"
-            className="h-9 bg-gradient-primary text-primary-foreground border-0"
+            className="h-8 bg-gradient-primary text-primary-foreground border-0"
             onClick={openCreate}
           >
             <Plus className="h-3.5 w-3.5 mr-1" />
             新建
           </Button>
-        )}
-      </div>
-
-      {filtered.length === 0 ? (
+        )
+      }
+    >
+      {rows.length === 0 ? (
         <EmptyHint text={`暂无${labelPrefix}记录，请新增`} />
       ) : (
         <div className="rounded-lg border border-border/70 overflow-hidden">
