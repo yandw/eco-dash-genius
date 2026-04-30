@@ -1,79 +1,58 @@
 ## 目标
 
-完善节能档案各子界面的列表交互一致性：精简操作按钮、修正文案、补全改造项目计划的增删改弹窗，并为四个表格统一接入分页选择器。
+完善「待填报」状态档案的默认数据、提交审核交互、以及详情页流程时间轴的最低显示。
 
-## 1. 能源审计 / 能效诊断 — 操作按钮改为图标
+## 1. 主要产品默认值（待填报也有）
 
-文件：`src/components/archives/ArchiveStepContent.tsx` `AuditTable`
+文件：`src/mocks/archives.ts`
 
-- 编辑按钮：去掉「编辑」文字，仅保留 `Pencil` 图标，使用 `variant="ghost"` + `size="icon"` + `title="编辑"`（hover 提示）。
-- 删除按钮：去掉「删除」文字，仅保留 `Trash2` 图标，`title="删除"`，保留红色 `text-destructive`。
-- 操作列宽度收窄。
+`baseDetail(year, withData=true)` 中，`products` 当前在 `withData=false` 时为空数组。改为：无论 `withData` 真假，`products` 都返回固定的 2 行默认值（数据来源于年报和限额报告，企业无需手填）。同步把 `completed.products` 默认置为 `true`。
 
-## 2. 主要产品情况 — 文案修改
+`basic`/`audits`/`projects` 的逻辑保持不变（仍受 `withData` 控制）。
 
-文件：`src/components/archives/ArchiveStepContent.tsx` `Products`
+## 2. 提交审核交互完善
 
-- description 由 `如已纳入国家能耗限额标准目录，将自动比对并生成对标等级` 改为 `数据来源于年报和限额报告`。
+文件：`src/pages/ent/EntArchiveDetail.tsx`
 
-## 3. 节能降碳改造和用能设备更新项目计划 — 完善增删改交互
+把目前的「直接 `toast.success` 提交」改为完整的二次确认 + 提交流程：
 
-文件：
-- `src/mocks/archives.ts`：`ProjectRow` 增加 `id: string`；mock 数据补 `id`。
-- `src/components/archives/ArchiveStepContent.tsx` `Projects` 重构：
+- 新增 `AlertDialog` 组件「提交审核确认」：
+  - 标题：确认提交本年度档案？
+  - 描述：列出当前完成度（X/5 步骤），并提示「提交后将进入经信委审核，期间不可直接编辑，可点击撤回」。
+  - 当存在未完成步骤时，描述中以 warning 文案列出未完成的步骤名（来自 `ARCHIVE_STEPS`），但仍允许提交。
+  - 操作：取消 / 确认提交（gradient-primary）。
+- 确认后：
+  - `toast.loading("正在提交...")` → 600ms 后 `toast.success("已提交至中心审核，等待经信委审核")`。
+  - 本地 `useState` 管理 `localStatus`（初始 `yr.status`），提交后置为 `"submitted"` 并 push 一条 timeline 项「提交审核」。
+  - 顶栏的状态徽章、按钮（撤回 vs 提交）、`readOnly` 都基于 `localStatus`。
+- 「撤回提交」「保存草稿」沿用现有 toast，但同样写入本地 timeline 并切换 `localStatus`。
 
-新增/编辑：弹窗 `ProjectFormDialog`，字段（顺序与现有展示一致）：
+## 3. 待填报档案的时间轴
 
-- 项目名称 *（Input）
-- 项目类型 *（Select：新建 / 改造 / 更新）
-- 实施单位 *（Input）
-- 建设地点 *（Input）
-- 总投资（亿元）*（Input，数字）
-- 建设起止时间 *（Input，文本，格式 `YYYY-MM 至 YYYY-MM`）
-- 立项信息（Input）
-- 能评批复（Input）
-- 环评批复（Input）
-- 用地（Input）
-- 更新改造内容 *（Textarea）
+文件：`src/mocks/archives.ts` + `src/pages/ent/EntArchiveDetail.tsx`
 
-校验：必填项缺失 → toast.error；通过 → toast.success 并关闭弹窗，调用 onSave。
+待填报档案 (`status: "pending"`) 当前 `timeline: []`，详情页会显示「尚无操作记录」。改为：
 
-新增按钮：保留 section header 右侧「新增项目」（gradient-primary），点击打开空白弹窗。
+- mock 中 ent-001 的 2025 待填报档案补一条 timeline：
+  ```
+  { time: "2026-01-01 00:00", actor: "系统", action: "创建年度档案",
+    comment: "年度档案已由系统自动生成，请按时填报", type: "info" }
+  ```
+- 同时在 `EntArchiveDetail.tsx` 内，渲染 timeline 时合并：
+  - 基础项 = `yr.timeline`
+  - 若用户在当前会话里触发了「保存草稿 / 提交 / 撤回」，append 到本地副本（与第 2 点联动）。
 
-行操作：编辑（铅笔图标）/ 删除（垃圾桶图标），均为图标按钮，`title` 提示。
+## 4. ArchiveTimeline 兼容
 
-删除：`AlertDialog` 二次确认「确认删除该项目？」→ 调 onDelete。
-
-状态：`Projects` 内部 `useState<ProjectRow[]>(detail.projects)`，统一 upsert / remove。
-`readOnly` 时隐藏新增按钮和行操作。
-
-## 4. 四个列表统一接入分页选择器
-
-引入：`import { ListPagination, paginate } from "@/components/ui/list-pagination";`
-
-为以下列表都添加分页：
-- Products（detail.products）
-- Equipments（detail.equipments）
-- Audits 内部 `AuditTable`（rows） — 两张表各自独立分页
-- Projects（projects state）
-
-实现要点：
-- 每个组件（或 AuditTable）维护本地 `page=1`、`pageSize=10`，`pageSizeOptions=[10, 20, 50]`。
-- 用 `paginate(list, page, pageSize)` 切片渲染。
-- 在表格容器底部（border 内）渲染 `<ListPagination total={list.length} ... />`。
-- 仅当 `list.length > 0` 时显示分页，空态隐藏。
+`ArchiveTimeline.tsx` 当前已支持 `info` 类型，无需修改；只需保证传入数组非空即正常渲染。
 
 ## 受影响文件
 
-- `src/mocks/archives.ts`：`ProjectRow` 增 `id` 字段，mock 数据补 `id`。
-- `src/components/archives/ArchiveStepContent.tsx`：
-  - `Products`：改文案、加分页。
-  - `Equipments`：加分页。
-  - `AuditTable`：操作改图标、加分页。
-  - `Projects`：重构为状态管理 + 弹窗 + 删除确认 + 分页。
+- `src/mocks/archives.ts`：products 改为始终默认；ent-001 的 2025 pending 档案补 1 条创建 timeline。
+- `src/pages/ent/EntArchiveDetail.tsx`：新增提交确认 AlertDialog、本地 status/timeline 状态、按钮与 readOnly 改为响应本地状态。
 
 ## 不在本次范围
 
-- Audit/Project 的真实文件上传（仍 mock）
-- 多选批量删除
-- 服务端分页（纯前端切片）
+- 真实的服务端提交、撤回、保存接口
+- 提交校验阻断（仅提示不阻断）
+- 政府侧时间轴展示调整
