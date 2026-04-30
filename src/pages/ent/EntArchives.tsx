@@ -124,15 +124,9 @@ export default function EntArchives() {
             <SelectItem value="rejected">已退回</SelectItem>
           </SelectContent>
         </Select>
-        <Button
-          asChild
-          className="h-9 ml-auto bg-gradient-primary text-primary-foreground border-0"
-        >
-          <Link to={`/ent/archives/${new Date().getFullYear()}`}>
-            <Plus className="h-3.5 w-3.5 mr-1" />
-            新建年度档案
-          </Link>
-        </Button>
+        <div className="ml-auto text-xs text-muted-foreground">
+          年度档案由系统于每年初自动生成，请按时填报
+        </div>
       </div>
 
       {/* 年度档案卡片 */}
