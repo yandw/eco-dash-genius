@@ -2,13 +2,14 @@ import { useMemo, useState } from "react";
 import {
   Search,
   RotateCcw,
-  Tag,
+  SlidersHorizontal,
   Download,
   AlertOctagon,
   CheckCircle2,
   Clock,
   Building2,
   TrendingUp,
+  X,
 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { EnterpriseYearMatrix } from "@/components/archives/EnterpriseYearMatrix";
+import { ArchiveFilterDrawer } from "@/components/archives/ArchiveFilterDrawer";
 import { enterprises, ArchiveStatus, ArchiveStatusLabel } from "@/mocks/archives";
+import {
+  AdvancedFilters,
+  countAdvancedFilters,
+  emptyAdvancedFilters,
+  findGroupLabel,
+} from "@/mocks/archiveFilters";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const CURRENT_YEAR = 2024;
@@ -37,11 +46,13 @@ const YEARS = [2024, 2025];
 
 export default function Archives() {
   const [keyword, setKeyword] = useState("");
-  const [district, setDistrict] = useState("all");
-  const [industry, setIndustry] = useState("all");
   const [statusFilter, setStatusFilter] = useState<"all" | ArchiveStatus>("all");
   const [exportOpen, setExportOpen] = useState(false);
   const [exportYear, setExportYear] = useState<number>(CURRENT_YEAR);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [advanced, setAdvanced] = useState<AdvancedFilters>(emptyAdvancedFilters());
+
+  const advancedCount = countAdvancedFilters(advanced);
 
   const handleExport = () => {
     const header = ["序号", "企业名称", "统一社会信用代码", "行业", "所属区", `${exportYear}年度状态`];
