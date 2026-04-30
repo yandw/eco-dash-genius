@@ -42,10 +42,12 @@ export default function EntArchives() {
       ent.years.filter(
         (y) =>
           (statusFilter === "all" || y.status === statusFilter) &&
-          String(y.year).includes(keyword.trim()),
+          (keyword === "all" || String(y.year) === keyword),
       ),
     [ent.years, statusFilter, keyword],
   );
+
+  const yearOptions = [2023, 2024, 2025, 2026, 2027];
 
   const kpi = useMemo(() => {
     const total = ent.years.length;
