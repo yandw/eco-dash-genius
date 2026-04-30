@@ -192,12 +192,16 @@ function BasicInfo({ detail, annotations, readOnly, onAnnotate }: StepProps) {
 
 /* ───────────────────── 主要产品 ───────────────────── */
 function Products({ detail, annotations, readOnly }: StepProps) {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const list = detail.products;
+  const pageRows = paginate(list, page, pageSize);
   return (
     <ArchiveSection
       title="主要产品情况"
-      description="如已纳入国家能耗限额标准目录，将自动比对并生成对标等级"
+      description="数据来源于年报和限额报告"
     >
-      {detail.products.length === 0 ? (
+      {list.length === 0 ? (
         <EmptyHint text="暂无产品数据" />
       ) : (
         <div className="rounded-lg border border-border/70 overflow-hidden">
@@ -214,7 +218,7 @@ function Products({ detail, annotations, readOnly }: StepProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {detail.products.map((p) => (
+              {pageRows.map((p) => (
                 <TableRow key={p.name}>
                   <TableCell className="font-medium">{p.name}</TableCell>
                   <TableCell className="text-muted-foreground">{p.capacity}</TableCell>
@@ -242,6 +246,14 @@ function Products({ detail, annotations, readOnly }: StepProps) {
               ))}
             </TableBody>
           </Table>
+          <ListPagination
+            total={list.length}
+            page={page}
+            pageSize={pageSize}
+            pageSizeOptions={[10, 20, 50]}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
       )}
     </ArchiveSection>
