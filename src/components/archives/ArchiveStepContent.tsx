@@ -47,7 +47,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ListPagination, paginate } from "@/components/ui/list-pagination";
+import { SimplePagination, paginate } from "@/components/ui/simple-pagination";
 import { toast } from "sonner";
 import {
   RefreshCw,
