@@ -727,36 +727,8 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
       }
     >
       {list.length === 0 ? (
-        <div className="panel p-4 border-dashed">
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-semibold text-muted-foreground">待填报项目</span>
-            <Badge variant="outline" className="border-border text-muted-foreground text-[10px]">
-              待填写
-            </Badge>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 mt-3 text-xs">
-            <Meta label="实施单位" value="" />
-            <Meta label="建设性质" value="" />
-            <Meta label="建设地点" value="" />
-            <Meta label="总投资（亿元）" value="" />
-            <Meta label="建设起止时间" value="" />
-            <Meta label="年节能量（万吨标准煤）" value="" />
-            <Meta label="立项信息" value="" />
-            <Meta label="能评批复" value="" />
-            <Meta label="环评批复" value="" />
-            <Meta label="用地、用海批复" value="" />
-            <Meta label="创建时间" value="" />
-          </div>
-          <div className="mt-3 text-xs text-muted-foreground leading-relaxed">
-            <span className="text-foreground/70">更新改造内容：</span>
-            —
-          </div>
-          {!readOnly && (
-            <div className="mt-3 text-[11px] text-muted-foreground">
-              点击右上角「新增项目」按钮开始填报
-            </div>
-          )}
+        <div className="rounded-lg border border-dashed border-border/70 py-10 text-center text-xs text-muted-foreground">
+          暂无数据
         </div>
       ) : (
         <div className="space-y-3">
