@@ -44,7 +44,21 @@ const FIELDS = {
 export function PostBasicTab({ data, readOnly }: Props) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(data);
+  const { toast } = useToast();
   const isEdit = !readOnly && editing;
+
+  const handleSave = () => {
+    const missing: string[] = [];
+    if (!form.name?.trim()) missing.push("企业名称");
+    if (!form.creditCode?.trim()) missing.push("统一社会信用代码");
+    if (!form.industry?.trim()) missing.push("行业分类");
+    if (missing.length > 0) {
+      toast({ title: "请完善必填字段", description: missing.join("、"), variant: "destructive" });
+      return;
+    }
+    toast({ title: "保存成功", description: "基本信息已更新" });
+    setEditing(false);
+  };
 
   const renderField = (
     f: { key: string; label: string; required?: boolean; mono?: boolean; colSpan?: boolean },
