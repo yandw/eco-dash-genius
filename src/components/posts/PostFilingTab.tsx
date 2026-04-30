@@ -43,10 +43,14 @@ function ownerFields(type: "energy" | "carbon"): { key: keyof OwnerInfo; label: 
   ];
 }
 
-export function downloadEnterprisePdf(enterpriseName: string) {
+export function downloadEnterprisePdf(enterpriseName: string, type: "energy" | "carbon" = "energy") {
+  const fileName =
+    type === "carbon"
+      ? "上海市XX公司碳排放管理岗位备案表.pdf"
+      : "上海市XX公司能源管理岗位备案表.pdf";
   const a = document.createElement("a");
-  a.href = "/exports/" + encodeURIComponent("三井高科技（上海）有限公司.pdf");
-  a.download = `${enterpriseName || "岗位备案"}.pdf`;
+  a.href = "/exports/" + encodeURIComponent(fileName);
+  a.download = fileName;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -59,8 +63,12 @@ export function PostFilingTab({ data, type, readOnly, enterpriseName = "" }: Pro
   const isEdit = !readOnly && editing;
 
   const handleExport = () => {
-    downloadEnterprisePdf(enterpriseName);
-    toast({ title: "已开始下载", description: `${enterpriseName || "岗位备案"}.pdf` });
+    const fileName =
+      type === "carbon"
+        ? "上海市XX公司碳排放管理岗位备案表.pdf"
+        : "上海市XX公司能源管理岗位备案表.pdf";
+    downloadEnterprisePdf(enterpriseName, type);
+    toast({ title: "已开始下载", description: fileName });
   };
 
   const validate = (): string | null => {
