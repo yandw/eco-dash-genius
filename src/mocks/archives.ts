@@ -247,7 +247,6 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
           annualSaving: "0.042",
           createdAt: `${year}-08-12 14:05`,
         },
-        },
       ]
     : [],
   completed: {
