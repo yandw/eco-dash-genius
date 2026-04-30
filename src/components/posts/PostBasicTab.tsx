@@ -36,6 +36,7 @@ const FIELDS = {
     { key: "district", label: "企业所在区" },
     { key: "county", label: "所属区县" },
     { key: "address", label: "详细地址", colSpan: true },
+    { key: "group", label: "所属集团", colSpan: true },
   ],
 } as const;
 
