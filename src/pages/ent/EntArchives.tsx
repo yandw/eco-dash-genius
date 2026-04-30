@@ -35,7 +35,7 @@ import {
 export default function EntArchives() {
   const ent = enterprises.find((e) => e.id === CURRENT_ENT_ID)!;
   const [statusFilter, setStatusFilter] = useState<"all" | ArchiveStatus>("all");
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState<string>("all");
 
   const years = useMemo(
     () =>
