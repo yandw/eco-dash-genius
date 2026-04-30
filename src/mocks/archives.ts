@@ -175,7 +175,8 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
     { name: "工业锅炉", model: "WNS6-1.25-Y(Q)", qty: 2, years: 9, level: "二级" },
     { name: "空压机", model: "GA75 VSD+", qty: 3, years: 4, level: "一级" },
   ],
-  audits: [
+  audits: withData
+    ? [
         {
           id: `aud-${year}-1`,
           kind: "audit",
@@ -208,8 +209,10 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
           suggestion: "升级燃烧器，加装烟气余热回收",
           fileName: `${year}年度锅炉诊断报告.pdf`,
         },
-      ],
-  projects: [
+      ]
+    : [],
+  projects: withData
+    ? [
         {
           id: `proj-${year}-1`,
           name: "冷库改造及节能降碳项目",
@@ -224,13 +227,14 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
           envApproval: "环评登记表",
           land: "存量用地",
         },
-      ],
+      ]
+    : [],
   completed: {
     basic: true,
     products: true,
     equipments: true,
-    audits: true,
-    projects: true,
+    audits: withData,
+    projects: withData,
   },
 });
 

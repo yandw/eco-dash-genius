@@ -417,27 +417,34 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
         )
       }
     >
-      {rows.length === 0 ? (
-        <EmptyHint text={`暂无${labelPrefix}记录，请新增`} />
-      ) : (
-        <div className="rounded-lg border border-border/70 overflow-hidden">
-          <Table>
-            <TableHeader className="bg-muted/40">
+      <div className="rounded-lg border border-border/70 overflow-hidden">
+        <Table>
+          <TableHeader className="bg-muted/40">
+            <TableRow>
+              {!readOnly && (
+                <TableHead className="w-10">
+                  <Checkbox />
+                </TableHead>
+              )}
+              <TableHead>{labelPrefix}时间</TableHead>
+              <TableHead>{labelPrefix}内容</TableHead>
+              <TableHead>{labelPrefix}建议</TableHead>
+              <TableHead>{labelPrefix}文件</TableHead>
+              {!readOnly && <TableHead className="text-right">操作</TableHead>}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.length === 0 ? (
               <TableRow>
-                {!readOnly && (
-                  <TableHead className="w-10">
-                    <Checkbox />
-                  </TableHead>
-                )}
-                <TableHead>{labelPrefix}时间</TableHead>
-                <TableHead>{labelPrefix}内容</TableHead>
-                <TableHead>{labelPrefix}建议</TableHead>
-                <TableHead>{labelPrefix}文件</TableHead>
-                {!readOnly && <TableHead className="text-right">操作</TableHead>}
+                <TableCell
+                  colSpan={readOnly ? 4 : 6}
+                  className="h-24 text-center text-xs text-muted-foreground"
+                >
+                  暂无数据
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {pageRows.map((r) => (
+            ) : (
+              pageRows.map((r) => (
                 <TableRow key={r.id}>
                   {!readOnly && (
                     <TableCell>
@@ -485,19 +492,19 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
                     </TableCell>
                   )}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {rows.length > 0 && (
-            <SimplePagination
-              total={rows.length}
-              page={page}
-              pageSize={PAGE_SIZE}
-              onPageChange={setPage}
-            />
-          )}
-        </div>
-      )}
+              ))
+            )}
+          </TableBody>
+        </Table>
+        {rows.length > 0 && (
+          <SimplePagination
+            total={rows.length}
+            page={page}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
+        )}
+      </div>
 
       <AuditFormDialog
         open={dialogOpen}
@@ -723,7 +730,32 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
       }
     >
       {list.length === 0 ? (
-        <EmptyHint text="暂无改造计划项目" />
+        <div className="rounded-lg border border-border/70 overflow-hidden">
+          <Table>
+            <TableHeader className="bg-muted/40">
+              <TableRow>
+                <TableHead>项目名称</TableHead>
+                <TableHead>项目类型</TableHead>
+                <TableHead>实施单位</TableHead>
+                <TableHead>建设地点</TableHead>
+                <TableHead>总投资（亿元）</TableHead>
+                <TableHead>建设起止时间</TableHead>
+                <TableHead>更新改造内容</TableHead>
+                {!readOnly && <TableHead className="text-right">操作</TableHead>}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  colSpan={readOnly ? 7 : 8}
+                  className="h-24 text-center text-xs text-muted-foreground"
+                >
+                  暂无数据
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       ) : (
         <div className="space-y-3">
           {pageRows.map((p) => (
