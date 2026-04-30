@@ -110,7 +110,6 @@ function BasicInfo({ detail, annotations, readOnly, onAnnotate }: StepProps) {
             hint="同步自岗位备案模块"
             value={b.contact}
             readOnly={readOnly}
-            annotation={<FieldAnnotationList items={annFor("能源管理岗位人员及联系方式", annotations)} />}
             className="md:col-span-2"
           >
             <Input defaultValue={b.contact} />
