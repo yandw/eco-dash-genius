@@ -187,23 +187,9 @@ function Products({ detail, annotations, readOnly }: StepProps) {
     <ArchiveSection
       title="主要产品情况"
       description="如已纳入国家能耗限额标准目录，将自动比对并生成对标等级"
-      action={
-        !readOnly && (
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="h-8">
-              <Upload className="h-3.5 w-3.5 mr-1" />
-              Excel 导入
-            </Button>
-            <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0">
-              <Plus className="h-3.5 w-3.5 mr-1" />
-              新增产品
-            </Button>
-          </div>
-        )
-      }
     >
       {detail.products.length === 0 ? (
-        <EmptyHint text="暂无产品数据，请新增" />
+        <EmptyHint text="暂无产品数据" />
       ) : (
         <div className="rounded-lg border border-border/70 overflow-hidden">
           <Table>
@@ -216,7 +202,6 @@ function Products({ detail, annotations, readOnly }: StepProps) {
                 <TableHead>单位产品综合能耗</TableHead>
                 <TableHead>对标限额标准</TableHead>
                 <TableHead>能效等级</TableHead>
-                {!readOnly && <TableHead className="text-right">操作</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -244,25 +229,10 @@ function Products({ detail, annotations, readOnly }: StepProps) {
                       {p.level}
                     </Badge>
                   </TableCell>
-                  {!readOnly && (
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="text-primary h-7">
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="text-destructive h-7">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </TableCell>
-                  )}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </div>
-      )}
-      {annotations.length > 0 && (
-        <div className="mt-3">
-          <FieldAnnotationList items={annotations.filter((a) => a.step === "products")} />
         </div>
       )}
     </ArchiveSection>
