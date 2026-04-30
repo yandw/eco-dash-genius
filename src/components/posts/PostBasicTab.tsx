@@ -98,7 +98,7 @@ export function PostBasicTab({ data, readOnly }: Props) {
               <Button
                 size="sm"
                 className="bg-gradient-primary text-primary-foreground border-0"
-                onClick={() => setEditing(false)}
+                onClick={handleSave}
               >
                 <Save className="h-3.5 w-3.5 mr-1" /> 保存
               </Button>
