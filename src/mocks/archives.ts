@@ -68,6 +68,7 @@ export interface AuditRow {
 }
 
 export interface ProjectRow {
+  id: string;
   name: string;
   unit: string;
   type: "新建" | "改造" | "更新";
@@ -215,6 +216,7 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
   projects: withData
     ? [
         {
+          id: `proj-${year}-1`,
           name: "冷库改造及节能降碳项目",
           unit: "测试企业",
           type: "改造",
