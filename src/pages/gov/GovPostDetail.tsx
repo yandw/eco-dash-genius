@@ -1,25 +1,18 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Building2, Briefcase, Leaf, FileCheck, Download, FileText } from "lucide-react";
+import { ArrowLeft, Building2, Briefcase, Leaf, FileCheck } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostStatusBadge } from "@/components/posts/PostStatusBadge";
 import { PostBasicTab } from "@/components/posts/PostBasicTab";
-import { PostFilingTab, downloadEnterprisePdf } from "@/components/posts/PostFilingTab";
+import { PostFilingTab } from "@/components/posts/PostFilingTab";
 import { getEnterpriseById, enterpriseList } from "@/mocks/posts";
-import { useToast } from "@/hooks/use-toast";
 
 export default function GovPostDetail() {
   const { entId = "ENT-001" } = useParams();
   const navigate = useNavigate();
   const ent = getEnterpriseById(entId);
   const meta = enterpriseList.find((e) => e.id === entId);
-  const { toast } = useToast();
-
-  const handleDownload = (suffix = "") => {
-    downloadEnterprisePdf(`${ent.basic.name}${suffix}`);
-    toast({ title: "已开始下载", description: `${ent.basic.name}${suffix}.pdf` });
-  };
 
 
   return (
