@@ -187,23 +187,9 @@ function Products({ detail, annotations, readOnly }: StepProps) {
     <ArchiveSection
       title="主要产品情况"
       description="如已纳入国家能耗限额标准目录，将自动比对并生成对标等级"
-      action={
-        !readOnly && (
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="h-8">
-              <Upload className="h-3.5 w-3.5 mr-1" />
-              Excel 导入
-            </Button>
-            <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0">
-              <Plus className="h-3.5 w-3.5 mr-1" />
-              新增产品
-            </Button>
-          </div>
-        )
-      }
     >
       {detail.products.length === 0 ? (
-        <EmptyHint text="暂无产品数据，请新增" />
+        <EmptyHint text="暂无产品数据" />
       ) : (
         <div className="rounded-lg border border-border/70 overflow-hidden">
           <Table>
@@ -216,7 +202,6 @@ function Products({ detail, annotations, readOnly }: StepProps) {
                 <TableHead>单位产品综合能耗</TableHead>
                 <TableHead>对标限额标准</TableHead>
                 <TableHead>能效等级</TableHead>
-                {!readOnly && <TableHead className="text-right">操作</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -244,25 +229,10 @@ function Products({ detail, annotations, readOnly }: StepProps) {
                       {p.level}
                     </Badge>
                   </TableCell>
-                  {!readOnly && (
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="text-primary h-7">
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button variant="ghost" size="sm" className="text-destructive h-7">
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </TableCell>
-                  )}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </div>
-      )}
-      {annotations.length > 0 && (
-        <div className="mt-3">
-          <FieldAnnotationList items={annotations.filter((a) => a.step === "products")} />
         </div>
       )}
     </ArchiveSection>
@@ -383,19 +353,9 @@ interface AuditTableProps {
 
 function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete }: AuditTableProps) {
   const labelPrefix = kind === "audit" ? "审计" : "诊断";
-  const [keyword, setKeyword] = useState("");
-  const [query, setQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AuditRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const filtered = useMemo(() => {
-    const k = query.trim();
-    if (!k) return rows;
-    return rows.filter(
-      (r) => r.content.includes(k) || r.suggestion.includes(k) || r.date.includes(k),
-    );
-  }, [rows, query]);
 
   const openCreate = () => {
     setEditing(null);
@@ -407,37 +367,23 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
   };
 
   return (
-    <ArchiveSection title={title} description={description}>
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        <div className="relative flex-1 min-w-[200px] max-w-md">
-          <Input
-            placeholder="搜索时间 / 内容 / 建议"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            className="h-9"
-          />
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-9"
-          onClick={() => setQuery(keyword)}
-        >
-          查询
-        </Button>
-        {!readOnly && (
+    <ArchiveSection
+      title={title}
+      description={description}
+      action={
+        !readOnly && (
           <Button
             size="sm"
-            className="h-9 bg-gradient-primary text-primary-foreground border-0"
+            className="h-8 bg-gradient-primary text-primary-foreground border-0"
             onClick={openCreate}
           >
             <Plus className="h-3.5 w-3.5 mr-1" />
             新建
           </Button>
-        )}
-      </div>
-
-      {filtered.length === 0 ? (
+        )
+      }
+    >
+      {rows.length === 0 ? (
         <EmptyHint text={`暂无${labelPrefix}记录，请新增`} />
       ) : (
         <div className="rounded-lg border border-border/70 overflow-hidden">
@@ -457,7 +403,7 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((r) => (
+              {rows.map((r) => (
                 <TableRow key={r.id}>
                   {!readOnly && (
                     <TableCell>
