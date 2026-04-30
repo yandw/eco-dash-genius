@@ -7,7 +7,7 @@ const styles: Record<ArchiveStatus, string> = {
   submitted: "bg-primary/10 text-primary border-primary/30",
   approved: "bg-success/15 text-success border-success/30",
   rejected: "bg-destructive/15 text-destructive border-destructive/30",
-  pending: "bg-muted/60 text-muted-foreground border-border",
+  pending: "bg-warning/15 text-warning border-warning/30",
 };
 
 interface Props {
