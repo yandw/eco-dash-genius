@@ -29,7 +29,7 @@ export function ArchiveFilterDrawer({ open, onOpenChange, value, onApply }: Prop
   const [activeKey, setActiveKey] = useState<string>(ARCHIVE_FILTER_GROUPS[0].key);
   const [keyword, setKeyword] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
-  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
   // 每次打开时同步外部值
   useEffect(() => {
