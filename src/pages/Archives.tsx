@@ -157,8 +157,9 @@ export default function Archives() {
 
       {/* 筛选区 */}
       <div className="panel p-4 mb-4 space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div className="relative md:col-span-2">
+        {/* 顶部快搜行 */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[260px] max-w-md">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
               placeholder="搜索企业名称 / 统一信用代码"
@@ -167,35 +168,7 @@ export default function Archives() {
               onChange={(e) => setKeyword(e.target.value)}
             />
           </div>
-          <Select value={district} onValueChange={setDistrict}>
-            <SelectTrigger className="h-9">
-              <SelectValue placeholder="所属区" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">全部区域</SelectItem>
-              {districts.map((d) => (
-                <SelectItem key={d} value={d}>
-                  {d}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={industry} onValueChange={setIndustry}>
-            <SelectTrigger className="h-9">
-              <SelectValue placeholder="行业" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">全部行业</SelectItem>
-              {industries.map((i) => (
-                <SelectItem key={i} value={i}>
-                  {i}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground mr-1">本期状态：</span>
+          <span className="text-xs text-muted-foreground ml-2">本期状态：</span>
           {(
             [
               { v: "all", l: "全部" },
@@ -211,8 +184,8 @@ export default function Archives() {
               size="sm"
               className={
                 statusFilter === opt.v
-                  ? "h-7 bg-gradient-primary text-primary-foreground border-0"
-                  : "h-7"
+                  ? "h-8 bg-gradient-primary text-primary-foreground border-0"
+                  : "h-8"
               }
               onClick={() => setStatusFilter(opt.v as any)}
             >
@@ -220,19 +193,28 @@ export default function Archives() {
             </Button>
           ))}
           <div className="ml-auto flex flex-wrap gap-2">
-            <Button variant="outline" size="sm" className="h-8">
-              <Tag className="h-3.5 w-3.5 mr-1" /> 标签
+            <Button
+              variant="outline"
+              size="sm"
+              className={cn(
+                "h-8 relative",
+                advancedCount > 0 && "border-primary/50 text-primary",
+              )}
+              onClick={() => setFilterOpen(true)}
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
+              高级筛选
+              {advancedCount > 0 && (
+                <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-primary text-primary-foreground text-[10px] font-mono px-1">
+                  {advancedCount}
+                </span>
+              )}
             </Button>
             <Button
               variant="outline"
               size="sm"
               className="h-8"
-              onClick={() => {
-                setKeyword("");
-                setDistrict("all");
-                setIndustry("all");
-                setStatusFilter("all");
-              }}
+              onClick={clearAll}
             >
               <RotateCcw className="h-3.5 w-3.5 mr-1" /> 重置
             </Button>
@@ -246,7 +228,41 @@ export default function Archives() {
             </Button>
           </div>
         </div>
+
+        {/* 已选条件 chips */}
+        {advancedCount > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/60">
+            <span className="text-[11px] text-muted-foreground mr-1">已选条件：</span>
+            {Object.entries(advanced).flatMap(([gKey, opts]) =>
+              opts.map((opt) => (
+                <span
+                  key={`${gKey}-${opt}`}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent text-accent-foreground border border-primary/30 text-[11px]"
+                >
+                  <span className="text-muted-foreground">{findGroupLabel(gKey)}:</span>
+                  <span className="font-medium">{opt}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeAdvanced(gKey, opt)}
+                    className="ml-0.5 text-muted-foreground hover:text-destructive transition-colors"
+                    aria-label={`移除 ${opt}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )),
+            )}
+            <button
+              type="button"
+              onClick={() => setAdvanced(emptyAdvancedFilters())}
+              className="ml-1 text-[11px] text-muted-foreground hover:text-destructive underline-offset-2 hover:underline"
+            >
+              清空全部
+            </button>
+          </div>
+        )}
       </div>
+
 
       {/* 企业 × 年度矩阵 */}
       <EnterpriseYearMatrix rows={filtered} years={YEARS} currentYear={CURRENT_YEAR} />
