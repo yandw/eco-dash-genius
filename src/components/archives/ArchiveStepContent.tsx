@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -570,7 +570,7 @@ function AuditFormDialog({ open, onOpenChange, kind, editing, onSubmit }: AuditF
   const [fileName, setFileName] = useState("");
 
   // Reset form when dialog opens / editing changes
-  useMemo(() => {
+  useEffect(() => {
     if (open) {
       setDate(editing?.date ?? "");
       setContent(editing?.content ?? "");
