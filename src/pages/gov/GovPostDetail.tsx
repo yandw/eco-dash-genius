@@ -1,25 +1,18 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Building2, Briefcase, Leaf, FileCheck, Download, FileText } from "lucide-react";
+import { ArrowLeft, Building2, Briefcase, Leaf, FileCheck } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostStatusBadge } from "@/components/posts/PostStatusBadge";
 import { PostBasicTab } from "@/components/posts/PostBasicTab";
-import { PostFilingTab, downloadEnterprisePdf } from "@/components/posts/PostFilingTab";
+import { PostFilingTab } from "@/components/posts/PostFilingTab";
 import { getEnterpriseById, enterpriseList } from "@/mocks/posts";
-import { useToast } from "@/hooks/use-toast";
 
 export default function GovPostDetail() {
   const { entId = "ENT-001" } = useParams();
   const navigate = useNavigate();
   const ent = getEnterpriseById(entId);
   const meta = enterpriseList.find((e) => e.id === entId);
-  const { toast } = useToast();
-
-  const handleDownload = (suffix = "") => {
-    downloadEnterprisePdf(`${ent.basic.name}${suffix}`);
-    toast({ title: "已开始下载", description: `${ent.basic.name}${suffix}.pdf` });
-  };
 
 
   return (
@@ -61,12 +54,6 @@ export default function GovPostDetail() {
               <span className="text-xs text-muted-foreground">碳排岗位</span>
               <PostStatusBadge status={meta?.carbonStatus ?? "empty"} />
             </div>
-            <Button variant="outline" size="sm" className="h-8" onClick={() => handleDownload()}>
-              <FileText className="h-3.5 w-3.5 mr-1" /> 导出 PDF
-            </Button>
-            <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0" onClick={() => handleDownload("-名册")}>
-              <Download className="h-3.5 w-3.5 mr-1" /> 导出名册
-            </Button>
           </div>
         </div>
       </div>
