@@ -89,10 +89,10 @@ export default function GovPostDetail() {
             <PostBasicTab data={ent.basic} readOnly />
           </TabsContent>
           <TabsContent value="energy" className="mt-5">
-            <PostFilingTab data={ent.energy} type="energy" readOnly />
+            <PostFilingTab data={ent.energy} type="energy" readOnly enterpriseName={ent.basic.name} />
           </TabsContent>
           <TabsContent value="carbon" className="mt-5">
-            <PostFilingTab data={ent.carbon} type="carbon" readOnly />
+            <PostFilingTab data={ent.carbon} type="carbon" readOnly enterpriseName={ent.basic.name} />
           </TabsContent>
         </Tabs>
       </div>
