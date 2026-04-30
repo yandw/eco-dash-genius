@@ -1,58 +1,72 @@
-## 需求拆解
+## 目标
 
-1. **基本信息 Tab**：在「详细地址」之后增加「所属集团」字段（企业侧 + 政府侧只读视图）。
-2. **能源管理岗位备案 Tab**：去掉顶部操作栏的「同步企业设置」和「上传备案表」按钮。
-3. **导出按钮**：点击「导出」后浏览器下载该企业对应的 PDF（如「三井高科技（上海）有限公司.pdf」）。
-4. **岗位备案 增删改 + 校验交互**：基本信息、能源岗位、碳排岗位 3 个子页 — 编辑/保存校验必填字段；管理人员名册支持新增、编辑、删除并带校验；备案文件支持新增/删除（已有，补校验提示）。
-5. **碳排放管理岗位备案 Tab**：同样去掉「上传岗位备案表」按钮。
+在企业侧节能档案的「实施能源审计或能效诊断情况」步骤中，将原本一个综合区块拆分为 **能源审计** 和 **能效诊断** 两个独立模块，每个模块以表格形式（参照图1）展示，并完善新增 / 编辑 / 删除的交互逻辑。
 
-## 实现方案
+## 1. 数据模型调整 (`src/mocks/archives.ts`)
 
-### 1. 资源准备
-- 把用户上传的 `三井高科技（上海）有限公司.pdf` 复制到 `public/exports/三井高科技（上海）有限公司.pdf`，作为所有"导出"按钮的下载样本（mock 行为：导出文件名 = `${企业名称}.pdf`，下载内容统一指向该样例 PDF）。
+- `AuditRow` 增加字段 `kind: "audit" | "diagnose"`，用于区分能源审计与能效诊断。
+- 现有 mock 数据按时间/内容拆分到两个 `kind`，保证两张表都有示例数据。
+- `id` 字段（string）方便编辑/删除定位。
 
-### 2. 基本信息字段（`src/components/posts/PostBasicTab.tsx`）
-- 在 `FIELDS.loc` 数组里 `address` 之后追加 `{ key: "group", label: "所属集团" }`。`BasicInfo.group` 已存在于 mock 数据，直接复用。
-- 编辑模式下增加简单必填校验：`name`、`creditCode`、`industry` 为空时点保存 toast 提示 + 阻止退出编辑态。
+## 2. UI 重构 (`src/components/archives/ArchiveStepContent.tsx` 中的 `Audits`)
 
-### 3. PostFilingTab 顶部操作栏（`src/components/posts/PostFilingTab.tsx`）
-- 移除「同步企业设置」按钮（`RefreshCw`）。
-- 移除「上传备案表」按钮（`Upload`）— energy 与 carbon 共用此组件，自然两个 Tab 都去掉。
-- 「导出」按钮改为可点击：触发一个 `<a>` 临时元素，`href="/exports/三井高科技（上海）有限公司.pdf"`，`download="${企业名称}.pdf"`，自动 click 然后 toast「已开始下载」。
-- 通过 prop 把当前企业名 `enterpriseName` 透传进 `PostFilingTab`（在 `EntPosts.tsx`、`GovPostDetail.tsx` 调用处补传）。
+将原来的卡片列表替换为两个并列的表格模块：
 
-### 4. 详情页顶部「导出 PDF / 导出名册」（`src/pages/gov/GovPostDetail.tsx`）
-- 让这两个按钮也走相同下载逻辑（同一个 mock PDF，文件名带企业名）。
+```text
+┌──────────────────────── 能源审计 ────────────────────────┐
+│ [搜索框]                              [查询] [新建]      │
+│ ┌──┬──────────┬──────────┬──────────┬──────────┬─────┐ │
+│ │☐ │审计时间  │审计内容  │审计建议  │审计文件  │操作 │ │
+│ ├──┼──────────┼──────────┼──────────┼──────────┼─────┤ │
+│ │☐ │2024-08-01│……        │……        │下载文件  │编辑 │ │
+│ │  │          │          │          │          │删除 │ │
+│ └──┴──────────┴──────────┴──────────┴──────────┴─────┘ │
+└─────────────────────────────────────────────────────────┘
 
-### 5. 字段校验逻辑（PostFilingTab）
-- 保存「领导与负责人」时校验：`leader.name`、`leader.duty`、`owner.name`、`owner.department` 必填；电话/邮箱格式简单正则校验，不通过 toast 错误提示并保持编辑态。
-- `OwnerInfo.hasCert === true` 时，`certNo`、`certDate` 必填。
+┌──────────────────────── 能效诊断 ────────────────────────┐
+│ 同上结构（列名改为 "诊断时间 / 诊断内容 / 诊断建议 / 诊断文件"）│
+└─────────────────────────────────────────────────────────┘
+```
 
-### 6. 管理人员名册新增/编辑/删除（`src/components/posts/PostStaffTable.tsx`）
-- 新增本地 state：`rows`（取自 props 初始化）+ `editing` 行 id（`"new"` 表示新增行）+ `draft` 暂存。
-- 「新增人员」按钮：在表格顶部插入一行可编辑空白行（输入框替代单元格）。
-- 每行操作按钮 编辑/保存/取消/删除：编辑态把单元格替换为 Input/Select。
-- 删除使用 `AlertDialog` 二次确认。
-- 校验：姓名、岗位分工、电话必填；电话格式 `/^1\d{10}$/`；`hasCert=是` 时 `certNo` 必填。校验失败 toast。
-- 保存/删除后 toast 成功提示（mock，不持久化）。
+每个模块包含：
+- 标题 + 描述
+- 顶部工具栏：搜索框（按内容/建议关键词过滤） + 查询按钮 + 新建按钮
+- 表格：复选框、时间、内容、建议、文件（蓝色「下载文件」链接）、操作（蓝色「编辑」/红色「删除」）
+- 空态：显示「暂无数据，请新增」
+- 表格保留现有 `Table` 组件 + 设计 token，不引入硬编码颜色
 
-### 7. 备案文件交互（`src/components/posts/FileUploadList.tsx`）
-- `<input type="file">` 加 `onChange`：把所选文件追加到本地 state 列表，文件大小格式化展示，toast「上传成功」。
-- 删除按钮加 `AlertDialog` 二次确认 + toast。
-- 预览/下载 按钮：复用同一个 mock PDF 下载行为。
+## 3. 新增 / 编辑 弹窗 (Dialog)
 
-### 8. 文件清单
+参照图2新建一个共用的 `AuditFormDialog`：
 
-| 类型 | 文件 | 主要改动 |
-|---|---|---|
-| 新增 | `public/exports/三井高科技（上海）有限公司.pdf` | 复制自上传 |
-| 编辑 | `src/components/posts/PostBasicTab.tsx` | 加「所属集团」字段 + 必填校验 |
-| 编辑 | `src/components/posts/PostFilingTab.tsx` | 删 2 按钮 + 导出下载 + 字段校验 + 接收 enterpriseName |
-| 编辑 | `src/components/posts/PostStaffTable.tsx` | 新增/编辑/删除 + 校验 |
-| 编辑 | `src/components/posts/FileUploadList.tsx` | 上传/删除/下载交互 |
-| 编辑 | `src/pages/ent/EntPosts.tsx` | 透传 `enterpriseName` |
-| 编辑 | `src/pages/gov/GovPostDetail.tsx` | 透传 `enterpriseName` + 顶部按钮接下载 |
+- 标题：根据 kind 显示「实施能源审计情况 / 实施能效诊断情况」 + （新增 / 编辑）
+- 字段（全部 required）：
+  - 时间（date input，带日历图标）
+  - 文件（上传文件按钮 + 下方提示「文件类型：Pdf | Word」；保留 mock 文件名）
+  - 内容（textarea，多行）
+  - 建议（textarea，多行）
+- 底部：取消 / 确定。确定按钮在必填项未填时禁用（灰色）。
+- 校验：缺字段 → toast 错误；通过 → toast 成功并关闭弹窗。
 
-### 备注
-- 全部数据为前端 mock，刷新后还原；toast 使用项目已接入的 `useToast`/`sonner`。
-- 政府侧详情页 `readOnly` 模式下不显示编辑/新增/删除按钮，原有判断保持。
+## 4. 删除交互
+
+- 点击「删除」弹出 `AlertDialog` 二次确认（"确认删除该条记录？"），确认后从对应 kind 列表中移除并 toast 提示。
+- 表头复选框 + 行复选框已渲染，但本次仅做 UI 展示（保持与图1一致），不实现批量操作以控制改动范围。
+
+## 5. 状态管理
+
+- `Audits` 组件内部用 `useState` 维护两份数组（auditsList / diagnoseList），初始值来自 `detail.audits` 按 `kind` 拆分。
+- `readOnly` 模式（已提交 / 已通过 / 政府侧）下：隐藏新建/编辑/删除按钮，隐藏复选框列。
+- 政府侧 `GovArchiveDetail` 复用同一组件，`readOnly` 已为 true，无需额外改动。
+
+## 6. 受影响文件
+
+- `src/mocks/archives.ts`：`AuditRow` 增加 `kind` + `id` 字段并补充 mock 数据。
+- `src/components/archives/ArchiveStepContent.tsx`：重写 `Audits` 子组件，新增 `AuditFormDialog` 与删除确认。
+- 步骤标题保持 `实施能源审计或能效诊断`，描述更新为「分别管理能源审计与能效诊断记录」。
+
+## 不在本次范围
+
+- 真实文件上传（仍为 mock，记录文件名）
+- 批量删除 / 导出
+- 表格分页（数据量小，暂不分页；保留底部说明文字）
