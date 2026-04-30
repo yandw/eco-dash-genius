@@ -194,18 +194,14 @@ export default function Archives() {
           ))}
           <div className="ml-auto flex flex-wrap gap-2">
             <Button
-              variant="outline"
               size="sm"
-              className={cn(
-                "h-8 relative",
-                advancedCount > 0 && "border-primary/50 text-primary",
-              )}
+              className="h-8 bg-primary text-primary-foreground hover:bg-primary/90 border-0"
               onClick={() => setFilterOpen(true)}
             >
               <SlidersHorizontal className="h-3.5 w-3.5 mr-1" />
               高级筛选
               {advancedCount > 0 && (
-                <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-primary text-primary-foreground text-[10px] font-mono px-1">
+                <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-primary-foreground/20 text-primary-foreground text-[10px] font-mono px-1">
                   {advancedCount}
                 </span>
               )}
@@ -219,9 +215,8 @@ export default function Archives() {
               <RotateCcw className="h-3.5 w-3.5 mr-1" /> 重置
             </Button>
             <Button
-              variant="outline"
               size="sm"
-              className="h-8"
+              className="h-8 bg-success text-success-foreground hover:bg-success/90 border-0"
               onClick={() => setExportOpen(true)}
             >
               <Download className="h-3.5 w-3.5 mr-1" /> 导出节能档案
