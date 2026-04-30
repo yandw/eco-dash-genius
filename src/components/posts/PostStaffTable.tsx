@@ -85,10 +85,10 @@ export function PostStaffTable({ staff: initial, readOnly }: Props) {
     setPendingDelete(null);
   };
 
-  const renderEditRow = () => {
+  const renderEditCells = () => {
     if (!draft) return null;
     return (
-      <TableRow className="bg-primary/5">
+      <>
         <TableCell><Input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="姓名" className="h-8" /></TableCell>
         <TableCell><Input value={draft.role} onChange={(e) => setDraft({ ...draft, role: e.target.value })} placeholder="岗位分工" className="h-8" /></TableCell>
         <TableCell><Input type="date" value={draft.hireDate} onChange={(e) => setDraft({ ...draft, hireDate: e.target.value })} className="h-8 font-mono" /></TableCell>
@@ -113,7 +113,7 @@ export function PostStaffTable({ staff: initial, readOnly }: Props) {
             <X className="h-3.5 w-3.5" />
           </Button>
         </TableCell>
-      </TableRow>
+      </>
     );
   };
 
