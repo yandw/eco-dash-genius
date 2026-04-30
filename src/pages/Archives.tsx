@@ -208,11 +208,13 @@ export default function Archives() {
             >
               <RotateCcw className="h-3.5 w-3.5 mr-1" /> 重置
             </Button>
-            <Button variant="outline" size="sm" className="h-8">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8"
+              onClick={() => setExportOpen(true)}
+            >
               <Download className="h-3.5 w-3.5 mr-1" /> 导出节能档案
-            </Button>
-            <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0">
-              <FolderOpen className="h-3.5 w-3.5 mr-1" /> 文件中心
             </Button>
           </div>
         </div>
