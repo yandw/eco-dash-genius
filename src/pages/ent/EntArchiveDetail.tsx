@@ -110,21 +110,7 @@ export default function EntArchiveDetail() {
           </div>
         </div>
 
-        {/* 退回提示 */}
-        {yr.status === "rejected" && yr.rejectReason && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 mb-5 flex items-start gap-3">
-            <AlertOctagon className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
-            <div className="flex-1 text-sm">
-              <div className="font-medium text-destructive">中心审核退回</div>
-              <div className="text-destructive/90 text-xs mt-1 leading-relaxed">
-                {yr.rejectReason}
-              </div>
-              <div className="text-[11px] text-destructive/70 mt-1">
-                请按左侧标记的步骤逐项整改后重新提交。
-              </div>
-            </div>
-          </div>
-        )}
+        {/* 退回提示已按需求移除 */}
 
         {/* 时间轴 */}
         <ArchiveTimeline items={yr.timeline} />

@@ -58,11 +58,7 @@ export function ArchiveStepNav({ active, onChange, completed, annotationsByStep 
                   >
                     {step.title}
                   </span>
-                  {issues > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive/15 text-destructive border border-destructive/30">
-                      {issues} 条退回
-                    </span>
-                  )}
+                  {/* 退回条数标签已按需求移除 */}
                 </div>
                 <div className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
                   {step.desc}

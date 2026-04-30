@@ -35,17 +35,19 @@ import {
 export default function EntArchives() {
   const ent = enterprises.find((e) => e.id === CURRENT_ENT_ID)!;
   const [statusFilter, setStatusFilter] = useState<"all" | ArchiveStatus>("all");
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState<string>("all");
 
   const years = useMemo(
     () =>
       ent.years.filter(
         (y) =>
           (statusFilter === "all" || y.status === statusFilter) &&
-          String(y.year).includes(keyword.trim()),
+          (keyword === "all" || String(y.year) === keyword),
       ),
     [ent.years, statusFilter, keyword],
   );
+
+  const yearOptions = [2023, 2024, 2025, 2026, 2027];
 
   const kpi = useMemo(() => {
     const total = ent.years.length;
@@ -97,15 +99,19 @@ export default function EntArchives() {
 
       {/* 工具栏 */}
       <div className="panel p-4 mb-4 flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input
-            placeholder="按年度搜索..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            className="pl-8 h-9"
-          />
-        </div>
+        <Select value={keyword} onValueChange={setKeyword}>
+          <SelectTrigger className="w-40 h-9">
+            <SelectValue placeholder="选择年份" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">全部年份</SelectItem>
+            {yearOptions.map((y) => (
+              <SelectItem key={y} value={String(y)}>
+                {y} 年
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
           <SelectTrigger className="w-40 h-9">
             <SelectValue placeholder="状态" />
