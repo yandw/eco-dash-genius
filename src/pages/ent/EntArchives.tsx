@@ -118,6 +118,7 @@ export default function EntArchives() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全部状态</SelectItem>
+            <SelectItem value="pending">待填报</SelectItem>
             <SelectItem value="draft">草稿</SelectItem>
             <SelectItem value="submitted">待审核</SelectItem>
             <SelectItem value="approved">已通过</SelectItem>
@@ -188,11 +189,13 @@ export default function EntArchives() {
                 <span className="text-muted-foreground">
                   {y.status === "rejected"
                     ? "立即整改"
-                    : y.status === "draft"
-                      ? "继续填报"
-                      : y.status === "submitted"
-                        ? "查看进度"
-                        : "查看详情"}
+                    : y.status === "pending"
+                      ? "开始填报"
+                      : y.status === "draft"
+                        ? "继续填报"
+                        : y.status === "submitted"
+                          ? "查看进度"
+                          : "查看详情"}
                 </span>
                 <span className="text-primary inline-flex items-center gap-1 group-hover:gap-2 transition-all">
                   <Pencil className="h-3 w-3" /> 进入
