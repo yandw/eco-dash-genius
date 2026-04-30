@@ -231,7 +231,7 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
     : [],
   completed: {
     basic: true,
-    products: withData,
+    products: true,
     equipments: true,
     audits: withData,
     projects: withData,
