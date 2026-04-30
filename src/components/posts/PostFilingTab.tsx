@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Download, Upload, Save, RefreshCw, Edit2, X, UserCog, User, FileBox, Users } from "lucide-react";
+import { Download, Save, Edit2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArchiveSection } from "@/components/archives/ArchiveField";
+import { useToast } from "@/hooks/use-toast";
 import { FileUploadList } from "./FileUploadList";
 import { PostStaffTable } from "./PostStaffTable";
 import type { PostFiling, LeaderInfo, OwnerInfo } from "@/mocks/posts";
@@ -13,6 +14,7 @@ interface Props {
   data: PostFiling;
   type: "energy" | "carbon";
   readOnly?: boolean;
+  enterpriseName?: string;
 }
 
 const leaderFields: { key: keyof LeaderInfo; label: string; required?: boolean; mono?: boolean }[] = [
@@ -41,10 +43,51 @@ function ownerFields(type: "energy" | "carbon"): { key: keyof OwnerInfo; label: 
   ];
 }
 
-export function PostFilingTab({ data, type, readOnly }: Props) {
+export function downloadEnterprisePdf(enterpriseName: string) {
+  const a = document.createElement("a");
+  a.href = "/exports/" + encodeURIComponent("三井高科技（上海）有限公司.pdf");
+  a.download = `${enterpriseName || "岗位备案"}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+export function PostFilingTab({ data, type, readOnly, enterpriseName = "" }: Props) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(data);
+  const { toast } = useToast();
   const isEdit = !readOnly && editing;
+
+  const handleExport = () => {
+    downloadEnterprisePdf(enterpriseName);
+    toast({ title: "已开始下载", description: `${enterpriseName || "岗位备案"}.pdf` });
+  };
+
+  const validate = (): string | null => {
+    if (!form.leader.name?.trim()) return "请填写主管领导姓名";
+    if (!form.leader.duty?.trim()) return "请填写主管领导职务";
+    if (form.leader.phone && !/^1\d{10}$/.test(form.leader.phone)) return "主管领导电话格式不正确";
+    if (form.leader.email && !/^\S+@\S+\.\S+$/.test(form.leader.email)) return "主管领导邮箱格式不正确";
+    if (!form.owner.name?.trim()) return "请填写负责人姓名";
+    if (!form.owner.department?.trim()) return "请填写负责人所在部门";
+    if (form.owner.phone && !/^1\d{10}$/.test(form.owner.phone)) return "负责人电话格式不正确";
+    if (form.owner.email && !/^\S+@\S+\.\S+$/.test(form.owner.email)) return "负责人邮箱格式不正确";
+    if (form.owner.hasCert) {
+      if (!form.owner.certNo?.trim()) return "已取证时必须填写证书证号";
+      if (!form.owner.certDate?.trim()) return "已取证时必须填写获证日期";
+    }
+    return null;
+  };
+
+  const handleSave = () => {
+    const err = validate();
+    if (err) {
+      toast({ title: "校验失败", description: err, variant: "destructive" });
+      return;
+    }
+    toast({ title: "保存成功", description: "领导与负责人信息已更新" });
+    setEditing(false);
+  };
 
   const renderField = (
     obj: any,
@@ -97,29 +140,19 @@ export function PostFilingTab({ data, type, readOnly }: Props) {
           最近更新：<span className="font-mono text-foreground">{data.updatedAt}</span>
         </div>
         <div className="flex gap-2">
-          {!readOnly && (
-            <Button variant="outline" size="sm" className="h-8">
-              <RefreshCw className="h-3.5 w-3.5 mr-1" /> 同步企业设置
-            </Button>
-          )}
-          <Button variant="outline" size="sm" className="h-8">
+          <Button variant="outline" size="sm" className="h-8" onClick={handleExport}>
             <Download className="h-3.5 w-3.5 mr-1" /> 导出
           </Button>
           {!readOnly && (
-            <Button variant="outline" size="sm" className="h-8">
-              <Upload className="h-3.5 w-3.5 mr-1" /> 上传备案表
-            </Button>
-          )}
-          {!readOnly && (
             isEdit ? (
               <>
-                <Button variant="ghost" size="sm" className="h-8" onClick={() => setEditing(false)}>
+                <Button variant="ghost" size="sm" className="h-8" onClick={() => { setForm(data); setEditing(false); }}>
                   <X className="h-3.5 w-3.5 mr-1" /> 取消
                 </Button>
                 <Button
                   size="sm"
                   className="h-8 bg-gradient-primary text-primary-foreground border-0"
-                  onClick={() => setEditing(false)}
+                  onClick={handleSave}
                 >
                   <Save className="h-3.5 w-3.5 mr-1" /> 保存
                 </Button>
@@ -182,7 +215,7 @@ export function PostFilingTab({ data, type, readOnly }: Props) {
         title="备案文件"
         description="岗位备案表、证书扫描件等支撑材料"
       >
-        <FileUploadList files={data.files} readOnly={readOnly} />
+        <FileUploadList files={data.files} readOnly={readOnly} enterpriseName={enterpriseName} />
       </ArchiveSection>
 
       {/* 管理人员 */}
