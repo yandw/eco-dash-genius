@@ -145,7 +145,9 @@ export function ArchiveFilterDrawer({ open, onOpenChange, value, onApply }: Prop
             {filteredGroups.map((g) => (
               <section
                 key={g.key}
-                ref={(el) => (sectionRefs.current[g.key] = el)}
+                ref={(el) => {
+                  sectionRefs.current[g.key] = el;
+                }}
                 className="rounded-lg border border-border/70 bg-card p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
