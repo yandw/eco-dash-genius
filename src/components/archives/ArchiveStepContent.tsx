@@ -192,10 +192,10 @@ function BasicInfo({ detail, annotations, readOnly, onAnnotate }: StepProps) {
 
 /* ───────────────────── 主要产品 ───────────────────── */
 function Products({ detail, annotations, readOnly }: StepProps) {
+  const PAGE_SIZE = 5;
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const list = detail.products;
-  const pageRows = paginate(list, page, pageSize);
+  const pageRows = paginate(list, page, PAGE_SIZE);
   return (
     <ArchiveSection
       title="主要产品情况"
@@ -246,13 +246,11 @@ function Products({ detail, annotations, readOnly }: StepProps) {
               ))}
             </TableBody>
           </Table>
-          <ListPagination
+          <SimplePagination
             total={list.length}
             page={page}
-            pageSize={pageSize}
-            pageSizeOptions={[10, 20, 50]}
+            pageSize={PAGE_SIZE}
             onPageChange={setPage}
-            onPageSizeChange={setPageSize}
           />
         </div>
       )}
