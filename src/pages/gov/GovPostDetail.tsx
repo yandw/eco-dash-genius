@@ -5,14 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PostStatusBadge } from "@/components/posts/PostStatusBadge";
 import { PostBasicTab } from "@/components/posts/PostBasicTab";
-import { PostFilingTab } from "@/components/posts/PostFilingTab";
+import { PostFilingTab, downloadEnterprisePdf } from "@/components/posts/PostFilingTab";
 import { getEnterpriseById, enterpriseList } from "@/mocks/posts";
+import { useToast } from "@/hooks/use-toast";
 
 export default function GovPostDetail() {
   const { entId = "ENT-001" } = useParams();
   const navigate = useNavigate();
   const ent = getEnterpriseById(entId);
   const meta = enterpriseList.find((e) => e.id === entId);
+  const { toast } = useToast();
+
+  const handleDownload = (suffix = "") => {
+    downloadEnterprisePdf(`${ent.basic.name}${suffix}`);
+    toast({ title: "已开始下载", description: `${ent.basic.name}${suffix}.pdf` });
+  };
+
 
   return (
     <AppLayout
@@ -53,10 +61,10 @@ export default function GovPostDetail() {
               <span className="text-xs text-muted-foreground">碳排岗位</span>
               <PostStatusBadge status={meta?.carbonStatus ?? "empty"} />
             </div>
-            <Button variant="outline" size="sm" className="h-8">
+            <Button variant="outline" size="sm" className="h-8" onClick={() => handleDownload()}>
               <FileText className="h-3.5 w-3.5 mr-1" /> 导出 PDF
             </Button>
-            <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0">
+            <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0" onClick={() => handleDownload("-名册")}>
               <Download className="h-3.5 w-3.5 mr-1" /> 导出名册
             </Button>
           </div>
@@ -81,10 +89,10 @@ export default function GovPostDetail() {
             <PostBasicTab data={ent.basic} readOnly />
           </TabsContent>
           <TabsContent value="energy" className="mt-5">
-            <PostFilingTab data={ent.energy} type="energy" readOnly />
+            <PostFilingTab data={ent.energy} type="energy" readOnly enterpriseName={ent.basic.name} />
           </TabsContent>
           <TabsContent value="carbon" className="mt-5">
-            <PostFilingTab data={ent.carbon} type="carbon" readOnly />
+            <PostFilingTab data={ent.carbon} type="carbon" readOnly enterpriseName={ent.basic.name} />
           </TabsContent>
         </Tabs>
       </div>

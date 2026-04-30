@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArchiveSection } from "@/components/archives/ArchiveField";
+import { useToast } from "@/hooks/use-toast";
 import type { BasicInfo } from "@/mocks/posts";
 
 interface Props {
@@ -36,13 +37,28 @@ const FIELDS = {
     { key: "district", label: "企业所在区" },
     { key: "county", label: "所属区县" },
     { key: "address", label: "详细地址", colSpan: true },
+    { key: "group", label: "所属集团", colSpan: true },
   ],
 } as const;
 
 export function PostBasicTab({ data, readOnly }: Props) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(data);
+  const { toast } = useToast();
   const isEdit = !readOnly && editing;
+
+  const handleSave = () => {
+    const missing: string[] = [];
+    if (!form.name?.trim()) missing.push("企业名称");
+    if (!form.creditCode?.trim()) missing.push("统一社会信用代码");
+    if (!form.industry?.trim()) missing.push("行业分类");
+    if (missing.length > 0) {
+      toast({ title: "请完善必填字段", description: missing.join("、"), variant: "destructive" });
+      return;
+    }
+    toast({ title: "保存成功", description: "基本信息已更新" });
+    setEditing(false);
+  };
 
   const renderField = (
     f: { key: string; label: string; required?: boolean; mono?: boolean; colSpan?: boolean },
@@ -82,7 +98,7 @@ export function PostBasicTab({ data, readOnly }: Props) {
               <Button
                 size="sm"
                 className="bg-gradient-primary text-primary-foreground border-0"
-                onClick={() => setEditing(false)}
+                onClick={handleSave}
               >
                 <Save className="h-3.5 w-3.5 mr-1" /> 保存
               </Button>
