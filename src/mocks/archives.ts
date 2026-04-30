@@ -175,8 +175,7 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
     { name: "工业锅炉", model: "WNS6-1.25-Y(Q)", qty: 2, years: 9, level: "二级" },
     { name: "空压机", model: "GA75 VSD+", qty: 3, years: 4, level: "一级" },
   ],
-  audits: withData
-    ? [
+  audits: [
         {
           id: `aud-${year}-1`,
           kind: "audit",
