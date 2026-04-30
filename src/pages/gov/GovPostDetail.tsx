@@ -14,6 +14,13 @@ export default function GovPostDetail() {
   const navigate = useNavigate();
   const ent = getEnterpriseById(entId);
   const meta = enterpriseList.find((e) => e.id === entId);
+  const { toast } = useToast();
+
+  const handleDownload = (suffix = "") => {
+    downloadEnterprisePdf(`${ent.basic.name}${suffix}`);
+    toast({ title: "已开始下载", description: `${ent.basic.name}${suffix}.pdf` });
+  };
+
 
   return (
     <AppLayout
