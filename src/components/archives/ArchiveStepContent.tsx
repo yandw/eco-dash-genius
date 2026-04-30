@@ -403,7 +403,7 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((r) => (
+              {rows.map((r) => (
                 <TableRow key={r.id}>
                   {!readOnly && (
                     <TableCell>
