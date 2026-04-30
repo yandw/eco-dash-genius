@@ -54,12 +54,6 @@ export default function GovPostDetail() {
               <span className="text-xs text-muted-foreground">碳排岗位</span>
               <PostStatusBadge status={meta?.carbonStatus ?? "empty"} />
             </div>
-            <Button variant="outline" size="sm" className="h-8" onClick={() => handleDownload()}>
-              <FileText className="h-3.5 w-3.5 mr-1" /> 导出 PDF
-            </Button>
-            <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0" onClick={() => handleDownload("-名册")}>
-              <Download className="h-3.5 w-3.5 mr-1" /> 导出名册
-            </Button>
           </div>
         </div>
       </div>
