@@ -675,13 +675,10 @@ function AuditFormDialog({ open, onOpenChange, kind, editing, onSubmit }: AuditF
 
 /* ───────────────────── 改造计划 ───────────────────── */
 function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: boolean }) {
-  const PAGE_SIZE = 5;
   const [list, setList] = useState<ProjectRow[]>(detail.projects);
-  const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ProjectRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const pageRows = paginate(list, page, PAGE_SIZE);
 
   const openCreate = () => {
     setEditing(null);
@@ -730,35 +727,12 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
       }
     >
       {list.length === 0 ? (
-        <div className="rounded-lg border border-border/70 overflow-hidden">
-          <Table>
-            <TableHeader className="bg-muted/40">
-              <TableRow>
-                <TableHead>项目名称</TableHead>
-                <TableHead>项目类型</TableHead>
-                <TableHead>实施单位</TableHead>
-                <TableHead>建设地点</TableHead>
-                <TableHead>总投资（亿元）</TableHead>
-                <TableHead>建设起止时间</TableHead>
-                <TableHead>更新改造内容</TableHead>
-                {!readOnly && <TableHead className="text-right">操作</TableHead>}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell
-                  colSpan={readOnly ? 7 : 8}
-                  className="h-24 text-center text-xs text-muted-foreground"
-                >
-                  暂无数据
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <div className="rounded-lg border border-dashed border-border/70 py-10 text-center text-xs text-muted-foreground">
+          暂无数据
         </div>
       ) : (
         <div className="space-y-3">
-          {pageRows.map((p) => (
+          {list.map((p) => (
             <div key={p.id} className="panel p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
@@ -771,13 +745,16 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 mt-3 text-xs">
                     <Meta label="实施单位" value={p.unit} />
+                    <Meta label="建设性质" value={p.type} />
                     <Meta label="建设地点" value={p.location} />
                     <Meta label="总投资（亿元）" value={p.invest} />
                     <Meta label="建设起止时间" value={p.duration} />
+                    <Meta label="年节能量（万吨标准煤）" value={p.annualSaving} />
                     <Meta label="立项信息" value={p.approval} />
                     <Meta label="能评批复" value={p.energyApproval} />
                     <Meta label="环评批复" value={p.envApproval} />
-                    <Meta label="用地" value={p.land} />
+                    <Meta label="用地、用海批复" value={p.land} />
+                    <Meta label="创建时间" value={p.createdAt} />
                   </div>
                   <div className="mt-3 text-xs text-muted-foreground leading-relaxed">
                     <span className="text-foreground/70">更新改造内容：</span>
@@ -809,15 +786,6 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
               </div>
             </div>
           ))}
-          <div className="rounded-lg border border-border/70 overflow-hidden">
-            <SimplePagination
-              total={list.length}
-              page={page}
-              pageSize={PAGE_SIZE}
-              onPageChange={setPage}
-              className="border-t-0"
-            />
-          </div>
         </div>
       )}
 
