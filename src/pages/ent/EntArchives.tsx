@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FileText,
-  Plus,
+  Plus: _Plus,
   Search,
   Calendar,
   CheckCircle2,
