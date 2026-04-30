@@ -22,7 +22,6 @@ const statCards = [
   { key: "complete", label: "已完成备案", value: govStats.complete, Icon: CheckCircle2, color: "text-success bg-success/10" },
   { key: "partial", label: "部分备案", value: govStats.partial, Icon: AlertCircle, color: "text-warning bg-warning/10" },
   { key: "empty", label: "未备案", value: govStats.empty, Icon: CircleSlash, color: "text-muted-foreground bg-muted" },
-  { key: "expiring", label: "证书将到期", value: govStats.expiring, Icon: AlertTriangle, color: "text-destructive bg-destructive/10" },
 ];
 
 const counties = ["全部", "浦东新区", "宝山区", "金山区", "奉贤区", "闵行区", "嘉定区", "松江区"];
