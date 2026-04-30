@@ -1,72 +1,79 @@
 ## 目标
 
-在企业侧节能档案的「实施能源审计或能效诊断情况」步骤中，将原本一个综合区块拆分为 **能源审计** 和 **能效诊断** 两个独立模块，每个模块以表格形式（参照图1）展示，并完善新增 / 编辑 / 删除的交互逻辑。
+完善节能档案各子界面的列表交互一致性：精简操作按钮、修正文案、补全改造项目计划的增删改弹窗，并为四个表格统一接入分页选择器。
 
-## 1. 数据模型调整 (`src/mocks/archives.ts`)
+## 1. 能源审计 / 能效诊断 — 操作按钮改为图标
 
-- `AuditRow` 增加字段 `kind: "audit" | "diagnose"`，用于区分能源审计与能效诊断。
-- 现有 mock 数据按时间/内容拆分到两个 `kind`，保证两张表都有示例数据。
-- `id` 字段（string）方便编辑/删除定位。
+文件：`src/components/archives/ArchiveStepContent.tsx` `AuditTable`
 
-## 2. UI 重构 (`src/components/archives/ArchiveStepContent.tsx` 中的 `Audits`)
+- 编辑按钮：去掉「编辑」文字，仅保留 `Pencil` 图标，使用 `variant="ghost"` + `size="icon"` + `title="编辑"`（hover 提示）。
+- 删除按钮：去掉「删除」文字，仅保留 `Trash2` 图标，`title="删除"`，保留红色 `text-destructive`。
+- 操作列宽度收窄。
 
-将原来的卡片列表替换为两个并列的表格模块：
+## 2. 主要产品情况 — 文案修改
 
-```text
-┌──────────────────────── 能源审计 ────────────────────────┐
-│ [搜索框]                              [查询] [新建]      │
-│ ┌──┬──────────┬──────────┬──────────┬──────────┬─────┐ │
-│ │☐ │审计时间  │审计内容  │审计建议  │审计文件  │操作 │ │
-│ ├──┼──────────┼──────────┼──────────┼──────────┼─────┤ │
-│ │☐ │2024-08-01│……        │……        │下载文件  │编辑 │ │
-│ │  │          │          │          │          │删除 │ │
-│ └──┴──────────┴──────────┴──────────┴──────────┴─────┘ │
-└─────────────────────────────────────────────────────────┘
+文件：`src/components/archives/ArchiveStepContent.tsx` `Products`
 
-┌──────────────────────── 能效诊断 ────────────────────────┐
-│ 同上结构（列名改为 "诊断时间 / 诊断内容 / 诊断建议 / 诊断文件"）│
-└─────────────────────────────────────────────────────────┘
-```
+- description 由 `如已纳入国家能耗限额标准目录，将自动比对并生成对标等级` 改为 `数据来源于年报和限额报告`。
 
-每个模块包含：
-- 标题 + 描述
-- 顶部工具栏：搜索框（按内容/建议关键词过滤） + 查询按钮 + 新建按钮
-- 表格：复选框、时间、内容、建议、文件（蓝色「下载文件」链接）、操作（蓝色「编辑」/红色「删除」）
-- 空态：显示「暂无数据，请新增」
-- 表格保留现有 `Table` 组件 + 设计 token，不引入硬编码颜色
+## 3. 节能降碳改造和用能设备更新项目计划 — 完善增删改交互
 
-## 3. 新增 / 编辑 弹窗 (Dialog)
+文件：
+- `src/mocks/archives.ts`：`ProjectRow` 增加 `id: string`；mock 数据补 `id`。
+- `src/components/archives/ArchiveStepContent.tsx` `Projects` 重构：
 
-参照图2新建一个共用的 `AuditFormDialog`：
+新增/编辑：弹窗 `ProjectFormDialog`，字段（顺序与现有展示一致）：
 
-- 标题：根据 kind 显示「实施能源审计情况 / 实施能效诊断情况」 + （新增 / 编辑）
-- 字段（全部 required）：
-  - 时间（date input，带日历图标）
-  - 文件（上传文件按钮 + 下方提示「文件类型：Pdf | Word」；保留 mock 文件名）
-  - 内容（textarea，多行）
-  - 建议（textarea，多行）
-- 底部：取消 / 确定。确定按钮在必填项未填时禁用（灰色）。
-- 校验：缺字段 → toast 错误；通过 → toast 成功并关闭弹窗。
+- 项目名称 *（Input）
+- 项目类型 *（Select：新建 / 改造 / 更新）
+- 实施单位 *（Input）
+- 建设地点 *（Input）
+- 总投资（亿元）*（Input，数字）
+- 建设起止时间 *（Input，文本，格式 `YYYY-MM 至 YYYY-MM`）
+- 立项信息（Input）
+- 能评批复（Input）
+- 环评批复（Input）
+- 用地（Input）
+- 更新改造内容 *（Textarea）
 
-## 4. 删除交互
+校验：必填项缺失 → toast.error；通过 → toast.success 并关闭弹窗，调用 onSave。
 
-- 点击「删除」弹出 `AlertDialog` 二次确认（"确认删除该条记录？"），确认后从对应 kind 列表中移除并 toast 提示。
-- 表头复选框 + 行复选框已渲染，但本次仅做 UI 展示（保持与图1一致），不实现批量操作以控制改动范围。
+新增按钮：保留 section header 右侧「新增项目」（gradient-primary），点击打开空白弹窗。
 
-## 5. 状态管理
+行操作：编辑（铅笔图标）/ 删除（垃圾桶图标），均为图标按钮，`title` 提示。
 
-- `Audits` 组件内部用 `useState` 维护两份数组（auditsList / diagnoseList），初始值来自 `detail.audits` 按 `kind` 拆分。
-- `readOnly` 模式（已提交 / 已通过 / 政府侧）下：隐藏新建/编辑/删除按钮，隐藏复选框列。
-- 政府侧 `GovArchiveDetail` 复用同一组件，`readOnly` 已为 true，无需额外改动。
+删除：`AlertDialog` 二次确认「确认删除该项目？」→ 调 onDelete。
 
-## 6. 受影响文件
+状态：`Projects` 内部 `useState<ProjectRow[]>(detail.projects)`，统一 upsert / remove。
+`readOnly` 时隐藏新增按钮和行操作。
 
-- `src/mocks/archives.ts`：`AuditRow` 增加 `kind` + `id` 字段并补充 mock 数据。
-- `src/components/archives/ArchiveStepContent.tsx`：重写 `Audits` 子组件，新增 `AuditFormDialog` 与删除确认。
-- 步骤标题保持 `实施能源审计或能效诊断`，描述更新为「分别管理能源审计与能效诊断记录」。
+## 4. 四个列表统一接入分页选择器
+
+引入：`import { ListPagination, paginate } from "@/components/ui/list-pagination";`
+
+为以下列表都添加分页：
+- Products（detail.products）
+- Equipments（detail.equipments）
+- Audits 内部 `AuditTable`（rows） — 两张表各自独立分页
+- Projects（projects state）
+
+实现要点：
+- 每个组件（或 AuditTable）维护本地 `page=1`、`pageSize=10`，`pageSizeOptions=[10, 20, 50]`。
+- 用 `paginate(list, page, pageSize)` 切片渲染。
+- 在表格容器底部（border 内）渲染 `<ListPagination total={list.length} ... />`。
+- 仅当 `list.length > 0` 时显示分页，空态隐藏。
+
+## 受影响文件
+
+- `src/mocks/archives.ts`：`ProjectRow` 增 `id` 字段，mock 数据补 `id`。
+- `src/components/archives/ArchiveStepContent.tsx`：
+  - `Products`：改文案、加分页。
+  - `Equipments`：加分页。
+  - `AuditTable`：操作改图标、加分页。
+  - `Projects`：重构为状态管理 + 弹窗 + 删除确认 + 分页。
 
 ## 不在本次范围
 
-- 真实文件上传（仍为 mock，记录文件名）
-- 批量删除 / 导出
-- 表格分页（数据量小，暂不分页；保留底部说明文字）
+- Audit/Project 的真实文件上传（仍 mock）
+- 多选批量删除
+- 服务端分页（纯前端切片）
