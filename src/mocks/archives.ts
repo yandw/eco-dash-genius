@@ -285,7 +285,15 @@ export const enterprises: EnterpriseArchive[] = [
         status: "pending",
         createdAt: "2026-01-01 00:00",
         updatedAt: "-",
-        timeline: [],
+        timeline: [
+          {
+            time: "2026-01-01 00:00",
+            actor: "系统",
+            action: "创建年度档案",
+            comment: "年度档案已由系统自动生成，请按时填报",
+            type: "info",
+          },
+        ],
         annotations: [],
         detail: baseDetail(2025, false),
       },
