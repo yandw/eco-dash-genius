@@ -208,10 +208,8 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
           suggestion: "升级燃烧器，加装烟气余热回收",
           fileName: `${year}年度锅炉诊断报告.pdf`,
         },
-      ]
-    : [],
-  projects: withData
-    ? [
+      ],
+  projects: [
         {
           id: `proj-${year}-1`,
           name: "冷库改造及节能降碳项目",
@@ -226,14 +224,13 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
           envApproval: "环评登记表",
           land: "存量用地",
         },
-      ]
-    : [],
+      ],
   completed: {
     basic: true,
     products: true,
     equipments: true,
-    audits: withData,
-    projects: withData,
+    audits: true,
+    projects: true,
   },
 });
 
