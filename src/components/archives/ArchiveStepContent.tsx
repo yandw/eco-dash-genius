@@ -675,13 +675,10 @@ function AuditFormDialog({ open, onOpenChange, kind, editing, onSubmit }: AuditF
 
 /* ───────────────────── 改造计划 ───────────────────── */
 function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: boolean }) {
-  const PAGE_SIZE = 5;
   const [list, setList] = useState<ProjectRow[]>(detail.projects);
-  const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<ProjectRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const pageRows = paginate(list, page, PAGE_SIZE);
 
   const openCreate = () => {
     setEditing(null);
@@ -730,35 +727,12 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
       }
     >
       {list.length === 0 ? (
-        <div className="rounded-lg border border-border/70 overflow-hidden">
-          <Table>
-            <TableHeader className="bg-muted/40">
-              <TableRow>
-                <TableHead>项目名称</TableHead>
-                <TableHead>项目类型</TableHead>
-                <TableHead>实施单位</TableHead>
-                <TableHead>建设地点</TableHead>
-                <TableHead>总投资（亿元）</TableHead>
-                <TableHead>建设起止时间</TableHead>
-                <TableHead>更新改造内容</TableHead>
-                {!readOnly && <TableHead className="text-right">操作</TableHead>}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell
-                  colSpan={readOnly ? 7 : 8}
-                  className="h-24 text-center text-xs text-muted-foreground"
-                >
-                  暂无数据
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <div className="rounded-lg border border-dashed border-border/70 py-10 text-center text-xs text-muted-foreground">
+          暂无数据
         </div>
       ) : (
         <div className="space-y-3">
-          {pageRows.map((p) => (
+          {list.map((p) => (
             <div key={p.id} className="panel p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
@@ -771,13 +745,16 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 mt-3 text-xs">
                     <Meta label="实施单位" value={p.unit} />
+                    <Meta label="建设性质" value={p.type} />
                     <Meta label="建设地点" value={p.location} />
                     <Meta label="总投资（亿元）" value={p.invest} />
                     <Meta label="建设起止时间" value={p.duration} />
+                    <Meta label="年节能量（万吨标准煤）" value={p.annualSaving} />
                     <Meta label="立项信息" value={p.approval} />
                     <Meta label="能评批复" value={p.energyApproval} />
                     <Meta label="环评批复" value={p.envApproval} />
-                    <Meta label="用地" value={p.land} />
+                    <Meta label="用地、用海批复" value={p.land} />
+                    <Meta label="创建时间" value={p.createdAt} />
                   </div>
                   <div className="mt-3 text-xs text-muted-foreground leading-relaxed">
                     <span className="text-foreground/70">更新改造内容：</span>
@@ -809,15 +786,6 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
               </div>
             </div>
           ))}
-          <div className="rounded-lg border border-border/70 overflow-hidden">
-            <SimplePagination
-              total={list.length}
-              page={page}
-              pageSize={PAGE_SIZE}
-              onPageChange={setPage}
-              className="border-t-0"
-            />
-          </div>
         </div>
       )}
 
@@ -859,7 +827,7 @@ interface ProjectFormDialogProps {
 }
 
 function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFormDialogProps) {
-  const [form, setForm] = useState<ProjectRow>({
+  const emptyForm: ProjectRow = {
     id: "",
     name: "",
     unit: "",
@@ -872,27 +840,16 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
     energyApproval: "",
     envApproval: "",
     land: "",
-  });
+    annualSaving: "",
+    createdAt: "",
+  };
+  const [form, setForm] = useState<ProjectRow>(emptyForm);
 
   useEffect(() => {
     if (open) {
-      setForm(
-        editing ?? {
-          id: "",
-          name: "",
-          unit: "",
-          type: "改造",
-          location: "",
-          content: "",
-          invest: "",
-          duration: "",
-          approval: "",
-          energyApproval: "",
-          envApproval: "",
-          land: "",
-        },
-      );
+      setForm(editing ?? emptyForm);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editing]);
 
   const set = <K extends keyof ProjectRow>(k: K, v: ProjectRow[K]) =>
@@ -911,9 +868,13 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
       toast.error("请完整填写带 * 的必填项");
       return;
     }
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const stamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
     onSubmit({
       ...form,
       id: editing?.id ?? `proj-${Date.now()}`,
+      createdAt: editing?.createdAt || stamp,
     });
   };
 
@@ -927,7 +888,7 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
           <FieldBlock label="项目名称" required>
             <Input value={form.name} onChange={(e) => set("name", e.target.value)} />
           </FieldBlock>
-          <FieldBlock label="项目类型" required>
+          <FieldBlock label="建设性质" required>
             <Select value={form.type} onValueChange={(v) => set("type", v as ProjectRow["type"])}>
               <SelectTrigger>
                 <SelectValue />
@@ -959,6 +920,13 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
               placeholder="如 2024-06 至 2025-12"
             />
           </FieldBlock>
+          <FieldBlock label="年节能量（万吨标准煤）">
+            <Input
+              value={form.annualSaving}
+              onChange={(e) => set("annualSaving", e.target.value)}
+              placeholder="如 0.085"
+            />
+          </FieldBlock>
           <FieldBlock label="立项信息">
             <Input value={form.approval} onChange={(e) => set("approval", e.target.value)} />
           </FieldBlock>
@@ -974,7 +942,7 @@ function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFor
               onChange={(e) => set("envApproval", e.target.value)}
             />
           </FieldBlock>
-          <FieldBlock label="用地">
+          <FieldBlock label="用地、用海批复">
             <Input value={form.land} onChange={(e) => set("land", e.target.value)} />
           </FieldBlock>
           <div className="md:col-span-2">
