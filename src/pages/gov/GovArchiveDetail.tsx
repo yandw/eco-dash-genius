@@ -24,7 +24,6 @@ import { ArchiveTimeline } from "@/components/archives/ArchiveTimeline";
 import { ArchiveStepContent } from "@/components/archives/ArchiveStepContent";
 import {
   enterprises,
-  ARCHIVE_STEPS,
   StepKey,
   FieldAnnotationItem,
 } from "@/mocks/archives";
