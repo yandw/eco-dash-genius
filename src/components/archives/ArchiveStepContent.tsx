@@ -260,6 +260,10 @@ function Products({ detail, annotations, readOnly }: StepProps) {
 
 /* ───────────────────── 用能设备 ───────────────────── */
 function Equipments({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: boolean }) {
+  const PAGE_SIZE = 5;
+  const [page, setPage] = useState(1);
+  const list = detail.equipments;
+  const pageRows = paginate(list, page, PAGE_SIZE);
   return (
     <ArchiveSection
       title="主要用能设备情况"
@@ -287,7 +291,7 @@ function Equipments({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bo
             </TableRow>
           </TableHeader>
           <TableBody>
-            {detail.equipments.map((e) => (
+            {pageRows.map((e) => (
               <TableRow key={e.name}>
                 <TableCell className="font-medium">{e.name}</TableCell>
                 <TableCell className="font-mono text-xs">{e.model}</TableCell>
@@ -313,6 +317,14 @@ function Equipments({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bo
             ))}
           </TableBody>
         </Table>
+        {list.length > 0 && (
+          <SimplePagination
+            total={list.length}
+            page={page}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
+        )}
       </div>
     </ArchiveSection>
   );
