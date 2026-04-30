@@ -56,7 +56,11 @@ export interface EquipmentRow {
   level: "一级" | "二级" | "三级" | "未定级";
 }
 
+export type AuditKind = "audit" | "diagnose";
+
 export interface AuditRow {
+  id: string;
+  kind: AuditKind;
   date: string;
   content: string;
   suggestion: string;
@@ -175,16 +179,36 @@ const baseDetail = (year: number, withData = true): ArchiveDetail => ({
   audits: withData
     ? [
         {
+          id: `aud-${year}-1`,
+          kind: "audit",
           date: `${year}-08-01`,
           content: "对全厂电力、热力、冷量进行能源审计",
           suggestion: "建议优化冷库温度控制策略，回收锅炉烟气余热",
           fileName: `${year}年度能源审计报告.pdf`,
         },
         {
+          id: `aud-${year}-2`,
+          kind: "audit",
+          date: `${year}-07-02`,
+          content: "供配电系统专项能源审计",
+          suggestion: "更换老旧变压器，优化无功补偿配置",
+          fileName: `${year}年度供配电审计报告.pdf`,
+        },
+        {
+          id: `dia-${year}-1`,
+          kind: "diagnose",
           date: `${year}-07-09`,
           content: "压缩空气系统能效诊断",
           suggestion: "调整空压机加卸载策略，新增热回收装置",
           fileName: `${year}年度压空诊断报告.pdf`,
+        },
+        {
+          id: `dia-${year}-2`,
+          kind: "diagnose",
+          date: `${year}-07-10`,
+          content: "锅炉房能效诊断",
+          suggestion: "升级燃烧器，加装烟气余热回收",
+          fileName: `${year}年度锅炉诊断报告.pdf`,
         },
       ]
     : [],
