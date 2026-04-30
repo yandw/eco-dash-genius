@@ -47,7 +47,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ListPagination, paginate } from "@/components/ui/list-pagination";
+import { SimplePagination, paginate } from "@/components/ui/simple-pagination";
 import { toast } from "sonner";
 import {
   RefreshCw,
@@ -192,10 +192,10 @@ function BasicInfo({ detail, annotations, readOnly, onAnnotate }: StepProps) {
 
 /* ───────────────────── 主要产品 ───────────────────── */
 function Products({ detail, annotations, readOnly }: StepProps) {
+  const PAGE_SIZE = 5;
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const list = detail.products;
-  const pageRows = paginate(list, page, pageSize);
+  const pageRows = paginate(list, page, PAGE_SIZE);
   return (
     <ArchiveSection
       title="主要产品情况"
@@ -246,13 +246,11 @@ function Products({ detail, annotations, readOnly }: StepProps) {
               ))}
             </TableBody>
           </Table>
-          <ListPagination
+          <SimplePagination
             total={list.length}
             page={page}
-            pageSize={pageSize}
-            pageSizeOptions={[10, 20, 50]}
+            pageSize={PAGE_SIZE}
             onPageChange={setPage}
-            onPageSizeChange={setPageSize}
           />
         </div>
       )}
@@ -262,6 +260,10 @@ function Products({ detail, annotations, readOnly }: StepProps) {
 
 /* ───────────────────── 用能设备 ───────────────────── */
 function Equipments({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: boolean }) {
+  const PAGE_SIZE = 5;
+  const [page, setPage] = useState(1);
+  const list = detail.equipments;
+  const pageRows = paginate(list, page, PAGE_SIZE);
   return (
     <ArchiveSection
       title="主要用能设备情况"
@@ -289,7 +291,7 @@ function Equipments({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bo
             </TableRow>
           </TableHeader>
           <TableBody>
-            {detail.equipments.map((e) => (
+            {pageRows.map((e) => (
               <TableRow key={e.name}>
                 <TableCell className="font-medium">{e.name}</TableCell>
                 <TableCell className="font-mono text-xs">{e.model}</TableCell>
@@ -315,6 +317,14 @@ function Equipments({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bo
             ))}
           </TableBody>
         </Table>
+        {list.length > 0 && (
+          <SimplePagination
+            total={list.length}
+            page={page}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
+        )}
       </div>
     </ArchiveSection>
   );
@@ -374,9 +384,12 @@ interface AuditTableProps {
 
 function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete }: AuditTableProps) {
   const labelPrefix = kind === "audit" ? "审计" : "诊断";
+  const PAGE_SIZE = 3;
+  const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AuditRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const pageRows = paginate(rows, page, PAGE_SIZE);
 
   const openCreate = () => {
     setEditing(null);
@@ -424,7 +437,7 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map((r) => (
+              {pageRows.map((r) => (
                 <TableRow key={r.id}>
                   {!readOnly && (
                     <TableCell>
@@ -453,21 +466,21 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
                     <TableCell className="text-right whitespace-nowrap">
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="h-7 text-primary"
+                        size="icon"
+                        className="h-7 w-7 text-primary"
+                        title="编辑"
                         onClick={() => openEdit(r)}
                       >
-                        <Pencil className="h-3.5 w-3.5 mr-1" />
-                        编辑
+                        <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="h-7 text-destructive"
+                        size="icon"
+                        className="h-7 w-7 text-destructive"
+                        title="删除"
                         onClick={() => setDeletingId(r.id)}
                       >
-                        <Trash2 className="h-3.5 w-3.5 mr-1" />
-                        删除
+                        <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </TableCell>
                   )}
@@ -475,6 +488,14 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
               ))}
             </TableBody>
           </Table>
+          {rows.length > 0 && (
+            <SimplePagination
+              total={rows.length}
+              page={page}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+            />
+          )}
         </div>
       )}
 
@@ -647,25 +668,66 @@ function AuditFormDialog({ open, onOpenChange, kind, editing, onSubmit }: AuditF
 
 /* ───────────────────── 改造计划 ───────────────────── */
 function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: boolean }) {
+  const PAGE_SIZE = 5;
+  const [list, setList] = useState<ProjectRow[]>(detail.projects);
+  const [page, setPage] = useState(1);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<ProjectRow | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const pageRows = paginate(list, page, PAGE_SIZE);
+
+  const openCreate = () => {
+    setEditing(null);
+    setDialogOpen(true);
+  };
+  const openEdit = (row: ProjectRow) => {
+    setEditing(row);
+    setDialogOpen(true);
+  };
+  const upsert = (row: ProjectRow) => {
+    setList((rs) => {
+      const idx = rs.findIndex((r) => r.id === row.id);
+      if (idx >= 0) {
+        const next = [...rs];
+        next[idx] = row;
+        return next;
+      }
+      return [row, ...rs];
+    });
+    setDialogOpen(false);
+    toast.success(editing ? "已更新项目" : "已新增项目");
+  };
+  const remove = () => {
+    if (deletingId) {
+      setList((rs) => rs.filter((r) => r.id !== deletingId));
+      toast.success("已删除");
+    }
+    setDeletingId(null);
+  };
+
   return (
     <ArchiveSection
       title="节能降碳改造和用能设备更新项目计划"
       description="仅填报正在实施和计划实施项目"
       action={
         !readOnly && (
-          <Button size="sm" className="h-8 bg-gradient-primary text-primary-foreground border-0">
+          <Button
+            size="sm"
+            className="h-8 bg-gradient-primary text-primary-foreground border-0"
+            onClick={openCreate}
+          >
             <Plus className="h-3.5 w-3.5 mr-1" />
             新增项目
           </Button>
         )
       }
     >
-      {detail.projects.length === 0 ? (
+      {list.length === 0 ? (
         <EmptyHint text="暂无改造计划项目" />
       ) : (
         <div className="space-y-3">
-          {detail.projects.map((p, i) => (
-            <div key={i} className="panel p-4">
+          {pageRows.map((p) => (
+            <div key={p.id} className="panel p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -692,10 +754,22 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
                 </div>
                 {!readOnly && (
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="sm" className="h-8 text-primary">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-primary"
+                      title="编辑"
+                      onClick={() => openEdit(p)}
+                    >
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-8 text-destructive">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive"
+                      title="删除"
+                      onClick={() => setDeletingId(p.id)}
+                    >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -703,9 +777,219 @@ function Projects({ detail, readOnly }: { detail: ArchiveDetail; readOnly?: bool
               </div>
             </div>
           ))}
+          <div className="rounded-lg border border-border/70 overflow-hidden">
+            <SimplePagination
+              total={list.length}
+              page={page}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+              className="border-t-0"
+            />
+          </div>
         </div>
       )}
+
+      <ProjectFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        editing={editing}
+        onSubmit={upsert}
+      />
+
+      <AlertDialog open={!!deletingId} onOpenChange={(o) => !o && setDeletingId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认删除该项目？</AlertDialogTitle>
+            <AlertDialogDescription>
+              删除后将无法恢复，请确认操作。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={remove}
+            >
+              确认删除
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </ArchiveSection>
+  );
+}
+
+interface ProjectFormDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  editing: ProjectRow | null;
+  onSubmit: (row: ProjectRow) => void;
+}
+
+function ProjectFormDialog({ open, onOpenChange, editing, onSubmit }: ProjectFormDialogProps) {
+  const [form, setForm] = useState<ProjectRow>({
+    id: "",
+    name: "",
+    unit: "",
+    type: "改造",
+    location: "",
+    content: "",
+    invest: "",
+    duration: "",
+    approval: "",
+    energyApproval: "",
+    envApproval: "",
+    land: "",
+  });
+
+  useEffect(() => {
+    if (open) {
+      setForm(
+        editing ?? {
+          id: "",
+          name: "",
+          unit: "",
+          type: "改造",
+          location: "",
+          content: "",
+          invest: "",
+          duration: "",
+          approval: "",
+          energyApproval: "",
+          envApproval: "",
+          land: "",
+        },
+      );
+    }
+  }, [open, editing]);
+
+  const set = <K extends keyof ProjectRow>(k: K, v: ProjectRow[K]) =>
+    setForm((f) => ({ ...f, [k]: v }));
+
+  const valid =
+    form.name.trim() &&
+    form.unit.trim() &&
+    form.location.trim() &&
+    form.invest.trim() &&
+    form.duration.trim() &&
+    form.content.trim();
+
+  const handleSubmit = () => {
+    if (!valid) {
+      toast.error("请完整填写带 * 的必填项");
+      return;
+    }
+    onSubmit({
+      ...form,
+      id: editing?.id ?? `proj-${Date.now()}`,
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle>{editing ? "编辑项目" : "新增项目"}</DialogTitle>
+        </DialogHeader>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 py-2 max-h-[65vh] overflow-y-auto pr-1">
+          <FieldBlock label="项目名称" required>
+            <Input value={form.name} onChange={(e) => set("name", e.target.value)} />
+          </FieldBlock>
+          <FieldBlock label="项目类型" required>
+            <Select value={form.type} onValueChange={(v) => set("type", v as ProjectRow["type"])}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="新建">新建</SelectItem>
+                <SelectItem value="改造">改造</SelectItem>
+                <SelectItem value="更新">更新</SelectItem>
+              </SelectContent>
+            </Select>
+          </FieldBlock>
+          <FieldBlock label="实施单位" required>
+            <Input value={form.unit} onChange={(e) => set("unit", e.target.value)} />
+          </FieldBlock>
+          <FieldBlock label="建设地点" required>
+            <Input value={form.location} onChange={(e) => set("location", e.target.value)} />
+          </FieldBlock>
+          <FieldBlock label="总投资（亿元）" required>
+            <Input
+              value={form.invest}
+              onChange={(e) => set("invest", e.target.value)}
+              placeholder="如 0.42"
+            />
+          </FieldBlock>
+          <FieldBlock label="建设起止时间" required>
+            <Input
+              value={form.duration}
+              onChange={(e) => set("duration", e.target.value)}
+              placeholder="如 2024-06 至 2025-12"
+            />
+          </FieldBlock>
+          <FieldBlock label="立项信息">
+            <Input value={form.approval} onChange={(e) => set("approval", e.target.value)} />
+          </FieldBlock>
+          <FieldBlock label="能评批复">
+            <Input
+              value={form.energyApproval}
+              onChange={(e) => set("energyApproval", e.target.value)}
+            />
+          </FieldBlock>
+          <FieldBlock label="环评批复">
+            <Input
+              value={form.envApproval}
+              onChange={(e) => set("envApproval", e.target.value)}
+            />
+          </FieldBlock>
+          <FieldBlock label="用地">
+            <Input value={form.land} onChange={(e) => set("land", e.target.value)} />
+          </FieldBlock>
+          <div className="md:col-span-2">
+            <FieldBlock label="更新改造内容" required>
+              <Textarea
+                rows={3}
+                value={form.content}
+                onChange={(e) => set("content", e.target.value)}
+                placeholder="请描述更新改造内容"
+              />
+            </FieldBlock>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            取消
+          </Button>
+          <Button
+            disabled={!valid}
+            className="bg-gradient-primary text-primary-foreground border-0"
+            onClick={handleSubmit}
+          >
+            确定
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function FieldBlock({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-xs">
+        {required && <span className="text-destructive mr-0.5">*</span>}
+        {label}
+      </Label>
+      {children}
+    </div>
   );
 }
 
