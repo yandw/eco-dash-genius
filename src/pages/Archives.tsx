@@ -226,6 +226,51 @@ export default function Archives() {
       <div className="text-[11px] text-muted-foreground mt-3 px-1">
         共 {filtered.length} 家企业 · 点击单元格进入审核详情
       </div>
+
+      <Dialog open={exportOpen} onOpenChange={setExportOpen}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Download className="h-4 w-4 text-primary" />
+              导出节能档案
+            </DialogTitle>
+            <DialogDescription>
+              选择需要导出的年度，确认后浏览器将自动下载 CSV 文件。
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2">
+            <div className="text-xs text-muted-foreground mb-1.5">
+              <span className="text-destructive">*</span> 导出年度
+            </div>
+            <Select
+              value={String(exportYear)}
+              onValueChange={(v) => setExportYear(Number(v))}
+            >
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {YEARS.map((y) => (
+                  <SelectItem key={y} value={String(y)}>
+                    {y} 年度
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setExportOpen(false)}>
+              取消
+            </Button>
+            <Button
+              onClick={handleExport}
+              className="bg-gradient-primary text-primary-foreground border-0"
+            >
+              <Download className="h-3.5 w-3.5 mr-1" /> 确定
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
