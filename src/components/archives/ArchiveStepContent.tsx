@@ -384,9 +384,12 @@ interface AuditTableProps {
 
 function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete }: AuditTableProps) {
   const labelPrefix = kind === "audit" ? "审计" : "诊断";
+  const PAGE_SIZE = 3;
+  const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AuditRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const pageRows = paginate(rows, page, PAGE_SIZE);
 
   const openCreate = () => {
     setEditing(null);
@@ -434,7 +437,7 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map((r) => (
+              {pageRows.map((r) => (
                 <TableRow key={r.id}>
                   {!readOnly && (
                     <TableCell>
@@ -463,21 +466,21 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
                     <TableCell className="text-right whitespace-nowrap">
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="h-7 text-primary"
+                        size="icon"
+                        className="h-7 w-7 text-primary"
+                        title="编辑"
                         onClick={() => openEdit(r)}
                       >
-                        <Pencil className="h-3.5 w-3.5 mr-1" />
-                        编辑
+                        <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="h-7 text-destructive"
+                        size="icon"
+                        className="h-7 w-7 text-destructive"
+                        title="删除"
                         onClick={() => setDeletingId(r.id)}
                       >
-                        <Trash2 className="h-3.5 w-3.5 mr-1" />
-                        删除
+                        <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     </TableCell>
                   )}
@@ -485,6 +488,14 @@ function AuditTable({ kind, title, description, rows, readOnly, onSave, onDelete
               ))}
             </TableBody>
           </Table>
+          {rows.length > 0 && (
+            <SimplePagination
+              total={rows.length}
+              page={page}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+            />
+          )}
         </div>
       )}
 
