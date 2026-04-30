@@ -77,13 +77,30 @@ export default function Archives() {
     toast.success(`${exportYear} 年度节能档案已导出`);
   };
 
-  const districts = useMemo(
-    () => Array.from(new Set(enterprises.map((e) => e.district))),
-    [],
-  );
-  const industries = useMemo(
-    () => Array.from(new Set(enterprises.map((e) => e.industry))),
-    [],
+  const removeAdvanced = (groupKey: string, opt: string) => {
+    setAdvanced((prev) => ({
+      ...prev,
+      [groupKey]: (prev[groupKey] ?? []).filter((x) => x !== opt),
+    }));
+  };
+
+  const clearAll = () => {
+    setKeyword("");
+    setStatusFilter("all");
+    setAdvanced(emptyAdvancedFilters());
+  };
+
+  // 已知能与 mock 数据对接的两个维度：主管区/上级区县 → district，行业 → industry
+  const districtSelected = useMemo(() => {
+    const set = new Set<string>([
+      ...(advanced.govDistrict ?? []),
+      ...(advanced.superior ?? []),
+    ]);
+    return set;
+  }, [advanced]);
+  const industrySelected = useMemo(
+    () => new Set<string>(advanced.industry ?? []),
+    [advanced],
   );
 
   const filtered = useMemo(() => {
@@ -92,14 +109,14 @@ export default function Archives() {
         !keyword.trim() ||
         e.name.includes(keyword.trim()) ||
         e.creditCode.includes(keyword.trim());
-      const matchDistrict = district === "all" || e.district === district;
-      const matchIndustry = industry === "all" || e.industry === industry;
+      const matchDistrict = districtSelected.size === 0 || districtSelected.has(e.district);
+      const matchIndustry = industrySelected.size === 0 || industrySelected.has(e.industry);
       const matchStatus =
         statusFilter === "all" ||
         e.years.some((y) => y.year === CURRENT_YEAR && y.status === statusFilter);
       return matchKw && matchDistrict && matchIndustry && matchStatus;
     });
-  }, [keyword, district, industry, statusFilter]);
+  }, [keyword, districtSelected, industrySelected, statusFilter]);
 
   // KPI based on current year across ALL enterprises
   const kpi = useMemo(() => {
