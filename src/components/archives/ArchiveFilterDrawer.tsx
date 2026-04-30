@@ -80,18 +80,15 @@ export function ArchiveFilterDrawer({ open, onOpenChange, value, onApply }: Prop
   }, [keyword]);
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="w-full sm:max-w-[560px] p-0 flex flex-col gap-0"
-      >
-        <SheetHeader className="px-5 py-4 border-b border-border/70 space-y-0">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="p-0 gap-0 max-w-[920px] w-[92vw] h-[80vh] max-h-[720px] flex flex-col overflow-hidden">
+        <DialogHeader className="px-5 py-4 border-b border-border/70 space-y-0">
           <div className="flex items-center justify-between">
-            <SheetTitle className="flex items-center gap-2 text-base">
+            <DialogTitle className="flex items-center gap-2 text-base">
               <SlidersHorizontal className="h-4 w-4 text-primary" />
               高级筛选
-            </SheetTitle>
-            <span className="text-xs text-muted-foreground">
+            </DialogTitle>
+            <span className="text-xs text-muted-foreground mr-8">
               已选 <span className="font-mono text-foreground font-medium">{total}</span> 项
             </span>
           </div>
@@ -104,7 +101,7 @@ export function ArchiveFilterDrawer({ open, onOpenChange, value, onApply }: Prop
               className="pl-8 h-9"
             />
           </div>
-        </SheetHeader>
+        </DialogHeader>
 
         <div className="flex-1 min-h-0 grid grid-cols-[140px_1fr]">
           {/* 左侧锚点 */}
@@ -253,7 +250,7 @@ export function ArchiveFilterDrawer({ open, onOpenChange, value, onApply }: Prop
             </Button>
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
