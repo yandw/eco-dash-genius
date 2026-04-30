@@ -7,7 +7,7 @@ export const ArchiveStatusLabel: Record<ArchiveStatus, string> = {
   submitted: "待审核",
   approved: "已通过",
   rejected: "已退回",
-  pending: "未上报",
+  pending: "待填报",
 };
 
 export const ARCHIVE_STEPS = [
@@ -282,6 +282,15 @@ export const enterprises: EnterpriseArchive[] = [
     industry: "食品制造业",
     district: "浦东新区",
     years: [
+      {
+        year: 2025,
+        status: "pending",
+        createdAt: "2026-01-01 00:00",
+        updatedAt: "-",
+        timeline: [],
+        annotations: [],
+        detail: baseDetail(2025, false),
+      },
       {
         year: 2024,
         status: "rejected",
