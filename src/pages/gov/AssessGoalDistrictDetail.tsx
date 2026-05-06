@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
-import { carbonGoals, districts, type CarbonGoalRow, type ChangeRecord } from "@/mocks/assess";
+import { carbonGoals, districts, type CarbonGoalRow } from "@/mocks/assess";
 import { toast } from "sonner";
 
 type ModifiedFilter = "all" | "modified" | "unmodified";
