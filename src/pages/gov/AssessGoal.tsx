@@ -222,23 +222,26 @@ export default function AssessGoal() {
                 <>
                   <Button variant="outline" size="sm" className="h-9" onClick={handleDownload} title="点击下载">
                     <FileCheck2 className="h-3.5 w-3.5 mr-1 text-success" />
-                    {currentDoc.name}
+                    <span className="max-w-[180px] truncate">{currentDoc.name}</span>
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground" onClick={handlePreview} title="预览">
+                    <Eye className="h-3.5 w-3.5" />
                   </Button>
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="h-9 text-muted-foreground hover:text-destructive"
-                    onClick={() => setStampedDoc((m) => ({ ...m, [year]: undefined }))}
+                    size="icon"
+                    className="h-9 w-9 text-muted-foreground hover:text-destructive"
+                    onClick={handleRemoveDoc}
                     title="删除"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
+                  <Button variant="outline" size="sm" className="h-9" onClick={() => setUploadOpen(true)}>
                     <Upload className="h-3.5 w-3.5 mr-1" />重新上传
                   </Button>
                 </>
               ) : (
-                <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
+                <Button variant="outline" size="sm" className="h-9" onClick={() => setUploadOpen(true)}>
                   <Upload className="h-3.5 w-3.5 mr-1" />上传盖章证明
                 </Button>
               )}
