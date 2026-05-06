@@ -95,23 +95,25 @@ export default function GovArchiveDetail() {
             <Clock className="h-3 w-3" />
             上报时间：<span className="font-mono">{yr.updatedAt}</span>
           </div>
-          <div className="ml-auto flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 text-destructive border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
-              onClick={() => setRejectOpen(true)}
-            >
-              <XCircle className="h-3.5 w-3.5 mr-1" /> 退回整改
-            </Button>
-            <Button
-              size="sm"
-              className="h-9 bg-gradient-primary text-primary-foreground border-0"
-              onClick={handleApprove}
-            >
-              <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> 审核通过
-            </Button>
-          </div>
+          {yr.status === "submitted" && (
+            <div className="ml-auto flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9 text-destructive border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                onClick={() => setRejectOpen(true)}
+              >
+                <XCircle className="h-3.5 w-3.5 mr-1" /> 退回整改
+              </Button>
+              <Button
+                size="sm"
+                className="h-9 bg-gradient-primary text-primary-foreground border-0"
+                onClick={handleApprove}
+              >
+                <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> 审核通过
+              </Button>
+            </div>
+          )}
         </div>
 
         <ArchiveTimeline items={yr.timeline} />
