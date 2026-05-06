@@ -288,8 +288,8 @@ export default function Archives() {
       </div>
 
 
-      {/* 企业 × 年度矩阵 */}
-      <EnterpriseYearMatrix rows={filtered} years={YEARS} currentYear={CURRENT_YEAR} />
+      {/* 企业上报明细 */}
+      <EnterpriseYearMatrix rows={filtered} year={selectedYear} />
 
       <div className="text-[11px] text-muted-foreground mt-3 px-1">
         共 {filtered.length} 家企业 · 点击单元格进入审核详情
