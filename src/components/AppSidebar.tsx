@@ -7,6 +7,7 @@ import {
   Gauge,
   FolderArchive,
   ClipboardCheck,
+  ClipboardList,
   Boxes,
   Leaf,
   Crosshair,
