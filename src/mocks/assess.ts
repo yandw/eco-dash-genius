@@ -271,6 +271,8 @@ export interface EntAssessYearRow {
   intensityActual: number;
   intensityActualNetGreen: number;
   intensityPass: "达标" | "未达标" | "—";
+  dualPass: "完成" | "未完成" | "—";
+  assessResult: "完成" | "未完成" | "—";
   remark: string;
 }
 
