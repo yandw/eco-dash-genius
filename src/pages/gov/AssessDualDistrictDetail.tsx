@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { ArrowLeft, ChevronRight, Download, Undo2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, Download, Undo2, Save, Send } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import { districts, energyAssess, type EnergyAssessRow } from "@/mocks/assess";
-import { useAssessStatusStore, rollbackAssess } from "@/mocks/assessStatusStore";
+import { useAssessStatusStore, rollbackAssess, submitAssess } from "@/mocks/assessStatusStore";
 import { toast } from "sonner";
 
 export default function AssessDualDistrictDetail() {
@@ -68,7 +68,7 @@ export default function AssessDualDistrictDetail() {
           <Button variant="outline" size="sm" className="h-8" onClick={() => toast.success("已导出")}>
             <Download className="h-3.5 w-3.5 mr-1" />导出
           </Button>
-          {submitted && districtId && (
+          {submitted && districtId ? (
             <Button
               variant="outline"
               size="sm"
@@ -81,6 +81,24 @@ export default function AssessDualDistrictDetail() {
             >
               <Undo2 className="h-3.5 w-3.5 mr-1" />退回
             </Button>
+          ) : (
+            <>
+              <Button variant="outline" size="sm" className="h-8" onClick={() => toast.success("已保存")}>
+                <Save className="h-3.5 w-3.5 mr-1" />保存
+              </Button>
+              <Button
+                size="sm"
+                className="h-8 bg-gradient-primary text-primary-foreground"
+                onClick={() => {
+                  if (districtId) {
+                    submitAssess(districtId);
+                    toast.success("已提交，列表状态：完成考核");
+                  }
+                }}
+              >
+                <Send className="h-3.5 w-3.5 mr-1" />提交
+              </Button>
+            </>
           )}
         </div>
       </div>
