@@ -85,7 +85,7 @@ export default function AssessDual() {
           <TabsContent value="district" className="mt-4 space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">参与区数</div><div className="text-lg font-semibold">{mergedSummary.length}</div></Card>
-              <Card className="p-3"><div className="text-[11px] text-muted-foreground">完成考核</div><div className="text-lg font-semibold text-success">{mergedSummary.filter((d) => d.status === "完成考核" || d.status === "已考核").length}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">完成考核</div><div className="text-lg font-semibold text-success">{mergedSummary.filter((d) => (d.status as string) === "完成考核" || d.status === "已考核").length}</div></Card>
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">考核中</div><div className="text-lg font-semibold text-warning">{mergedSummary.filter((d) => d.status === "考核中").length}</div></Card>
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">待考核</div><div className="text-lg font-semibold text-muted-foreground">{mergedSummary.filter((d) => d.status === "待考核").length}</div></Card>
             </div>
