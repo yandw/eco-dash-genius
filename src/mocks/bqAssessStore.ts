@@ -32,5 +32,5 @@ export function setBqReport(id: string, file: { name: string; url: string; uploa
 }
 
 export function rollbackBqEnt(id: string) {
-  updateBqEnt(id, { status: "待考核" });
+  updateBqEnt(id, { status: "待提交" });
 }

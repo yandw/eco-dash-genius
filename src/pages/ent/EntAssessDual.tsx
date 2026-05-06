@@ -9,6 +9,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { getEntAssess, energyAssess, type EntAssessYearRow } from "@/mocks/assess";
+import { useEntType } from "@/mocks/entTypeStore";
+import { EntAssessDualBqBody } from "@/components/assess/EntAssessDualBqBody";
 import { cn } from "@/lib/utils";
 
 const YEARS = [2026, 2025, 2024, 2023, 2022];
@@ -43,9 +45,18 @@ function rowStatus(r: EntAssessYearRow | undefined): AssessStatus {
 }
 
 export default function EntAssessDual() {
+  const entType = useEntType();
   const [year, setYear] = useState(CURRENT_YEAR);
   const ent = energyAssess[0];
   const allRows = useMemo(() => getEntAssess(ent.id), [ent.id]);
+
+  if (entType === "city") {
+    return (
+      <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
+        <EntAssessDualBqBody />
+      </AppLayout>
+    );
+  }
 
   // 用户手动选择的考核结果（按年份保存）
   const [resultOverride, setResultOverride] = useState<Record<number, "完成" | "未完成" | "">>({});

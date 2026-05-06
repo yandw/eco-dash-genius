@@ -6,6 +6,7 @@ import { AppSidebar, UserSide, govItems, entItems } from "@/components/AppSideba
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RoleSwitcher } from "@/components/assess/RoleSwitcher";
+import { EntTypeSwitcher } from "@/components/assess/EntTypeSwitcher";
 
 interface AppLayoutProps {
   title: string;
@@ -114,6 +115,7 @@ export function AppLayout({ title, subtitle, children, side = "gov", fullscreen,
 
             <div className="ml-auto flex items-center gap-3">
               {showRoleSwitcher && <RoleSwitcher side={side} />}
+              {side === "ent" && <EntTypeSwitcher />}
 
               {headerExtra}
 

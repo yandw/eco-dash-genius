@@ -1,16 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Download, Upload, Undo2, Save, FileText, FileCheck2 } from "lucide-react";
-import { AppLayout } from "@/components/AppLayout";
+import { useMemo } from "react";
+import { Download, FileText, FileCheck2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { PassBadge } from "@/components/assess/PassBadge";
-import { bqAssessDetail, type BqAssessDetailRow } from "@/mocks/assess";
-import { useBqAssessStore, getBqEnt, setBqReport, rollbackBqEnt } from "@/mocks/bqAssessStore";
-import { cn } from "@/lib/utils";
+import { bqAssessDetail, bqEntAssessList, type BqAssessDetailRow } from "@/mocks/assess";
+import { useBqAssessStore } from "@/mocks/bqAssessStore";
 import { toast } from "sonner";
 
 interface Group {
@@ -19,24 +14,16 @@ interface Group {
   items: Array<BqAssessDetailRow & { __idx: number }>;
 }
 
-export default function AssessDualBqDetail() {
-  const { entId } = useParams<{ entId: string }>();
-  const navigate = useNavigate();
+/** 市管企业 — 百千家通信业能耗考核结果（只读视图） */
+export function EntAssessDualBqBody() {
   useBqAssessStore();
-  const row = entId ? getBqEnt(entId) : undefined;
-  const reportInput = useRef<HTMLInputElement>(null);
+  // 取演示企业（第 1 家）
+  const row = bqEntAssessList[0];
 
-  const [detail, setDetail] = useState<BqAssessDetailRow[]>(() => bqAssessDetail.map((d) => ({ ...d })));
-
-  useEffect(() => {
-    setDetail(bqAssessDetail.map((d) => ({ ...d })));
-  }, [entId]);
-
-  // 按 groupName 分组
   const groups: Group[] = useMemo(() => {
     const out: Group[] = [];
     let cur: Group | null = null;
-    detail.forEach((d, i) => {
+    bqAssessDetail.forEach((d, i) => {
       if (d.groupName) {
         cur = { name: d.groupName, groupScore: d.groupScore ?? 0, items: [] };
         out.push(cur);
@@ -44,103 +31,46 @@ export default function AssessDualBqDetail() {
       cur?.items.push({ ...d, __idx: i });
     });
     return out;
-  }, [detail]);
+  }, []);
 
   const totals = useMemo(() => ({
-    total: detail.reduce((s, d) => s + d.itemScore, 0),
-    self: detail.reduce((s, d) => s + d.selfScore, 0),
-    review: detail.reduce((s, d) => s + d.reviewScore, 0),
-  }), [detail]);
+    total: bqAssessDetail.reduce((s, d) => s + d.itemScore, 0),
+    self: bqAssessDetail.reduce((s, d) => s + d.selfScore, 0),
+    review: bqAssessDetail.reduce((s, d) => s + d.reviewScore, 0),
+  }), []);
 
-  if (!row) {
-    return (
-      <AppLayout side="gov" title="双控考核" subtitle="">
-        <div className="p-8 text-center text-muted-foreground">未找到企业数据</div>
-      </AppLayout>
-    );
-  }
-
-  const updateReview = (i: number, patch: Partial<BqAssessDetailRow>) => {
-    setDetail((prev) => prev.map((d, idx) => (idx === i ? { ...d, ...patch } : d)));
-  };
-
-  const handleReportUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (f && entId) {
-      const url = URL.createObjectURL(f);
-      setBqReport(entId, { name: f.name, url, uploadedAt: new Date().toISOString().slice(0, 10) });
-      toast.success(`已上传考评报告：${f.name}`);
-    }
-    e.target.value = "";
-  };
-
-  const groupReviewSum = (g: Group) => g.items.reduce((s, x) => s + x.reviewScore, 0);
   const groupSelfSum = (g: Group) => g.items.reduce((s, x) => s + x.selfScore, 0);
+  const groupReviewSum = (g: Group) => g.items.reduce((s, x) => s + x.reviewScore, 0);
 
   return (
-    <AppLayout side="gov" title="双控考核" subtitle={`${row.entName} · ${row.year}年节能目标考核评分`}>
-      <input ref={reportInput} type="file" className="hidden" accept=".pdf,.zip,.doc,.docx" onChange={handleReportUpload} />
-
-      <div className="text-xs text-muted-foreground mb-3 flex items-center gap-1">
-        <button className="hover:text-primary" onClick={() => navigate("/gov/assess/dual")}>双控考核</button>
-        <span>/</span>
-        <button className="hover:text-primary" onClick={() => navigate("/gov/assess/dual")}>"百家""千家"通信业企业能耗考核</button>
-        <span>/</span>
-        <span className="text-foreground/80">{row.entName}</span>
-      </div>
+    <>
+      <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
+        重点单位能耗双控考核结果
+      </h1>
 
       {/* 顶部工具栏 */}
       <div className="panel p-3 mb-4 flex items-center gap-3 flex-wrap">
-        <Button variant="outline" size="sm" className="h-9" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回
-        </Button>
         <h2 className="text-base font-semibold text-foreground mr-2">企业节能"双控"责任评价考核</h2>
         <div className="flex-1 min-w-[200px] flex items-center gap-2">
           <div className="flex-1 max-w-md flex items-center gap-2 px-3 h-9 rounded-md border border-border bg-background text-xs">
             <FileText className="h-3.5 w-3.5 text-muted-foreground" />
             <span className="truncate text-foreground/80">企业自评相关附件（更新版）.zip</span>
           </div>
-          <Button size="sm" className="h-9 bg-primary text-primary-foreground" onClick={() => toast.success("正在下载企业自评相关附件.zip")}>
-            下载附件
+          <Button size="sm" className="h-9" onClick={() => toast.success("正在下载企业自评相关附件.zip")}>
+            <Download className="h-3.5 w-3.5 mr-1" />下载附件
           </Button>
         </div>
-        <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
-        {row.reportFile ? (
+        {row.reportFile && (
           <Button
             size="sm"
             variant="outline"
             className="h-9 text-success border-success/40 hover:text-success"
-            onClick={() => {
-              const a = document.createElement("a");
-              a.href = row.reportFile!.url;
-              a.download = row.reportFile!.name;
-              document.body.appendChild(a); a.click(); a.remove();
-              toast.success(`正在下载 ${row.reportFile!.name}`);
-            }}
+            onClick={() => toast.success(`正在下载 ${row.reportFile!.name}`)}
           >
             <Download className="h-3.5 w-3.5 mr-1" />下载考评报告
           </Button>
-        ) : null}
-        <Button size="sm" className="h-9 bg-success text-success-foreground hover:bg-success/90" onClick={() => reportInput.current?.click()}>
-          <Upload className="h-3.5 w-3.5 mr-1" />{row.reportFile ? "重新上传" : "上传考评报告"}
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="h-9 text-destructive border-destructive/40 hover:text-destructive"
-          onClick={() => {
-            if (entId) {
-              rollbackBqEnt(entId);
-              toast.success("已退回重填");
-              navigate("/gov/assess/dual");
-            }
-          }}
-        >
-          <Undo2 className="h-3.5 w-3.5 mr-1" />退回重填
-        </Button>
-        <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已保存考评分")}>
-          <Save className="h-3.5 w-3.5 mr-1" />保存
-        </Button>
+        )}
+        <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
       </div>
 
       <div className="max-w-[1400px] mx-auto space-y-4">
@@ -195,21 +125,16 @@ export default function AssessDualBqDetail() {
               <div className="divide-y divide-border">
                 {g.items.map((it) => (
                   <div key={it.__idx} className="p-4 space-y-3">
-                    {/* 评分项标题 */}
-                    <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <div className="inline-flex items-center gap-2">
-                        <Badge variant="outline" className="font-mono text-xs">{it.no}</Badge>
-                        <span className="text-xs text-muted-foreground">单项分值</span>
-                        <span className="text-sm font-semibold text-foreground">{it.itemScore} 分</span>
-                      </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="outline" className="font-mono text-xs">{it.no}</Badge>
+                      <span className="text-xs text-muted-foreground">单项分值</span>
+                      <span className="text-sm font-semibold text-foreground">{it.itemScore} 分</span>
                     </div>
 
-                    {/* 评分标准 */}
                     <div className="rounded-md bg-muted/40 border border-border px-3 py-2 text-xs leading-relaxed text-foreground/80">
                       <span className="font-medium text-muted-foreground mr-1">评分标准：</span>{it.criterion}
                     </div>
 
-                    {/* 自评 + 考评 双栏 */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {/* 企业自评 */}
                       <div className="rounded-md border border-border bg-background p-3 space-y-2.5">
@@ -253,7 +178,7 @@ export default function AssessDualBqDetail() {
                         </div>
                       </div>
 
-                      {/* 政府考评 */}
+                      {/* 政府考评（只读） */}
                       <div className="rounded-md border border-warning/30 bg-warning/5 p-3 space-y-2.5">
                         <div className="flex items-center justify-between">
                           <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
@@ -266,35 +191,16 @@ export default function AssessDualBqDetail() {
                           </div>
                         </div>
                         <div>
-                          <label className="text-[11px] text-muted-foreground mb-1 block">考评分</label>
-                          <Input
-                            type="number"
-                            value={it.reviewScore}
-                            max={it.itemScore}
-                            min={0}
-                            step="0.5"
-                            onChange={(e) => updateReview(it.__idx, { reviewScore: Number(e.target.value) })}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") { e.preventDefault(); (e.target as HTMLInputElement).blur(); }
-                            }}
-                            className="h-8 text-sm font-mono"
-                          />
+                          <div className="text-[11px] text-muted-foreground mb-1">考评分</div>
+                          <div className="text-sm font-mono font-semibold text-foreground rounded bg-background border border-border px-2 py-1.5 min-h-[32px] flex items-center">
+                            {it.reviewScore}
+                          </div>
                         </div>
                         <div>
-                          <label className="text-[11px] text-muted-foreground mb-1 block">评分依据</label>
-                          <Textarea
-                            value={it.reviewBasis}
-                            onChange={(e) => updateReview(it.__idx, { reviewBasis: e.target.value })}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" && !e.shiftKey) {
-                                e.preventDefault();
-                                (e.target as HTMLTextAreaElement).blur();
-                              }
-                            }}
-                            placeholder="请输入考评依据，回车确认（Shift+Enter 换行）"
-                            className="text-xs resize-none"
-                            rows={3}
-                          />
+                          <div className="text-[11px] text-muted-foreground mb-1">评分依据</div>
+                          <div className="text-xs text-foreground/80 leading-relaxed min-h-[44px] rounded bg-background border border-border px-2 py-1.5">
+                            {it.reviewBasis || <span className="text-muted-foreground">—</span>}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -304,8 +210,7 @@ export default function AssessDualBqDetail() {
             </Card>
           );
         })}
-
       </div>
-    </AppLayout>
+    </>
   );
 }
