@@ -181,16 +181,9 @@ export default function AssessGoal() {
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{summary.total.toLocaleString()}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">平均强度</div><div className="text-lg font-semibold">{summary.avgIntensity}</div></Card>
           </div>
-          <CarbonGoalTable rows={rows} mode="district-view" onEdit={setEditing} />
+          <CarbonGoalTable rows={rows} mode="district-view" onInlineSave={handleSaveEdit} />
         </div>
       )}
-
-      <EditWithRemarkSheet
-        open={!!editing}
-        row={editing}
-        onClose={() => setEditing(null)}
-        onSave={handleSaveEdit}
-      />
     </AppLayout>
   );
 }
