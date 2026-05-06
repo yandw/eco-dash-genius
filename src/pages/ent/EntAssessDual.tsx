@@ -222,41 +222,23 @@ export default function EntAssessDual() {
             <SectionTitle>双控考核结论</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <Field label="考核结果">
-                <RadioGroup
-                  value={currentOverride || ""}
-                  onValueChange={(v) =>
-                    setResultOverride((prev) => ({
-                      ...prev,
-                      [year]: v as "完成" | "未完成",
-                    }))
-                  }
-                  className="flex items-center gap-6 min-h-[80px]"
-                >
-                  <div className="flex items-center gap-2">
-                    <RadioGroupItem value="完成" id={`result-done-${year}`} />
-                    <Label htmlFor={`result-done-${year}`} className="cursor-pointer text-sm font-normal">完成</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <RadioGroupItem value="未完成" id={`result-undone-${year}`} />
-                    <Label htmlFor={`result-undone-${year}`} className="cursor-pointer text-sm font-normal">未完成</Label>
-                  </div>
-                </RadioGroup>
+                <div className={cn(ro, "justify-start")}>
+                  {effectiveResult ? (
+                    <PassBadge value={effectiveResult} />
+                  ) : (
+                    <span className="text-muted-foreground">待区级管理员填写</span>
+                  )}
+                </div>
               </Field>
               <Field label="备注">
-                <Textarea
-                  value={remarkInput[year] ?? currentRow.remark ?? ""}
-                  onChange={(e) =>
-                    setRemarkInput((prev) => ({ ...prev, [year]: e.target.value }))
-                  }
-                  placeholder="请输入备注"
-                  className={cn(
-                    "min-h-[80px] bg-background",
-                    currentRow.dualPass === "未完成" && effectiveResult === "完成" &&
-                      "border-warning/40",
-                  )}
-                />
+                <div className={cn(ro, "min-h-[80px] items-start py-2 whitespace-pre-wrap leading-relaxed")}>
+                  {currentRow.remark || <span className="text-muted-foreground">—</span>}
+                </div>
               </Field>
             </div>
+            <p className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1">
+              <Lock className="h-3 w-3" />考核结果与备注由区级管理员填写，企业用户仅可查看
+            </p>
           </Card>
 
           <p className="text-[11px] text-muted-foreground">
