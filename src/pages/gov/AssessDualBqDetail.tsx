@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { bqAssessDetail, type BqAssessDetailRow } from "@/mocks/assess";
 import { useBqAssessStore, getBqEnt, setBqReport, rollbackBqEnt } from "@/mocks/bqAssessStore";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
