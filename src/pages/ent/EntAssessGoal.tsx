@@ -26,12 +26,32 @@ type EntStatus = "draft" | "submitted" | "modified";
 
 // 不同年度的初始填报状态：演示历史已提交、当期已被中心修改、过往草稿等不同情形
 const INITIAL_YEAR_STATUS: Record<number, EntStatus> = {
-  2026: "draft",       // 本期 · 未提交（企业可编辑），但中心已对部分字段进行同步调整
+  2026: "draft",       // 本期 · 未提交（企业可编辑）
   2025: "submitted",   // 已提交
-  2024: "submitted",   // 已提交
+  2024: "modified",    // 已提交 · 中心已调整
   2023: "draft",       // 未提交
   2022: "submitted",   // 已提交
 };
+
+// 2024 年中心负责人修改记录（演示）
+const YEAR_CHANGES_2024 = [
+  {
+    field: "total2026",
+    oldValue: 29171,
+    newValue: 28300,
+    remark: "总量目标按区考核要求收紧 3%",
+    by: "节能中心 · 王磊",
+    at: "2024-04-12 14:08",
+  },
+  {
+    field: "intensity2026",
+    oldValue: 0.221,
+    newValue: 0.205,
+    remark: "强度目标同步收紧",
+    by: "节能中心 · 王磊",
+    at: "2024-04-12 14:08",
+  },
+];
 
 export default function EntAssessGoal() {
   const [year, setYear] = useState(CURRENT_YEAR);
