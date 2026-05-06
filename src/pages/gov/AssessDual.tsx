@@ -70,7 +70,24 @@ export default function AssessDual() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [rows, setRows] = useState<EnergyAssessRow[]>(energyAssess);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [bqRows, setBqRows] = useState<BqEntAssessRow[]>(bqEntAssessList);
+  const [bqDetailRow, setBqDetailRow] = useState<BqEntAssessRow | null>(null);
   const statusStore = useAssessStatusStore();
+
+  const bqStats = useMemo(() => ({
+    total: bqRows.length,
+    done: bqRows.filter((r) => r.status === "已完成").length,
+    doing: bqRows.filter((r) => r.status === "考核中").length,
+    pending: bqRows.filter((r) => r.status === "待考核").length,
+    uploaded: bqRows.filter((r) => !!r.reportFile).length,
+  }), [bqRows]);
+
+  const updateBqReport = (id: string, file: { name: string; url: string; uploadedAt: string }) => {
+    setBqRows((prev) => prev.map((r) => (r.id === id ? { ...r, reportFile: file } : r)));
+  };
+  const rollbackBq = (id: string) => {
+    setBqRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "待考核" as const } : r)));
+  };
 
   // 当前区（区级管理员）
   const myDistrictId = (currentUser as unknown as { districtId?: string }).districtId ?? "qingpu";
