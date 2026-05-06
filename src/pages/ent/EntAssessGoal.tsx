@@ -192,10 +192,9 @@ export default function EntAssessGoal() {
           {statusBadge()}
         </div>
         <div className="flex items-center gap-2">
-          {submitted || modified ? (
+          {submitted ? (
             <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
-              <Lock className="h-3.5 w-3.5" />
-              {modified ? "中心负责人已调整目标值，最终目标以中心调整后为准" : "提交后不可修改，如需调整请联系主管部门"}
+              <Lock className="h-3.5 w-3.5" />提交后不可修改，如需调整请联系主管部门
             </span>
           ) : (
             <>
@@ -214,7 +213,7 @@ export default function EntAssessGoal() {
         </div>
       </div>
 
-      {scope === "district" && modified && <ChangeAlert changes={myRow.changes} />}
+      {scope === "district" && myRow.changes.length > 0 && <ChangeAlert changes={myRow.changes} />}
 
       {submitted && (
         <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
