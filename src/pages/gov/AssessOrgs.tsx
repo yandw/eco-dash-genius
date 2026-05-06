@@ -54,6 +54,8 @@ export default function AssessOrgs() {
   const [confirmDelete, setConfirmDelete] = useState<AssessOrg | null>(null);
 
   const list = tab === "district" ? districts : groups;
+  const pageItems = paginate(list, page, PAGE_SIZE);
+  const startIdx = (Math.min(Math.max(1, page), Math.max(1, Math.ceil(list.length / PAGE_SIZE))) - 1) * PAGE_SIZE;
   const groupColLabel = "集团";
 
   const openAdd = () => {
@@ -104,7 +106,7 @@ export default function AssessOrgs() {
   return (
     <AppLayout title="区/集团管理" subtitle="考核管理 / 区/集团管理" side="gov">
       <div className="panel p-5">
-        <Tabs value={tab} onValueChange={(v) => setTab(v as OrgTab)}>
+        <Tabs value={tab} onValueChange={(v) => { setTab(v as OrgTab); setPage(1); }}>
           <div className="flex items-center justify-between mb-4">
             <TabsList>
               <TabsTrigger value="district">区管理单位</TabsTrigger>
@@ -131,9 +133,9 @@ export default function AssessOrgs() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {list.map((r, i) => (
+                  {pageItems.map((r, i) => (
                     <TableRow key={r.id}>
-                      <TableCell>{i + 1}</TableCell>
+                      <TableCell>{startIdx + i + 1}</TableCell>
                       <TableCell>{r.group}</TableCell>
                       <TableCell>{r.unitName}</TableCell>
                       <TableCell>
@@ -176,6 +178,12 @@ export default function AssessOrgs() {
                   )}
                 </TableBody>
               </Table>
+              <SimplePagination
+                total={list.length}
+                page={page}
+                pageSize={PAGE_SIZE}
+                onPageChange={setPage}
+              />
             </div>
           </TabsContent>
         </Tabs>
