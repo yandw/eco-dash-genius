@@ -156,6 +156,34 @@ export default function Archives() {
         <KpiCard label="已退回" value={kpi.rejected} unit="家" icon={AlertOctagon} tone="danger" />
       </div>
 
+      {/* 报告年度选择 */}
+      <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
+        <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
+          <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
+          报告年度
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {YEARS.map((y) => (
+            <Button
+              key={y}
+              size="sm"
+              variant={selectedYear === y ? "default" : "outline"}
+              className={
+                selectedYear === y
+                  ? "h-8 min-w-[68px] bg-gradient-primary text-primary-foreground border-0"
+                  : "h-8 min-w-[68px]"
+              }
+              onClick={() => setSelectedYear(y)}
+            >
+              {y}
+            </Button>
+          ))}
+        </div>
+        {selectedYear === CURRENT_YEAR && (
+          <span className="text-[11px] text-primary ml-1">本期</span>
+        )}
+      </div>
+
       {/* 筛选区 */}
       <div className="panel p-4 mb-4 space-y-3">
         {/* 顶部快搜行 */}
