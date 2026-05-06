@@ -68,7 +68,7 @@ export function EntBqGoalForm({ row, onChange }: Props) {
               step="0.01"
               value={row.totalGoal ?? ""}
               onChange={(e) => onChange(row.id, { totalGoal: e.target.value === "" ? null : Number(e.target.value) })}
-              className="h-9"
+              className="h-9 bg-white dark:bg-background border-primary/40"
             />
           </Field>
           <Field label={<span className="inline-flex items-center gap-1">强度目标值（吨CO₂/万元）<ChangeBadge changes={row.changes} field="intensityGoal" /></span>}>
@@ -77,7 +77,7 @@ export function EntBqGoalForm({ row, onChange }: Props) {
               step="0.001"
               value={row.intensityGoal ?? ""}
               onChange={(e) => onChange(row.id, { intensityGoal: e.target.value === "" ? null : Number(e.target.value) })}
-              className="h-9"
+              className="h-9 bg-white dark:bg-background border-primary/40"
             />
           </Field>
           <Field label="强度指标"><div className={ro}>{row.intensityIndicator || "—"}</div></Field>
@@ -91,7 +91,7 @@ export function EntBqGoalForm({ row, onChange }: Props) {
           value={row.remark}
           onChange={(e) => onChange(row.id, { remark: e.target.value })}
           placeholder="请输入备注信息"
-          className="min-h-[80px] text-sm"
+          className="min-h-[80px] text-sm bg-white dark:bg-background border-primary/40"
         />
       </Card>
     </div>
