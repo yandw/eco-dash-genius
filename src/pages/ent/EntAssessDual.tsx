@@ -113,29 +113,19 @@ export default function EntAssessDual() {
         </span>
         <div className="flex flex-wrap gap-2">
           {YEARS.map((y) => {
-            const s = yearStatusMap[y];
             const active = year === y;
-            const labelColor = active
-              ? "text-primary-foreground/90"
-              : s === "passed"
-                ? "text-success"
-                : "text-destructive";
             return (
               <div key={y} className="relative">
                 <Button
                   size="sm"
                   variant={active ? "default" : "outline"}
                   className={cn(
-                    "h-8 min-w-[92px] gap-1.5",
+                    "h-8 min-w-[72px]",
                     active && "bg-gradient-primary text-primary-foreground border-0",
                   )}
                   onClick={() => setYear(y)}
-                  title={`${y} 年 · ${yearStatusLabel(s)}`}
                 >
                   {y}
-                  <span className={cn("text-[10px] font-medium", labelColor)}>
-                    {yearStatusLabel(s)}
-                  </span>
                 </Button>
                 {y === CURRENT_YEAR && (
                   <span className="absolute -top-1.5 -right-1.5 px-1.5 h-4 leading-4 rounded-full bg-primary text-primary-foreground text-[10px] font-medium shadow-sm pointer-events-none">
@@ -155,29 +145,6 @@ export default function EntAssessDual() {
         </span>
       </div>
 
-      {/* 总体结论横幅 */}
-      {currentRow && status === "passed" && (
-        <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
-          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-          <div className="text-sm">
-            <div className="font-medium text-foreground">{year} 年度能耗双控考核已通过</div>
-            <div className="text-xs text-muted-foreground mt-0.5">
-              总量与强度两项指标均达标，结果由系统根据年度能源利用状况报告自动判定。
-            </div>
-          </div>
-        </div>
-      )}
-      {currentRow && status === "failed" && (
-        <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 p-4 flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
-          <div className="text-sm">
-            <div className="font-medium text-foreground">{year} 年度能耗双控考核未通过</div>
-            <div className="text-xs text-muted-foreground mt-0.5">
-              请关注下方未达标项，并配合主管部门完成后续工作。
-            </div>
-          </div>
-        </div>
-      )}
       {!currentRow && (
         <div className="mb-4 rounded-lg border border-border bg-muted/30 p-4 flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
@@ -197,7 +164,7 @@ export default function EntAssessDual() {
               <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
               企业基础信息
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="space-y-1">
                 <div className="text-[11px] text-muted-foreground">所属区</div>
                 <div className="text-sm font-medium text-foreground">青浦区</div>
@@ -209,10 +176,6 @@ export default function EntAssessDual() {
               <div className="space-y-1">
                 <div className="text-[11px] text-muted-foreground">企业名称</div>
                 <div className="text-sm font-medium text-foreground truncate" title={ent.entName}>{ent.entName}</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-[11px] text-muted-foreground">考核年份</div>
-                <div className="text-sm font-medium text-foreground">{year}年</div>
               </div>
               <div className="space-y-1">
                 <div className="text-[11px] text-muted-foreground">考核状态</div>
@@ -259,41 +222,23 @@ export default function EntAssessDual() {
             <SectionTitle>双控考核结论</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <Field label="考核结果">
-                <RadioGroup
-                  value={currentOverride || ""}
-                  onValueChange={(v) =>
-                    setResultOverride((prev) => ({
-                      ...prev,
-                      [year]: v as "完成" | "未完成",
-                    }))
-                  }
-                  className="flex items-center gap-6 min-h-[80px]"
-                >
-                  <div className="flex items-center gap-2">
-                    <RadioGroupItem value="完成" id={`result-done-${year}`} />
-                    <Label htmlFor={`result-done-${year}`} className="cursor-pointer text-sm font-normal">完成</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <RadioGroupItem value="未完成" id={`result-undone-${year}`} />
-                    <Label htmlFor={`result-undone-${year}`} className="cursor-pointer text-sm font-normal">未完成</Label>
-                  </div>
-                </RadioGroup>
+                <div className={cn(ro, "justify-start")}>
+                  {effectiveResult ? (
+                    <PassBadge value={effectiveResult} />
+                  ) : (
+                    <span className="text-muted-foreground">待区级管理员填写</span>
+                  )}
+                </div>
               </Field>
               <Field label="备注">
-                <Textarea
-                  value={remarkInput[year] ?? currentRow.remark ?? ""}
-                  onChange={(e) =>
-                    setRemarkInput((prev) => ({ ...prev, [year]: e.target.value }))
-                  }
-                  placeholder="请输入备注"
-                  className={cn(
-                    "min-h-[80px] bg-background",
-                    currentRow.dualPass === "未完成" && effectiveResult === "完成" &&
-                      "border-warning/40",
-                  )}
-                />
+                <div className={cn(ro, "min-h-[80px] items-start py-2 whitespace-pre-wrap leading-relaxed")}>
+                  {currentRow.remark || <span className="text-muted-foreground">—</span>}
+                </div>
               </Field>
             </div>
+            <p className="mt-3 text-[11px] text-muted-foreground inline-flex items-center gap-1">
+              <Lock className="h-3 w-3" />考核结果与备注由区级管理员填写，企业用户仅可查看
+            </p>
           </Card>
 
           <p className="text-[11px] text-muted-foreground">
