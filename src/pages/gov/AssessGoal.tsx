@@ -19,6 +19,7 @@ import {
   bqGoals,
   districtGoalSummary,
   type CarbonGoalRow,
+  type BqGoalRow,
   type ChangeRecord,
 } from "@/mocks/assess";
 import { getCurrentRole } from "@/mocks/currentUser";
