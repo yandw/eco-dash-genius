@@ -63,7 +63,7 @@ export default function EntAssessGoal() {
 
   const [myRow, setMyRow] = useState<CarbonGoalRow>({
     ...carbonGoals[0],
-    status: "modified",
+    status: "draft",
     total2026: 28300,
     intensity2026: 0.205,
     changes: DEMO_CHANGES_2026,
