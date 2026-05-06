@@ -83,6 +83,7 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
             const tc = row.changes.find((c) => c.field === "total2026");
             const ic = row.changes.find((c) => c.field === "intensity2026");
             const hl = "border-amber-400 ring-2 ring-amber-300/40 bg-amber-50 dark:bg-amber-500/10";
+            const editableBg = "bg-white dark:bg-background border-primary/40";
             return (
               <>
                 <Field label={<span className="inline-flex items-center gap-1">总量（万吨CO₂）<ChangeBadge changes={row.changes} field="total2026" /></span>}>
@@ -90,7 +91,7 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
                     type="number"
                     value={row.total2026 ?? ""}
                     onChange={(e) => onChange(row.id, { total2026: e.target.value === "" ? null : Number(e.target.value) })}
-                    className={cn("h-9", tc && hl)}
+                    className={cn("h-9", editableBg, tc && hl)}
                   />
                 </Field>
                 <Field label={<span className="inline-flex items-center gap-1">强度<ChangeBadge changes={row.changes} field="intensity2026" /></span>}>
@@ -99,7 +100,7 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
                     step="0.001"
                     value={row.intensity2026 ?? ""}
                     onChange={(e) => onChange(row.id, { intensity2026: e.target.value === "" ? null : Number(e.target.value) })}
-                    className={cn("h-9", ic && hl)}
+                    className={cn("h-9", editableBg, ic && hl)}
                   />
                 </Field>
               </>
@@ -116,7 +117,7 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
           value={row.remark}
           onChange={(e) => onChange(row.id, { remark: e.target.value })}
           placeholder="请输入备注信息"
-          className="min-h-[80px] text-sm"
+          className="min-h-[80px] text-sm bg-white dark:bg-background border-primary/40"
         />
       </Card>
     </div>
