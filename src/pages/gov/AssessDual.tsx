@@ -69,6 +69,7 @@ export default function AssessDual() {
   const [rows, setRows] = useState<EnergyAssessRow[]>(energyAssess);
   const [uploadOpen, setUploadOpen] = useState(false);
   const bqRows = useBqAssessStore();
+  const statusStore = useAssessStatusStore();
 
   const bqStats = useMemo(() => ({
     total: bqRows.length,
@@ -77,6 +78,7 @@ export default function AssessDual() {
     pending: bqRows.filter((r) => r.status === "待考核").length,
     uploaded: bqRows.filter((r) => !!r.reportFile).length,
   }), [bqRows]);
+
 
 
   // 当前区（区级管理员）
