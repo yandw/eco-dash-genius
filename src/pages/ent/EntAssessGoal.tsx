@@ -125,7 +125,13 @@ export default function EntAssessGoal() {
   };
 
   const statusBadge = () => {
-    if (submitted)
+    if (status === "modified")
+      return (
+        <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-400/50 hover:bg-amber-500/10 inline-flex items-center gap-1">
+          <CheckCircle2 className="h-3.5 w-3.5" />已提交 · 中心已调整
+        </Badge>
+      );
+    if (status === "submitted")
       return (
         <Badge className="bg-primary/10 text-primary border border-primary/30 hover:bg-primary/10 inline-flex items-center gap-1">
           <CheckCircle2 className="h-3.5 w-3.5" />已提交
@@ -141,8 +147,8 @@ export default function EntAssessGoal() {
   return (
     <AppLayout
       side="ent"
-      title="目标分解"
-      subtitle={`${year}年重点单位碳排放双控目标分解`}
+      title="重点单位碳排放双控目标分解"
+      subtitle={`${year} 年度`}
       headerExtra={headerScope}
     >
       {/* 报告年度 */}
