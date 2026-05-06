@@ -12,7 +12,7 @@ export function ChangeAlert({ changes }: Props) {
   return (
     <Alert className="border-warning/40 bg-warning/10 mb-4">
       <AlertTriangle className="h-4 w-4 text-warning" />
-      <AlertTitle className="text-warning text-sm">区级已修改本企业目标值</AlertTitle>
+      <AlertTitle className="text-warning text-sm">中心负责人已修改本企业 2026 年碳排放目标</AlertTitle>
       <AlertDescription className="text-xs text-foreground/80">
         {latest.by} 于 {latest.at} 修改了
         <span className="font-mono mx-1 px-1 rounded bg-muted">{latest.field}</span>
