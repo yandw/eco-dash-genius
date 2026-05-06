@@ -8,14 +8,14 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   rows: EnergyAssessRow[];
-  mode: "district-edit" | "city-view";
+  mode: "district-edit" | "city-view" | "city-edit";
   onChange?: (id: string, patch: Partial<EnergyAssessRow>) => void;
 }
 
 const cellRO = "px-3 py-2 align-middle text-xs text-foreground/90 bg-muted/40";
 
 export function DistrictAssessTable({ rows, mode, onChange }: Props) {
-  const editable = mode === "district-edit";
+  const editable = mode === "district-edit" || mode === "city-edit";
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const pageRows = paginate(rows, page, pageSize);
