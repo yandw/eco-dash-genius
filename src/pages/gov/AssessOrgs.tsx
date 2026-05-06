@@ -21,6 +21,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { SimplePagination, paginate } from "@/components/ui/simple-pagination";
 import {
   AssessOrg, OrgTab, CENTER_CONTACTS,
   useDistrictOrgs, useGroupOrgs, addOrg, updateOrg, removeOrg,
