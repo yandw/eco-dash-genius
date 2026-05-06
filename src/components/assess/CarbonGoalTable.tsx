@@ -39,6 +39,7 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange }: Props) {
             <th className="px-3 py-2 font-medium border-r border-border">总量<br /><span className="text-[10px] opacity-70">（万吨CO₂）</span></th>
             <th className="px-3 py-2 font-medium border-r border-border">单位产值碳排放</th>
             <th className="px-3 py-2 font-medium border-r border-border">总量<br /><span className="text-[10px] opacity-70">（万吨CO₂）</span></th>
+            <th className="px-3 py-2 font-medium border-r border-border">总量<br /><span className="text-[10px] opacity-70">（万吨CO₂）</span></th>
             <th className="px-3 py-2 font-medium border-r border-border">强度</th>
             <th className="px-3 py-2 font-medium border-r border-border">强度指标</th>
             <th className="px-3 py-2 font-medium border-r border-border">强度单位</th>
