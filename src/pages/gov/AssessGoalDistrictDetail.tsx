@@ -48,6 +48,14 @@ export default function AssessGoalDistrictDetail() {
 
   const modifiedCount = allRows.filter((r) => r.status === "modified").length;
 
+  const stats = useMemo(() => {
+    const total = allRows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
+    const intensRows = allRows.filter((r) => r.intensity2026);
+    const avgIntensity = (intensRows.reduce((s, r) => s + (r.intensity2026 ?? 0), 0) / Math.max(1, intensRows.length)).toFixed(3);
+    const completed = allRows.filter((r) => r.total2026 != null || r.intensity2026 != null).length;
+    return { count: allRows.length, completed, modified: modifiedCount, total, avgIntensity };
+  }, [allRows, modifiedCount]);
+
   const reset = () => {
     setKeyword("");
     setModifiedFilter("all");
