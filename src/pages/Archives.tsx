@@ -197,30 +197,31 @@ export default function Archives() {
               onChange={(e) => setKeyword(e.target.value)}
             />
           </div>
-          <span className="text-xs text-muted-foreground ml-2">本期状态：</span>
-          {(
-            [
-              { v: "all", l: "全部" },
-              { v: "submitted", l: "待审核" },
-              { v: "approved", l: "已通过" },
-              { v: "rejected", l: "已退回" },
-              { v: "pending", l: "未上报" },
-            ] as const
-          ).map((opt) => (
-            <Button
-              key={opt.v}
-              variant={statusFilter === opt.v ? "default" : "outline"}
-              size="sm"
-              className={
-                statusFilter === opt.v
-                  ? "h-8 bg-gradient-primary text-primary-foreground border-0"
-                  : "h-8"
-              }
-              onClick={() => setStatusFilter(opt.v as any)}
-            >
-              {opt.l}
-            </Button>
-          ))}
+          <div className="inline-flex items-center gap-0.5 ml-2 p-0.5 rounded-md bg-muted/60 border border-border/60">
+            {(
+              [
+                { v: "all", l: "全部" },
+                { v: "submitted", l: "待审核" },
+                { v: "approved", l: "已通过" },
+                { v: "rejected", l: "已退回" },
+                { v: "pending", l: "未上报" },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.v}
+                type="button"
+                onClick={() => setStatusFilter(opt.v as any)}
+                className={cn(
+                  "px-3 h-7 rounded text-xs font-medium transition-all",
+                  statusFilter === opt.v
+                    ? "bg-background text-primary shadow-sm border border-border/70"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {opt.l}
+              </button>
+            ))}
+          </div>
           <div className="ml-auto flex flex-wrap gap-2">
             <Button
               size="sm"
