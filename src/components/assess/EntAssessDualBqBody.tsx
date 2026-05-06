@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Download, FileText, FileCheck2, Upload, Save, X, Plus } from "lucide-react";
+import { Download, FileText, FileCheck2, Upload, Save, X, Plus, Send, Undo2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { bqAssessDetail, bqEntAssessList, type BqAssessDetailRow } from "@/mocks/assess";
-import { useBqAssessStore } from "@/mocks/bqAssessStore";
+import { useBqAssessStore, updateBqEnt } from "@/mocks/bqAssessStore";
 import { toast } from "sonner";
 
 interface Group {
@@ -23,10 +23,13 @@ interface Props {
 
 /** 市管企业 — 百千家通信业能耗考核结果 */
 export function EntAssessDualBqBody({ editable = false }: Props) {
-  useBqAssessStore();
-  const row = bqEntAssessList[0];
+  const list = useBqAssessStore();
+  const row = list[0];
   const proofInput = useRef<HTMLInputElement>(null);
   const [proofTargetIdx, setProofTargetIdx] = useState<number | null>(null);
+  // "已完成"=政府已考评，企业不可退回；"已提交"=待政府审核，企业可退回；"待提交"=可编辑
+  const govDone = row.status === "已完成" || row.status === "考核中";
+  const canEdit = editable && row.status === "待提交";
 
   const [detail, setDetail] = useState<BqAssessDetailRow[]>(() => bqAssessDetail.map((d) => ({ ...d, proofs: [...d.proofs] })));
 
@@ -107,10 +110,40 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
           </Button>
         )}
         <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
-        {editable && (
-          <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已保存企业自评")}>
-            <Save className="h-3.5 w-3.5 mr-1" />保存
+        {editable && canEdit && (
+          <>
+            <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已保存企业自评")}>
+              <Save className="h-3.5 w-3.5 mr-1" />保存
+            </Button>
+            <Button
+              size="sm"
+              className="h-9 bg-gradient-primary text-primary-foreground"
+              onClick={() => {
+                updateBqEnt(row.id, { status: "已提交" });
+                toast.success("已提交考核，等待政府审核");
+              }}
+            >
+              <Send className="h-3.5 w-3.5 mr-1" />提交
+            </Button>
+          </>
+        )}
+        {editable && row.status === "已提交" && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-9 text-warning border-warning/40 hover:text-warning"
+            onClick={() => {
+              updateBqEnt(row.id, { status: "待提交" });
+              toast.success("已退回，可重新编辑");
+            }}
+          >
+            <Undo2 className="h-3.5 w-3.5 mr-1" />退回
           </Button>
+        )}
+        {editable && govDone && (
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <Lock className="h-3.5 w-3.5" />政府已完成考评，如需修改请联系主管部门
+          </span>
         )}
       </div>
 
@@ -178,25 +211,25 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {/* 企业自评 */}
-                      <div className={`rounded-md border p-3 space-y-2.5 ${editable ? "border-primary/30 bg-primary/5" : "border-border bg-background"}`}>
+                      <div className={`rounded-md border p-3 space-y-2.5 ${canEdit ? "border-primary/30 bg-primary/5" : "border-border bg-background"}`}>
                         <div className="flex items-center justify-between">
                           <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
-                            <span className={`inline-block h-3 w-1 rounded-sm ${editable ? "bg-primary" : "bg-muted-foreground/60"}`} />
-                            企业自评{editable && <span className="text-[10px] text-primary">（可编辑）</span>}
+                            <span className={`inline-block h-3 w-1 rounded-sm ${canEdit ? "bg-primary" : "bg-muted-foreground/60"}`} />
+                            企业自评{canEdit && <span className="text-[10px] text-primary">（可编辑）</span>}{editable && !canEdit && <span className="text-[10px] text-muted-foreground">（已锁定）</span>}
                           </div>
                           <div className="inline-flex items-center gap-1 text-xs">
-                            <span className="text-muted-foreground">{editable ? "满分" : "自评分"}</span>
-                            {!editable && (
+                            <span className="text-muted-foreground">{canEdit ? "满分" : "自评分"}</span>
+                            {!canEdit && (
                               <>
                                 <span className="font-mono font-semibold text-foreground tabular-nums">{it.selfScore}</span>
                                 <span className="text-muted-foreground">/</span>
                               </>
                             )}
-                            <span className={`font-mono ${editable ? "text-foreground/70" : "text-muted-foreground"} tabular-nums`}>{it.itemScore}</span>
+                            <span className={`font-mono ${canEdit ? "text-foreground/70" : "text-muted-foreground"} tabular-nums`}>{it.itemScore}</span>
                           </div>
                         </div>
 
-                        {editable ? (
+                        {canEdit ? (
                           <>
                             <div>
                               <label className="text-[11px] text-muted-foreground mb-1 block">自评分</label>

@@ -373,7 +373,7 @@ export interface BqEntAssessRow {
   entName: string;
   selfScore: number;
   totalScore: number;
-  status: "已完成" | "考核中" | "待考核" | "待提交";
+  status: "已完成" | "考核中" | "待考核" | "待提交" | "已提交";
   reportFile?: BqEntAssessReportFile;
 }
 
@@ -400,7 +400,7 @@ export const bqEntAssessList: BqEntAssessRow[] = _bqEntNames.map(([name, self, t
   entName: name,
   selfScore: self,
   totalScore: total,
-  status: "已完成",
+  status: idx === 0 ? "待提交" : "已完成",
   reportFile: idx === 6 ? { name: "国网上海市电力公司2024考核报告.pdf", url: "#", uploadedAt: "2025-01-15" } : undefined,
 }));
 
