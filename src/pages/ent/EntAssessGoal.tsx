@@ -64,9 +64,18 @@ export default function EntAssessGoal() {
     </Tabs>
   );
 
+  const setYearStatus = (s: EntStatus) => {
+    if (scope === "district") {
+      setYearStatusDistrict((m) => ({ ...m, [year]: s }));
+      setMyRow((r) => ({ ...r, status: s }));
+    } else {
+      setYearStatusCity((m) => ({ ...m, [year]: s }));
+      setBqRow((r) => ({ ...r, status: s }));
+    }
+  };
+
   const handleSaveDraft = () => {
-    if (scope === "district") setMyRow((r) => ({ ...r, status: "draft" }));
-    else setBqRow((r) => ({ ...r, status: "draft" }));
+    setYearStatus("draft");
     toast.success("已保存草稿", {
       description: `${year} 年度目标分解填报内容已暂存，可稍后继续编辑。`,
     });
@@ -74,9 +83,20 @@ export default function EntAssessGoal() {
 
   const handleConfirmSubmit = () => {
     setSubmitOpen(false);
-    if (scope === "district") setMyRow((r) => ({ ...r, status: "submitted" }));
-    else setBqRow((r) => ({ ...r, status: "submitted" }));
+    setYearStatus("submitted");
     setSuccessOpen(true);
+  };
+
+  const yearStatusMap = scope === "district" ? yearStatusDistrict : yearStatusCity;
+  const yearDotClass = (s: EntStatus | undefined) => {
+    if (s === "submitted") return "bg-emerald-500";
+    if (s === "modified") return "bg-amber-500";
+    return "bg-muted-foreground/50"; // draft / 未提交
+  };
+  const yearStatusLabel = (s: EntStatus | undefined) => {
+    if (s === "submitted") return "已提交";
+    if (s === "modified") return "区级已修改";
+    return "未提交";
   };
 
   const statusBadge = () => {
