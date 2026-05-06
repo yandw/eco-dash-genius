@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Save, Send, CheckCircle2, Lock } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
