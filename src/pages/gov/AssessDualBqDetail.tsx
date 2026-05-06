@@ -1,21 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Download, Upload, Undo2, Save, FileText } from "lucide-react";
+import { ArrowLeft, Download, Upload, Undo2, Save, FileText, FileCheck2 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { PassBadge } from "@/components/assess/PassBadge";
 import { bqAssessDetail, type BqAssessDetailRow } from "@/mocks/assess";
 import { useBqAssessStore, getBqEnt, setBqReport, rollbackBqEnt } from "@/mocks/bqAssessStore";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-const cell = "px-2 py-1.5 align-top text-xs border-r border-b border-border";
+interface Group {
+  name: string;
+  groupScore: number;
+  items: Array<BqAssessDetailRow & { __idx: number }>;
+}
 
 export default function AssessDualBqDetail() {
   const { entId } = useParams<{ entId: string }>();
   const navigate = useNavigate();
-  useBqAssessStore(); // subscribe
+  useBqAssessStore();
   const row = entId ? getBqEnt(entId) : undefined;
   const reportInput = useRef<HTMLInputElement>(null);
 
@@ -25,21 +32,25 @@ export default function AssessDualBqDetail() {
     setDetail(bqAssessDetail.map((d) => ({ ...d })));
   }, [entId]);
 
+  // 按 groupName 分组
+  const groups: Group[] = useMemo(() => {
+    const out: Group[] = [];
+    let cur: Group | null = null;
+    detail.forEach((d, i) => {
+      if (d.groupName) {
+        cur = { name: d.groupName, groupScore: d.groupScore ?? 0, items: [] };
+        out.push(cur);
+      }
+      cur?.items.push({ ...d, __idx: i });
+    });
+    return out;
+  }, [detail]);
+
   const totals = useMemo(() => ({
     total: detail.reduce((s, d) => s + d.itemScore, 0),
     self: detail.reduce((s, d) => s + d.selfScore, 0),
     review: detail.reduce((s, d) => s + d.reviewScore, 0),
   }), [detail]);
-
-  const groupSpans = useMemo(() => {
-    const spans: Record<number, number> = {};
-    let curIdx = -1;
-    detail.forEach((d, i) => {
-      if (d.groupName) { curIdx = i; spans[i] = 1; }
-      else if (curIdx >= 0) spans[curIdx]++;
-    });
-    return spans;
-  }, [detail]);
 
   if (!row) {
     return (
@@ -62,6 +73,9 @@ export default function AssessDualBqDetail() {
     }
     e.target.value = "";
   };
+
+  const groupReviewSum = (g: Group) => g.items.reduce((s, x) => s + x.reviewScore, 0);
+  const groupSelfSum = (g: Group) => g.items.reduce((s, x) => s + x.selfScore, 0);
 
   return (
     <AppLayout side="gov" title="双控考核" subtitle={`${row.entName} · ${row.year}年节能目标考核评分`}>
@@ -90,9 +104,7 @@ export default function AssessDualBqDetail() {
             下载附件
           </Button>
         </div>
-        <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>
-          导出
-        </Button>
+        <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
         {row.reportFile ? (
           <Button
             size="sm"
@@ -105,7 +117,6 @@ export default function AssessDualBqDetail() {
               document.body.appendChild(a); a.click(); a.remove();
               toast.success(`正在下载 ${row.reportFile!.name}`);
             }}
-            title={row.reportFile.name}
           >
             <Download className="h-3.5 w-3.5 mr-1" />下载考评报告
           </Button>
@@ -132,115 +143,185 @@ export default function AssessDualBqDetail() {
         </Button>
       </div>
 
-      {/* 评分表 */}
-      <div className="rounded-md border border-border bg-card overflow-hidden">
-        <div className="overflow-auto">
-          <table className="min-w-[1300px] w-full border-collapse text-xs border-l border-t border-border">
-            <thead className="bg-primary/10">
-              <tr>
-                <th colSpan={10} className="px-3 py-2.5 text-center text-sm font-semibold border-r border-b border-border text-foreground">
-                  上海市工业"百家""千家"和通信业企业{row.year}年节能目标考核评分标准
-                </th>
-              </tr>
-              <tr className="bg-muted/60 text-muted-foreground">
-                <th className={cn(cell, "w-12 text-center font-medium")}>序号</th>
-                <th className={cn(cell, "w-32 text-center font-medium")}>考核指标</th>
-                <th className={cn(cell, "w-14 text-center font-medium")}>分值</th>
-                <th className={cn(cell, "w-14 text-center font-medium")}>分值</th>
-                <th className={cn(cell, "min-w-[300px] text-center font-medium")}>评分标准</th>
-                <th className={cn(cell, "w-14 text-center font-medium")}>自评分</th>
-                <th className={cn(cell, "w-32 text-center font-medium")}>评分依据</th>
-                <th className={cn(cell, "w-48 text-center font-medium")}>证明材料</th>
-                <th className={cn(cell, "w-14 text-center font-medium bg-warning/10")}>考评分</th>
-                <th className={cn(cell, "min-w-[160px] text-center font-medium bg-warning/10")}>评分依据</th>
-              </tr>
-            </thead>
-            <tbody>
-              {detail.map((d, i) => (
-                <tr key={i} className="hover:bg-accent/20">
-                  <td className={cn(cell, "text-center")}>{i + 1}</td>
-                  {d.groupName ? (
-                    <td rowSpan={groupSpans[i]} className={cn(cell, "text-center font-medium bg-muted/30 align-middle")}>
-                      {d.groupName}
-                    </td>
-                  ) : null}
-                  {d.groupName ? (
-                    <td rowSpan={groupSpans[i]} className={cn(cell, "text-center bg-muted/30 align-middle")}>
-                      {d.groupScore}
-                    </td>
-                  ) : null}
-                  <td className={cn(cell, "text-center")}>{d.itemScore}</td>
-                  <td className={cn(cell, "text-foreground/80 leading-relaxed")}>
-                    <span className="font-medium">{d.no}</span>　{d.criterion}
-                  </td>
-                  <td className={cn(cell, "text-center font-mono")}>{d.selfScore}</td>
-                  <td className={cn(cell, "text-foreground/70")}>{d.selfBasis || "—"}</td>
-                  <td className={cn(cell)}>
-                    {d.proofs.length ? (
-                      <div className="flex flex-col gap-1">
-                        {d.proofs.map((p, k) => (
-                          <button
-                            key={k}
-                            onClick={() => toast.success(`正在下载 ${p.name}`)}
-                            className="text-left text-primary hover:underline inline-flex items-start gap-1"
-                            title={p.name}
-                          >
-                            <Download className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                            <span className="truncate">{p.name}</span>
-                          </button>
-                        ))}
+      <div className="max-w-[1400px] mx-auto space-y-4">
+        {/* 企业基础信息 */}
+        <Card className="p-4">
+          <div className="text-sm font-semibold mb-3 inline-flex items-center gap-2">
+            <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
+            上海市工业"百家""千家"和通信业企业{row.year}年节能目标考核
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="space-y-1">
+              <div className="text-[11px] text-muted-foreground">企业名称</div>
+              <div className="text-sm font-medium text-foreground">{row.entName}</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[11px] text-muted-foreground">考核年份</div>
+              <div className="text-sm font-medium">{row.year}年</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[11px] text-muted-foreground">企业自评分</div>
+              <div className="text-lg font-semibold font-mono">{totals.self} <span className="text-xs text-muted-foreground font-normal">/ {totals.total}</span></div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[11px] text-muted-foreground">政府考评分</div>
+              <div className="text-lg font-semibold font-mono text-warning">{totals.review} <span className="text-xs text-muted-foreground font-normal">/ {totals.total}</span></div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[11px] text-muted-foreground">考核状态</div>
+              <div><PassBadge value={row.status} /></div>
+            </div>
+          </div>
+        </Card>
+
+        {/* 三大分组卡片 */}
+        {groups.map((g, gi) => {
+          const reviewSum = groupReviewSum(g);
+          const selfSum = groupSelfSum(g);
+          return (
+            <Card key={gi} className="overflow-hidden">
+              <div className="flex items-center justify-between gap-3 px-4 py-3 bg-primary/5 border-b border-border">
+                <div className="inline-flex items-center gap-2">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">{gi + 1}</span>
+                  <span className="text-sm font-semibold text-foreground">{g.name}</span>
+                  <Badge variant="outline" className="border-primary/30 text-primary">满分 {g.groupScore}</Badge>
+                </div>
+                <div className="flex items-center gap-4 text-xs">
+                  <div>自评 <span className="font-mono font-semibold text-foreground">{selfSum}</span> / {g.groupScore}</div>
+                  <div>考评 <span className="font-mono font-semibold text-warning">{reviewSum}</span> / {g.groupScore}</div>
+                </div>
+              </div>
+
+              <div className="divide-y divide-border">
+                {g.items.map((it) => (
+                  <div key={it.__idx} className="p-4 space-y-3">
+                    {/* 评分项标题 */}
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="inline-flex items-center gap-2">
+                        <Badge variant="outline" className="font-mono text-xs">{it.no}</Badge>
+                        <span className="text-xs text-muted-foreground">单项分值</span>
+                        <span className="text-sm font-semibold text-foreground">{it.itemScore} 分</span>
                       </div>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className={cn(cell, "bg-warning/5")}>
-                    <Input
-                      type="number"
-                      value={d.reviewScore}
-                      max={d.itemScore}
-                      min={0}
-                      onChange={(e) => updateReview(i, { reviewScore: Number(e.target.value) })}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          (e.target as HTMLInputElement).blur();
-                        }
-                      }}
-                      className="h-7 text-xs text-center"
-                    />
-                  </td>
-                  <td className={cn(cell, "bg-warning/5")}>
-                    <Textarea
-                      value={d.reviewBasis}
-                      onChange={(e) => updateReview(i, { reviewBasis: e.target.value })}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          (e.target as HTMLTextAreaElement).blur();
-                        }
-                      }}
-                      placeholder="回车确认"
-                      className="min-h-[28px] h-7 text-xs resize-none py-1"
-                      rows={1}
-                    />
-                  </td>
-                </tr>
-              ))}
-              <tr className="bg-primary/5 font-semibold text-foreground">
-                <td colSpan={2} className={cn(cell, "text-center")}>小计</td>
-                <td className={cn(cell, "text-center")}>{totals.total}</td>
-                <td className={cn(cell, "text-center")}>{totals.total}</td>
-                <td className={cell}></td>
-                <td className={cn(cell, "text-center font-mono")}>{totals.self}</td>
-                <td className={cell}></td>
-                <td className={cell}></td>
-                <td className={cn(cell, "text-center font-mono bg-warning/10")}>{totals.review}</td>
-                <td className={cn(cell, "bg-warning/10")}></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                    </div>
+
+                    {/* 评分标准 */}
+                    <div className="rounded-md bg-muted/40 border border-border px-3 py-2 text-xs leading-relaxed text-foreground/80">
+                      <span className="font-medium text-muted-foreground mr-1">评分标准：</span>{it.criterion}
+                    </div>
+
+                    {/* 自评 + 考评 双栏 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      {/* 企业自评 */}
+                      <div className="rounded-md border border-border bg-background p-3 space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
+                            <span className="inline-block h-3 w-1 rounded-sm bg-muted-foreground/60" />
+                            企业自评
+                          </div>
+                          <div className="inline-flex items-center gap-1 text-xs">
+                            <span className="text-muted-foreground">自评分</span>
+                            <span className="font-mono font-semibold text-foreground tabular-nums">{it.selfScore}</span>
+                            <span className="text-muted-foreground">/ {it.itemScore}</span>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[11px] text-muted-foreground mb-1">评分依据</div>
+                          <div className="text-xs text-foreground/80 leading-relaxed min-h-[44px] rounded bg-muted/30 px-2 py-1.5">
+                            {it.selfBasis || <span className="text-muted-foreground">—</span>}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[11px] text-muted-foreground mb-1">证明材料</div>
+                          {it.proofs.length ? (
+                            <div className="flex flex-col gap-1.5">
+                              {it.proofs.map((p, k) => (
+                                <button
+                                  key={k}
+                                  onClick={() => toast.success(`正在下载 ${p.name}`)}
+                                  className="flex items-center gap-1.5 px-2 py-1.5 rounded border border-border bg-card hover:border-primary/40 hover:bg-primary/5 text-left text-xs"
+                                  title={p.name}
+                                >
+                                  <FileCheck2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
+                                  <span className="flex-1 truncate text-foreground/80">{p.name}</span>
+                                  <Download className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                                </button>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="text-xs text-muted-foreground px-2 py-1.5">未提供证明材料</div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 政府考评 */}
+                      <div className="rounded-md border border-warning/30 bg-warning/5 p-3 space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
+                            <span className="inline-block h-3 w-1 rounded-sm bg-warning" />
+                            政府考评
+                          </div>
+                          <div className="inline-flex items-center gap-1 text-xs">
+                            <span className="text-muted-foreground">满分</span>
+                            <span className="font-mono text-foreground/70 tabular-nums">{it.itemScore}</span>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-muted-foreground mb-1 block">考评分</label>
+                          <Input
+                            type="number"
+                            value={it.reviewScore}
+                            max={it.itemScore}
+                            min={0}
+                            step="0.5"
+                            onChange={(e) => updateReview(it.__idx, { reviewScore: Number(e.target.value) })}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") { e.preventDefault(); (e.target as HTMLInputElement).blur(); }
+                            }}
+                            className="h-8 text-sm font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-muted-foreground mb-1 block">评分依据</label>
+                          <Textarea
+                            value={it.reviewBasis}
+                            onChange={(e) => updateReview(it.__idx, { reviewBasis: e.target.value })}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
+                                (e.target as HTMLTextAreaElement).blur();
+                              }
+                            }}
+                            placeholder="请输入考评依据，回车确认（Shift+Enter 换行）"
+                            className="text-xs resize-none"
+                            rows={3}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          );
+        })}
+
+        {/* 底部小计 */}
+        <Card className="p-4 sticky bottom-2 z-10 shadow-lg">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="text-sm font-semibold text-foreground">合计</div>
+            <div className="flex items-center gap-6 text-sm">
+              <div>满分 <span className="font-mono font-semibold text-foreground tabular-nums">{totals.total}</span></div>
+              <div>企业自评 <span className="font-mono font-semibold text-foreground tabular-nums">{totals.self}</span></div>
+              <div>政府考评 <span className="font-mono font-semibold text-warning text-base tabular-nums">{totals.review}</span></div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="h-9" onClick={() => navigate(-1)}>取消</Button>
+              <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已保存考评分")}>
+                <Save className="h-3.5 w-3.5 mr-1" />保存
+              </Button>
+            </div>
+          </div>
+        </Card>
       </div>
     </AppLayout>
   );
