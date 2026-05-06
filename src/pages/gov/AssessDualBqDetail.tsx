@@ -309,7 +309,7 @@ export default function AssessDualBqDetail() {
                               }
                             }}
                             placeholder="请输入考评依据，回车确认（Shift+Enter 换行）"
-                            className="text-xs resize-none"
+                            className="text-xs resize-none bg-white"
                             rows={3}
                           />
                         </div>
