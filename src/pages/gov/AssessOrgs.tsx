@@ -178,11 +178,12 @@ export default function AssessOrgs() {
                   )}
                 </TableBody>
               </Table>
-              <SimplePagination
+              <ListPagination
                 total={list.length}
                 page={page}
-                pageSize={PAGE_SIZE}
+                pageSize={pageSize}
                 onPageChange={setPage}
+                onPageSizeChange={setPageSize}
               />
             </div>
           </TabsContent>
