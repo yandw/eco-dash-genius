@@ -339,8 +339,8 @@ export const districtAssessSummary: DistrictAssessSummary[] = districts.map((d) 
     name: d.name,
     count: districtCounts[d.id],
     status,
-    assessTime: status === "完成考核" || status === "已考核" ? "2026-03-20" : null,
-    hasStampedDoc: status === "完成考核" || status === "已考核",
+    assessTime: status === "完成考核" ? "2026-03-20" : null,
+    hasStampedDoc: status === "完成考核",
   };
 });
 
