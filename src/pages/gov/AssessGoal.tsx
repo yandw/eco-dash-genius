@@ -168,7 +168,30 @@ export default function AssessGoal() {
             <DistrictListTable variant="goal" rows={districtGoalSummary} year={year} onAction={(id) => navigate(`/gov/assess/goal/district/${id}`)} />
           </TabsContent>
 
-          <TabsContent value="bq" className="mt-4">
+          <TabsContent value="bq" className="mt-4 space-y-4">
+            {(() => {
+              const bqTotal = bqGoals.reduce((s, r) => s + (r.totalGoal ?? 0), 0);
+              const bqIntens = bqGoals.filter((r) => r.intensityGoal != null);
+              const bqAvgIntensity = (bqIntens.reduce((s, r) => s + (r.intensityGoal ?? 0), 0) / Math.max(1, bqIntens.length)).toFixed(3);
+              const bqCompleted = bqGoals.filter((r) => r.totalGoal != null || r.intensityGoal != null).length;
+              const bqModified = bqGoals.filter((r) => r.status === "modified").length;
+              return (
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{bqGoals.length}</div></Card>
+                    <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{bqCompleted}</div></Card>
+                    <Card className="p-3"><div className="text-[11px] text-muted-foreground">已修改</div><div className="text-lg font-semibold text-warning">{bqModified}</div></Card>
+                    <Card className="p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{bqTotal.toLocaleString()}</div></Card>
+                    <Card className="p-3"><div className="text-[11px] text-muted-foreground">平均强度</div><div className="text-lg font-semibold">{bqAvgIntensity}</div></Card>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button variant="outline" size="sm" className="h-9" onClick={() => toast.success("已导出 Excel")}>
+                      <Download className="h-3.5 w-3.5 mr-1" />导出
+                    </Button>
+                  </div>
+                </>
+              );
+            })()}
             <BqGoalTable rows={bqGoals} mode="city-view" />
           </TabsContent>
         </Tabs>
