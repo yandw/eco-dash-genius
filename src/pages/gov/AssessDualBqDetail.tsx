@@ -1,54 +1,53 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Download, Upload, Undo2, X, FileText } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, Download, Upload, Undo2, Save, FileText } from "lucide-react";
+import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { bqAssessDetail, type BqEntAssessRow, type BqAssessDetailRow } from "@/mocks/assess";
+import { bqAssessDetail, type BqAssessDetailRow } from "@/mocks/assess";
+import { useBqAssessStore, getBqEnt, setBqReport, rollbackBqEnt } from "@/mocks/bqAssessStore";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-interface Props {
-  open: boolean;
-  row: BqEntAssessRow | null;
-  onClose: () => void;
-  onRollback: (id: string) => void;
-  onUploadReport: (id: string, file: { name: string; url: string; uploadedAt: string }) => void;
-}
-
 const cell = "px-2 py-1.5 align-top text-xs border-r border-b border-border";
 
-export function BqEntAssessDetailDialog({ open, row, onClose, onRollback, onUploadReport }: Props) {
-  const [detail, setDetail] = useState<BqAssessDetailRow[]>(bqAssessDetail);
+export default function AssessDualBqDetail() {
+  const { entId } = useParams<{ entId: string }>();
+  const navigate = useNavigate();
+  useBqAssessStore(); // subscribe
+  const row = entId ? getBqEnt(entId) : undefined;
   const reportInput = useRef<HTMLInputElement>(null);
 
+  const [detail, setDetail] = useState<BqAssessDetailRow[]>(() => bqAssessDetail.map((d) => ({ ...d })));
+
   useEffect(() => {
-    if (open) setDetail(bqAssessDetail.map((d) => ({ ...d })));
-  }, [open, row?.id]);
+    setDetail(bqAssessDetail.map((d) => ({ ...d })));
+  }, [entId]);
 
-  const totals = useMemo(() => {
-    const total = detail.reduce((s, d) => s + d.itemScore, 0);
-    const self = detail.reduce((s, d) => s + d.selfScore, 0);
-    const review = detail.reduce((s, d) => s + d.reviewScore, 0);
-    return { total, self, review };
-  }, [detail]);
+  const totals = useMemo(() => ({
+    total: detail.reduce((s, d) => s + d.itemScore, 0),
+    self: detail.reduce((s, d) => s + d.selfScore, 0),
+    review: detail.reduce((s, d) => s + d.reviewScore, 0),
+  }), [detail]);
 
-  // 把含 groupName 的行做 rowSpan 计算
   const groupSpans = useMemo(() => {
     const spans: Record<number, number> = {};
     let curIdx = -1;
     detail.forEach((d, i) => {
-      if (d.groupName) {
-        curIdx = i;
-        spans[i] = 1;
-      } else if (curIdx >= 0) {
-        spans[curIdx]++;
-      }
+      if (d.groupName) { curIdx = i; spans[i] = 1; }
+      else if (curIdx >= 0) spans[curIdx]++;
     });
     return spans;
   }, [detail]);
 
-  if (!row) return null;
+  if (!row) {
+    return (
+      <AppLayout side="gov" title="双控考核" subtitle="">
+        <div className="p-8 text-center text-muted-foreground">未找到企业数据</div>
+      </AppLayout>
+    );
+  }
 
   const updateReview = (i: number, patch: Partial<BqAssessDetailRow>) => {
     setDetail((prev) => prev.map((d, idx) => (idx === i ? { ...d, ...patch } : d)));
@@ -56,67 +55,90 @@ export function BqEntAssessDetailDialog({ open, row, onClose, onRollback, onUplo
 
   const handleReportUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
-    if (f) {
+    if (f && entId) {
       const url = URL.createObjectURL(f);
-      onUploadReport(row.id, { name: f.name, url, uploadedAt: new Date().toISOString().slice(0, 10) });
+      setBqReport(entId, { name: f.name, url, uploadedAt: new Date().toISOString().slice(0, 10) });
       toast.success(`已上传考评报告：${f.name}`);
     }
     e.target.value = "";
   };
 
-  const downloadAttachment = () => {
-    toast.success("正在下载企业自评相关附件.zip");
-  };
-
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent
-        className="max-w-[95vw] w-[1400px] h-[90vh] p-0 flex flex-col gap-0"
-        onInteractOutside={(e) => e.preventDefault()}
-      >
-        <input ref={reportInput} type="file" className="hidden" accept=".pdf,.zip,.doc,.docx" onChange={handleReportUpload} />
+    <AppLayout side="gov" title="双控考核" subtitle={`${row.entName} · ${row.year}年节能目标考核评分`}>
+      <input ref={reportInput} type="file" className="hidden" accept=".pdf,.zip,.doc,.docx" onChange={handleReportUpload} />
 
-        {/* 顶部工具栏 */}
-        <div className="flex items-center gap-3 px-5 py-3 border-b border-border bg-muted/30 flex-wrap">
-          <h2 className="text-base font-semibold text-foreground mr-2">企业节能"双控"责任评价考核</h2>
-          <div className="flex-1 min-w-[200px] flex items-center gap-2">
-            <div className="flex-1 max-w-md flex items-center gap-2 px-3 h-9 rounded-md border border-border bg-background text-xs">
-              <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="truncate text-foreground/80">企业自评相关附件（更新版）.zip</span>
-            </div>
-            <Button size="sm" className="h-9 bg-primary text-primary-foreground" onClick={downloadAttachment}>
-              下载附件
-            </Button>
+      <div className="text-xs text-muted-foreground mb-3 flex items-center gap-1">
+        <button className="hover:text-primary" onClick={() => navigate("/gov/assess/dual")}>双控考核</button>
+        <span>/</span>
+        <button className="hover:text-primary" onClick={() => navigate("/gov/assess/dual")}>"百家""千家"通信业企业能耗考核</button>
+        <span>/</span>
+        <span className="text-foreground/80">{row.entName}</span>
+      </div>
+
+      {/* 顶部工具栏 */}
+      <div className="panel p-3 mb-4 flex items-center gap-3 flex-wrap">
+        <Button variant="outline" size="sm" className="h-9" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回
+        </Button>
+        <h2 className="text-base font-semibold text-foreground mr-2">企业节能"双控"责任评价考核</h2>
+        <div className="flex-1 min-w-[200px] flex items-center gap-2">
+          <div className="flex-1 max-w-md flex items-center gap-2 px-3 h-9 rounded-md border border-border bg-background text-xs">
+            <FileText className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="truncate text-foreground/80">企业自评相关附件（更新版）.zip</span>
           </div>
-          <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>
-            导出
+          <Button size="sm" className="h-9 bg-primary text-primary-foreground" onClick={() => toast.success("正在下载企业自评相关附件.zip")}>
+            下载附件
           </Button>
-          <Button size="sm" className="h-9 bg-success text-success-foreground hover:bg-success/90" onClick={() => reportInput.current?.click()}>
-            <Upload className="h-3.5 w-3.5 mr-1" />上传考评报告
-          </Button>
+        </div>
+        <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>
+          导出
+        </Button>
+        {row.reportFile ? (
           <Button
             size="sm"
             variant="outline"
-            className="h-9 text-destructive border-destructive/40 hover:text-destructive"
+            className="h-9 text-success border-success/40 hover:text-success"
             onClick={() => {
-              onRollback(row.id);
-              toast.success("已退回重填");
-              onClose();
+              const a = document.createElement("a");
+              a.href = row.reportFile!.url;
+              a.download = row.reportFile!.name;
+              document.body.appendChild(a); a.click(); a.remove();
+              toast.success(`正在下载 ${row.reportFile!.name}`);
             }}
+            title={row.reportFile.name}
           >
-            <Undo2 className="h-3.5 w-3.5 mr-1" />退回重填
+            <Download className="h-3.5 w-3.5 mr-1" />下载考评报告
           </Button>
-          <Button size="sm" variant="ghost" className="h-9" onClick={onClose}>
-            <X className="h-3.5 w-3.5 mr-1" />关闭
-          </Button>
-        </div>
+        ) : null}
+        <Button size="sm" className="h-9 bg-success text-success-foreground hover:bg-success/90" onClick={() => reportInput.current?.click()}>
+          <Upload className="h-3.5 w-3.5 mr-1" />{row.reportFile ? "重新上传" : "上传考评报告"}
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-9 text-destructive border-destructive/40 hover:text-destructive"
+          onClick={() => {
+            if (entId) {
+              rollbackBqEnt(entId);
+              toast.success("已退回重填");
+              navigate("/gov/assess/dual");
+            }
+          }}
+        >
+          <Undo2 className="h-3.5 w-3.5 mr-1" />退回重填
+        </Button>
+        <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已保存考评分")}>
+          <Save className="h-3.5 w-3.5 mr-1" />保存
+        </Button>
+      </div>
 
-        {/* 表格 */}
-        <div className="flex-1 overflow-auto px-5 py-3">
+      {/* 评分表 */}
+      <div className="rounded-md border border-border bg-card overflow-hidden">
+        <div className="overflow-auto">
           <table className="min-w-[1300px] w-full border-collapse text-xs border-l border-t border-border">
             <thead className="bg-primary/10">
               <tr>
-                <th colSpan={11} className="px-3 py-2.5 text-center text-sm font-semibold border-r border-b border-border text-foreground">
+                <th colSpan={10} className="px-3 py-2.5 text-center text-sm font-semibold border-r border-b border-border text-foreground">
                   上海市工业"百家""千家"和通信业企业{row.year}年节能目标考核评分标准
                 </th>
               </tr>
@@ -219,15 +241,7 @@ export function BqEntAssessDetailDialog({ open, row, onClose, onRollback, onUplo
             </tbody>
           </table>
         </div>
-
-        {/* 底部保存 */}
-        <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border bg-muted/20">
-          <Button variant="outline" size="sm" className="h-9" onClick={onClose}>取消</Button>
-          <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => { toast.success("已保存考评分"); onClose(); }}>
-            保存
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </AppLayout>
   );
 }

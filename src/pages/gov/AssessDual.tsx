@@ -10,14 +10,12 @@ import { DistrictListTable } from "@/components/assess/DistrictListTable";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import { StampedDocDialog } from "@/components/assess/StampedDocDialog";
 import { BqEntAssessTable } from "@/components/assess/BqEntAssessTable";
-import { BqEntAssessDetailDialog } from "@/components/assess/BqEntAssessDetailDialog";
 import {
   energyAssess,
   districtAssessSummary,
-  bqEntAssessList,
   type EnergyAssessRow,
-  type BqEntAssessRow,
 } from "@/mocks/assess";
+import { useBqAssessStore, setBqReport } from "@/mocks/bqAssessStore";
 import {
   useAssessStatusStore,
   submitAssess,
@@ -70,8 +68,7 @@ export default function AssessDual() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [rows, setRows] = useState<EnergyAssessRow[]>(energyAssess);
   const [uploadOpen, setUploadOpen] = useState(false);
-  const [bqRows, setBqRows] = useState<BqEntAssessRow[]>(bqEntAssessList);
-  const [bqDetailRow, setBqDetailRow] = useState<BqEntAssessRow | null>(null);
+  const bqRows = useBqAssessStore();
   const statusStore = useAssessStatusStore();
 
   const bqStats = useMemo(() => ({
@@ -82,12 +79,7 @@ export default function AssessDual() {
     uploaded: bqRows.filter((r) => !!r.reportFile).length,
   }), [bqRows]);
 
-  const updateBqReport = (id: string, file: { name: string; url: string; uploadedAt: string }) => {
-    setBqRows((prev) => prev.map((r) => (r.id === id ? { ...r, reportFile: file } : r)));
-  };
-  const rollbackBq = (id: string) => {
-    setBqRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "待考核" as const } : r)));
-  };
+
 
   // 当前区（区级管理员）
   const myDistrictId = (currentUser as unknown as { districtId?: string }).districtId ?? "qingpu";
@@ -161,16 +153,10 @@ export default function AssessDual() {
             </div>
             <BqEntAssessTable
               rows={bqRows}
-              onOpenDetail={setBqDetailRow}
-              onUploadReport={updateBqReport}
+              onOpenDetail={(r) => navigate(`/gov/assess/dual/bq/${r.id}`)}
+              onUploadReport={setBqReport}
             />
-            <BqEntAssessDetailDialog
-              open={!!bqDetailRow}
-              row={bqDetailRow}
-              onClose={() => setBqDetailRow(null)}
-              onRollback={rollbackBq}
-              onUploadReport={updateBqReport}
-            />
+
           </TabsContent>
         </Tabs>
 
