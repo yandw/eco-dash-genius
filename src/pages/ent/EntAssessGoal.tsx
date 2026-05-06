@@ -24,19 +24,33 @@ const CURRENT_YEAR = 2026;
 
 type EntStatus = "draft" | "submitted" | "modified";
 
+// 不同年度的初始填报状态：演示历史已提交、当期草稿、过往草稿等不同情形
+const INITIAL_YEAR_STATUS: Record<number, EntStatus> = {
+  2026: "draft",       // 本期 · 草稿（未提交）
+  2025: "submitted",   // 已提交
+  2024: "submitted",   // 已提交
+  2023: "modified",    // 区级已修改 · 待重新提交
+  2022: "submitted",   // 已提交
+};
+
 export default function EntAssessGoal() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [scope, setScope] = useState<"district" | "city">("district");
-  // 默认初始化为草稿，便于演示完整业务流程
-  const [myRow, setMyRow] = useState<CarbonGoalRow>({ ...carbonGoals[0], status: "draft" });
-  const [bqRow, setBqRow] = useState<BqGoalRow>({ ...bqGoals[1], status: "draft" });
+  // 按年度维护填报状态
+  const [yearStatusDistrict, setYearStatusDistrict] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
+  const [yearStatusCity, setYearStatusCity] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
+
+  const currentYearStatus = scope === "district" ? yearStatusDistrict[year] : yearStatusCity[year];
+
+  const [myRow, setMyRow] = useState<CarbonGoalRow>({ ...carbonGoals[0], status: currentYearStatus });
+  const [bqRow, setBqRow] = useState<BqGoalRow>({ ...bqGoals[1], status: currentYearStatus });
   const [submitOpen, setSubmitOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
 
   const updateMy = (_id: string, patch: Partial<CarbonGoalRow>) => setMyRow((r) => ({ ...r, ...patch }));
   const updateBq = (_id: string, patch: Partial<BqGoalRow>) => setBqRow((r) => ({ ...r, ...patch }));
 
-  const status = (scope === "district" ? myRow.status : bqRow.status) as EntStatus;
+  const status: EntStatus = currentYearStatus ?? "draft";
   const submitted = status === "submitted";
   // 政府侧修改后回退到企业侧时（modified），企业可再次编辑并重新提交
   const editable = !submitted;
