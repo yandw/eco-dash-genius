@@ -147,24 +147,27 @@ export default function Archives() {
         </span>
         <div className="flex flex-wrap gap-2">
           {YEARS.map((y) => (
-            <Button
-              key={y}
-              size="sm"
-              variant={selectedYear === y ? "default" : "outline"}
-              className={
-                selectedYear === y
-                  ? "h-8 min-w-[68px] bg-gradient-primary text-primary-foreground border-0"
-                  : "h-8 min-w-[68px]"
-              }
-              onClick={() => setSelectedYear(y)}
-            >
-              {y}
-            </Button>
+            <div key={y} className="relative">
+              <Button
+                size="sm"
+                variant={selectedYear === y ? "default" : "outline"}
+                className={
+                  selectedYear === y
+                    ? "h-8 min-w-[68px] bg-gradient-primary text-primary-foreground border-0"
+                    : "h-8 min-w-[68px]"
+                }
+                onClick={() => setSelectedYear(y)}
+              >
+                {y}
+              </Button>
+              {y === CURRENT_YEAR && (
+                <span className="absolute -top-1.5 -right-1.5 px-1.5 h-4 leading-4 rounded-full bg-primary text-primary-foreground text-[10px] font-medium shadow-sm pointer-events-none">
+                  本期
+                </span>
+              )}
+            </div>
           ))}
         </div>
-        {selectedYear === CURRENT_YEAR && (
-          <span className="text-[11px] text-primary ml-1">本期</span>
-        )}
       </div>
 
       {/* KPI 行 */}
