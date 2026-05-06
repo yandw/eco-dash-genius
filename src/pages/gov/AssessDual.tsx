@@ -153,16 +153,10 @@ export default function AssessDual() {
             </div>
             <BqEntAssessTable
               rows={bqRows}
-              onOpenDetail={setBqDetailRow}
-              onUploadReport={updateBqReport}
+              onOpenDetail={(r) => navigate(`/gov/assess/dual/bq/${r.id}`)}
+              onUploadReport={setBqReport}
             />
-            <BqEntAssessDetailDialog
-              open={!!bqDetailRow}
-              row={bqDetailRow}
-              onClose={() => setBqDetailRow(null)}
-              onRollback={rollbackBq}
-              onUploadReport={updateBqReport}
-            />
+
           </TabsContent>
         </Tabs>
 
