@@ -35,8 +35,8 @@ const ro = "px-3 py-2 rounded-md bg-muted/50 border border-border text-sm min-h-
 
 function rowStatus(r: EntAssessYearRow | undefined): AssessStatus {
   if (!r) return "pending";
-  if (r.totalPass === "—" || r.intensityPass === "—") return "pending";
-  return r.totalPass === "达标" && r.intensityPass === "达标" ? "passed" : "failed";
+  if (r.assessResult === "—") return "pending";
+  return r.assessResult === "完成" ? "passed" : "failed";
 }
 
 export default function EntAssessDual() {
