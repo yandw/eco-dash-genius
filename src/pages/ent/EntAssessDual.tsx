@@ -91,6 +91,14 @@ export default function EntAssessDual() {
     );
   };
 
+  if (entType === "city") {
+    return (
+      <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
+        <EntAssessDualBqBody editable />
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle={`${year} 年度`}>
       <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
