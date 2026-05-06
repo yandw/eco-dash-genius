@@ -347,13 +347,13 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
                         </div>
                         <div>
                           <div className="text-[11px] text-muted-foreground mb-1">考评分</div>
-                          <div className="text-sm font-mono font-semibold text-foreground rounded bg-background border border-border px-2 py-1.5 min-h-[32px] flex items-center">
+                          <div className="text-sm font-mono font-semibold text-foreground">
                             {it.reviewScore}
                           </div>
                         </div>
                         <div>
                           <div className="text-[11px] text-muted-foreground mb-1">评分依据</div>
-                          <div className="text-xs text-foreground/80 leading-relaxed min-h-[44px] rounded bg-background border border-border px-2 py-1.5">
+                          <div className="text-xs text-foreground/80 leading-relaxed whitespace-pre-wrap">
                             {it.reviewBasis || <span className="text-muted-foreground">—</span>}
                           </div>
                         </div>
