@@ -26,7 +26,7 @@ type EntStatus = "draft" | "submitted" | "modified";
 
 // 不同年度的初始填报状态：演示历史已提交、当期已被中心修改、过往草稿等不同情形
 const INITIAL_YEAR_STATUS: Record<number, EntStatus> = {
-  2026: "modified",    // 本期 · 中心负责人已修改，需企业确认后重新提交
+  2026: "draft",       // 本期 · 未提交（企业可编辑），但中心已对部分字段进行同步调整
   2025: "submitted",   // 已提交
   2024: "submitted",   // 已提交
   2023: "draft",       // 未提交
@@ -63,7 +63,7 @@ export default function EntAssessGoal() {
 
   const [myRow, setMyRow] = useState<CarbonGoalRow>({
     ...carbonGoals[0],
-    status: "modified",
+    status: "draft",
     total2026: 28300,
     intensity2026: 0.205,
     changes: DEMO_CHANGES_2026,
@@ -77,9 +77,8 @@ export default function EntAssessGoal() {
 
   const status: EntStatus = currentYearStatus ?? "draft";
   const submitted = status === "submitted";
-  const modified = status === "modified";
-  // 仅草稿状态可编辑；已提交、中心已修改均锁定（中心修改后无需企业再次确认提交）
-  const editable = status === "draft";
+  // 仅已提交锁定；未提交（含中心已同步调整）均可编辑
+  const editable = !submitted;
 
   const headerScope = (
     <Tabs value={scope} onValueChange={(v) => setScope(v as "district" | "city")}>
@@ -132,15 +131,9 @@ export default function EntAssessGoal() {
           <CheckCircle2 className="h-3.5 w-3.5" />已提交
         </Badge>
       );
-    if (modified)
-      return (
-        <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 dark:text-amber-400 inline-flex items-center gap-1">
-          <CheckCircle2 className="h-3.5 w-3.5" />已提交 · 中心已调整目标值
-        </Badge>
-      );
     return (
       <Badge variant="outline" className="text-xs border-muted-foreground/40 text-muted-foreground">
-        草稿
+        未提交
       </Badge>
     );
   };
@@ -198,10 +191,9 @@ export default function EntAssessGoal() {
           {statusBadge()}
         </div>
         <div className="flex items-center gap-2">
-          {submitted || modified ? (
+          {submitted ? (
             <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
-              <Lock className="h-3.5 w-3.5" />
-              {modified ? "中心负责人已调整目标值，最终目标以中心调整后为准" : "提交后不可修改，如需调整请联系主管部门"}
+              <Lock className="h-3.5 w-3.5" />提交后不可修改，如需调整请联系主管部门
             </span>
           ) : (
             <>
@@ -220,7 +212,7 @@ export default function EntAssessGoal() {
         </div>
       </div>
 
-      {scope === "district" && modified && <ChangeAlert changes={myRow.changes} />}
+      {scope === "district" && myRow.changes.length > 0 && <ChangeAlert changes={myRow.changes} />}
 
       {submitted && (
         <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
