@@ -29,15 +29,14 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function Field({ label, children, className }: { label: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("space-y-1.5", className)}>
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="text-sm">{children}</div>
+    <div className={cn("space-y-1", className)}>
+      <div className="text-[11px] text-muted-foreground">{label}</div>
+      <div className="text-sm font-medium text-foreground">{children}</div>
     </div>
   );
 }
 
-const ro = "px-3 py-2 rounded-md bg-muted/50 border border-border text-sm min-h-[36px] flex items-center";
-const roEditable = "px-3 py-2 rounded-md bg-background border border-input text-sm min-h-[36px] flex items-center";
+const ro = "text-sm font-medium text-foreground";
 
 function rowStatus(r: EntAssessYearRow | undefined): AssessStatus {
   if (!r) return "failed";
@@ -191,11 +190,9 @@ export default function EntAssessDual() {
               <Field label="实际值"><div className={ro}>{currentRow.totalActual}</div></Field>
               <Field label="扣除绿电绿证可再生能源的能耗总量"><div className={ro}>{currentRow.totalActualNetGreen}</div></Field>
               <Field label="是否达标">
-                <div className={cn(ro, "justify-start")}>
-                  {currentRow.totalPass === "—"
-                    ? <span className="text-muted-foreground">—</span>
-                    : <PassBadge value={currentRow.totalPass} />}
-                </div>
+                {currentRow.totalPass === "—"
+                  ? <span className="text-muted-foreground text-sm">—</span>
+                  : <PassBadge value={currentRow.totalPass} />}
               </Field>
             </div>
           </Card>
@@ -209,11 +206,9 @@ export default function EntAssessDual() {
               <Field label="实际值"><div className={ro}>{currentRow.intensityActual}</div></Field>
               <Field label="扣除绿电绿证可再生能源的能耗强度"><div className={ro}>{currentRow.intensityActualNetGreen}</div></Field>
               <Field label="是否达标">
-                <div className={cn(ro, "justify-start")}>
-                  {currentRow.intensityPass === "—"
-                    ? <span className="text-muted-foreground">—</span>
-                    : <PassBadge value={currentRow.intensityPass} />}
-                </div>
+                {currentRow.intensityPass === "—"
+                  ? <span className="text-muted-foreground text-sm">—</span>
+                  : <PassBadge value={currentRow.intensityPass} />}
               </Field>
             </div>
           </Card>
@@ -222,17 +217,15 @@ export default function EntAssessDual() {
             <SectionTitle>双控考核结论</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <Field label="考核结果">
-                <div className={cn(ro, "justify-start")}>
-                  {effectiveResult ? (
-                    <PassBadge value={effectiveResult} />
-                  ) : (
-                    <span className="text-muted-foreground">待区级管理员填写</span>
-                  )}
-                </div>
+                {effectiveResult ? (
+                  <PassBadge value={effectiveResult} />
+                ) : (
+                  <span className="text-muted-foreground text-sm">待区级管理员填写</span>
+                )}
               </Field>
               <Field label="备注">
-                <div className={cn(ro, "min-h-[80px] items-start py-2 whitespace-pre-wrap leading-relaxed")}>
-                  {currentRow.remark || <span className="text-muted-foreground">—</span>}
+                <div className="text-sm font-medium text-foreground whitespace-pre-wrap leading-relaxed">
+                  {currentRow.remark || <span className="text-muted-foreground font-normal">—</span>}
                 </div>
               </Field>
             </div>
