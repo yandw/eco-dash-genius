@@ -51,19 +51,31 @@ export default function EntAssessDual() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const ent = energyAssess[0];
   const allRows = useMemo(() => getEntAssess(ent.id), [ent.id]);
+  const role = getCurrentRole();
+  const isDistrictAdmin = role === "district_admin";
 
-  // 年度状态映射：基于 mock 现有 3 年（2024/2025/2026），其余年份给一个演示状态
+  // 区级管理员手动覆盖的考核结果（按年份保存）
+  const [resultOverride, setResultOverride] = useState<Record<number, "完成" | "未完成" | "">>({});
+
+  // 年度状态映射：手动覆盖优先，其次系统判定
   const yearStatusMap = useMemo<Record<number, AssessStatus>>(() => {
     const map: Record<number, AssessStatus> = {};
     YEARS.forEach((y) => {
-      const r = allRows.find((x) => x.year === y);
-      map[y] = r ? rowStatus(r) : "pending";
+      const override = resultOverride[y];
+      if (override === "完成") map[y] = "passed";
+      else if (override === "未完成") map[y] = "failed";
+      else {
+        const r = allRows.find((x) => x.year === y);
+        map[y] = r ? rowStatus(r) : "pending";
+      }
     });
     return map;
-  }, [allRows]);
+  }, [allRows, resultOverride]);
 
   const currentRow = allRows.find((r) => r.year === year);
   const status = yearStatusMap[year];
+  const currentOverride = resultOverride[year] || "";
+  const effectiveResult: string = currentOverride || (currentRow?.assessResult ?? "—");
 
   const yearDotClass = (s: AssessStatus) =>
     s === "passed" ? "bg-emerald-500" : s === "failed" ? "bg-destructive" : "bg-muted-foreground/50";
