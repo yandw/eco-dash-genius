@@ -26,7 +26,7 @@ type EntStatus = "draft" | "submitted" | "modified";
 
 // 不同年度的初始填报状态：演示历史已提交、当期已被中心修改、过往草稿等不同情形
 const INITIAL_YEAR_STATUS: Record<number, EntStatus> = {
-  2026: "modified",    // 本期 · 中心负责人已修改，需企业确认后重新提交
+  2026: "draft",       // 本期 · 未提交（企业可编辑），但中心已对部分字段进行同步调整
   2025: "submitted",   // 已提交
   2024: "submitted",   // 已提交
   2023: "draft",       // 未提交
