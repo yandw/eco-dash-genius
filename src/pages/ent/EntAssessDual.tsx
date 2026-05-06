@@ -113,29 +113,19 @@ export default function EntAssessDual() {
         </span>
         <div className="flex flex-wrap gap-2">
           {YEARS.map((y) => {
-            const s = yearStatusMap[y];
             const active = year === y;
-            const labelColor = active
-              ? "text-primary-foreground/90"
-              : s === "passed"
-                ? "text-success"
-                : "text-destructive";
             return (
               <div key={y} className="relative">
                 <Button
                   size="sm"
                   variant={active ? "default" : "outline"}
                   className={cn(
-                    "h-8 min-w-[92px] gap-1.5",
+                    "h-8 min-w-[72px]",
                     active && "bg-gradient-primary text-primary-foreground border-0",
                   )}
                   onClick={() => setYear(y)}
-                  title={`${y} 年 · ${yearStatusLabel(s)}`}
                 >
                   {y}
-                  <span className={cn("text-[10px] font-medium", labelColor)}>
-                    {yearStatusLabel(s)}
-                  </span>
                 </Button>
                 {y === CURRENT_YEAR && (
                   <span className="absolute -top-1.5 -right-1.5 px-1.5 h-4 leading-4 rounded-full bg-primary text-primary-foreground text-[10px] font-medium shadow-sm pointer-events-none">
