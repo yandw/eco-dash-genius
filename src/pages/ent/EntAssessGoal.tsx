@@ -33,26 +33,6 @@ const INITIAL_YEAR_STATUS: Record<number, EntStatus> = {
   2022: "submitted",   // 已提交
 };
 
-// 演示用：中心负责人对 2026 年目标的修改记录
-const DEMO_CHANGES_2026 = [
-  {
-    field: "total2026",
-    oldValue: 29171,
-    newValue: 28300,
-    remark: "根据全市年度减排任务下调企业总量目标",
-    by: "节能中心 · 王磊",
-    at: "2026-04-12 14:08",
-  },
-  {
-    field: "intensity2026",
-    oldValue: 0.221,
-    newValue: 0.205,
-    remark: "强度目标同步收紧",
-    by: "节能中心 · 王磊",
-    at: "2026-04-12 14:08",
-  },
-];
-
 export default function EntAssessGoal() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [scope, setScope] = useState<"district" | "city">("district");
@@ -64,9 +44,7 @@ export default function EntAssessGoal() {
   const [myRow, setMyRow] = useState<CarbonGoalRow>({
     ...carbonGoals[0],
     status: "draft",
-    total2026: 28300,
-    intensity2026: 0.205,
-    changes: DEMO_CHANGES_2026,
+    changes: [],
   });
   const [bqRow, setBqRow] = useState<BqGoalRow>({ ...bqGoals[1], status: currentYearStatus });
   const [submitOpen, setSubmitOpen] = useState(false);
