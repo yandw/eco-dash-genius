@@ -218,7 +218,7 @@ export default function EntAssessGoal() {
         </div>
       </div>
 
-      {scope === "district" && myRow.changes.length > 0 && <ChangeAlert changes={myRow.changes} />}
+      {scope === "district" && yearChanges.length > 0 && <ChangeAlert changes={yearChanges} year={year} />}
 
       {submitted && (
         <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
@@ -234,7 +234,7 @@ export default function EntAssessGoal() {
 
       <fieldset disabled={!editable} className={cn(!editable && "[&_input]:cursor-not-allowed [&_textarea]:cursor-not-allowed")}>
         {scope === "district" ? (
-          <EntCarbonGoalForm row={myRow} onChange={updateMy} />
+          <EntCarbonGoalForm row={{ ...myRow, changes: yearChanges }} onChange={updateMy} />
         ) : (
           <EntBqGoalForm row={bqRow} onChange={updateBq} />
         )}
