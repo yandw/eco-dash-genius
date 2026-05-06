@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Download, Upload, FileCheck2, Trash2 } from "lucide-react";
+import { Download, Upload, FileCheck2, Trash2, Eye } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
 import { BqGoalTable } from "@/components/assess/BqGoalTable";
 import { DistrictListTable } from "@/components/assess/DistrictListTable";
+import { StampedDocDialog, type StampedDocFile } from "@/components/assess/StampedDocDialog";
 
 import {
   carbonGoals,
