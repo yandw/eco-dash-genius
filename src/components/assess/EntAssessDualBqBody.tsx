@@ -1,8 +1,10 @@
-import { useMemo } from "react";
-import { Download, FileText, FileCheck2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Download, FileText, FileCheck2, Upload, Save, X, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { bqAssessDetail, bqEntAssessList, type BqAssessDetailRow } from "@/mocks/assess";
 import { useBqAssessStore } from "@/mocks/bqAssessStore";
@@ -14,16 +16,28 @@ interface Group {
   items: Array<BqAssessDetailRow & { __idx: number }>;
 }
 
-/** 市管企业 — 百千家通信业能耗考核结果（只读视图） */
-export function EntAssessDualBqBody() {
+interface Props {
+  /** 企业用户编辑模式：企业自评可编辑，政府考评只读 */
+  editable?: boolean;
+}
+
+/** 市管企业 — 百千家通信业能耗考核结果 */
+export function EntAssessDualBqBody({ editable = false }: Props) {
   useBqAssessStore();
-  // 取演示企业（第 1 家）
   const row = bqEntAssessList[0];
+  const proofInput = useRef<HTMLInputElement>(null);
+  const [proofTargetIdx, setProofTargetIdx] = useState<number | null>(null);
+
+  const [detail, setDetail] = useState<BqAssessDetailRow[]>(() => bqAssessDetail.map((d) => ({ ...d, proofs: [...d.proofs] })));
+
+  useEffect(() => {
+    setDetail(bqAssessDetail.map((d) => ({ ...d, proofs: [...d.proofs] })));
+  }, []);
 
   const groups: Group[] = useMemo(() => {
     const out: Group[] = [];
     let cur: Group | null = null;
-    bqAssessDetail.forEach((d, i) => {
+    detail.forEach((d, i) => {
       if (d.groupName) {
         cur = { name: d.groupName, groupScore: d.groupScore ?? 0, items: [] };
         out.push(cur);
@@ -31,19 +45,41 @@ export function EntAssessDualBqBody() {
       cur?.items.push({ ...d, __idx: i });
     });
     return out;
-  }, []);
+  }, [detail]);
 
   const totals = useMemo(() => ({
-    total: bqAssessDetail.reduce((s, d) => s + d.itemScore, 0),
-    self: bqAssessDetail.reduce((s, d) => s + d.selfScore, 0),
-    review: bqAssessDetail.reduce((s, d) => s + d.reviewScore, 0),
-  }), []);
+    total: detail.reduce((s, d) => s + d.itemScore, 0),
+    self: detail.reduce((s, d) => s + d.selfScore, 0),
+    review: detail.reduce((s, d) => s + d.reviewScore, 0),
+  }), [detail]);
 
   const groupSelfSum = (g: Group) => g.items.reduce((s, x) => s + x.selfScore, 0);
   const groupReviewSum = (g: Group) => g.items.reduce((s, x) => s + x.reviewScore, 0);
 
+  const updateSelf = (i: number, patch: Partial<BqAssessDetailRow>) => {
+    setDetail((prev) => prev.map((d, idx) => (idx === i ? { ...d, ...patch } : d)));
+  };
+  const removeProof = (i: number, k: number) => {
+    setDetail((prev) => prev.map((d, idx) => (idx === i ? { ...d, proofs: d.proofs.filter((_, j) => j !== k) } : d)));
+  };
+  const triggerProofUpload = (i: number) => {
+    setProofTargetIdx(i);
+    proofInput.current?.click();
+  };
+  const handleProofFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f && proofTargetIdx !== null) {
+      const url = URL.createObjectURL(f);
+      setDetail((prev) => prev.map((d, idx) => (idx === proofTargetIdx ? { ...d, proofs: [...d.proofs, { name: f.name, url }] } : d)));
+      toast.success(`已上传：${f.name}`);
+    }
+    e.target.value = "";
+    setProofTargetIdx(null);
+  };
+
   return (
     <>
+      <input ref={proofInput} type="file" className="hidden" accept=".pdf,.zip,.doc,.docx,.png,.jpg,.jpeg" onChange={handleProofFile} />
       <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
         重点单位能耗双控考核结果
       </h1>
@@ -71,6 +107,11 @@ export function EntAssessDualBqBody() {
           </Button>
         )}
         <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
+        {editable && (
+          <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已保存企业自评")}>
+            <Save className="h-3.5 w-3.5 mr-1" />保存
+          </Button>
+        )}
       </div>
 
       <div className="max-w-[1400px] mx-auto space-y-4">
@@ -137,53 +178,134 @@ export function EntAssessDualBqBody() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {/* 企业自评 */}
-                      <div className="rounded-md border border-border bg-background p-3 space-y-2.5">
+                      <div className={`rounded-md border p-3 space-y-2.5 ${editable ? "border-primary/30 bg-primary/5" : "border-border bg-background"}`}>
                         <div className="flex items-center justify-between">
                           <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
-                            <span className="inline-block h-3 w-1 rounded-sm bg-muted-foreground/60" />
-                            企业自评
+                            <span className={`inline-block h-3 w-1 rounded-sm ${editable ? "bg-primary" : "bg-muted-foreground/60"}`} />
+                            企业自评{editable && <span className="text-[10px] text-primary">（可编辑）</span>}
                           </div>
                           <div className="inline-flex items-center gap-1 text-xs">
-                            <span className="text-muted-foreground">自评分</span>
-                            <span className="font-mono font-semibold text-foreground tabular-nums">{it.selfScore}</span>
-                            <span className="text-muted-foreground">/ {it.itemScore}</span>
+                            <span className="text-muted-foreground">{editable ? "满分" : "自评分"}</span>
+                            {!editable && (
+                              <>
+                                <span className="font-mono font-semibold text-foreground tabular-nums">{it.selfScore}</span>
+                                <span className="text-muted-foreground">/</span>
+                              </>
+                            )}
+                            <span className={`font-mono ${editable ? "text-foreground/70" : "text-muted-foreground"} tabular-nums`}>{it.itemScore}</span>
                           </div>
                         </div>
-                        <div>
-                          <div className="text-[11px] text-muted-foreground mb-1">评分依据</div>
-                          <div className="text-xs text-foreground/80 leading-relaxed min-h-[44px] rounded bg-muted/30 px-2 py-1.5">
-                            {it.selfBasis || <span className="text-muted-foreground">—</span>}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-[11px] text-muted-foreground mb-1">证明材料</div>
-                          {it.proofs.length ? (
-                            <div className="flex flex-col gap-1.5">
-                              {it.proofs.map((p, k) => (
-                                <button
-                                  key={k}
-                                  onClick={() => toast.success(`正在下载 ${p.name}`)}
-                                  className="flex items-center gap-1.5 px-2 py-1.5 rounded border border-border bg-card hover:border-primary/40 hover:bg-primary/5 text-left text-xs"
-                                  title={p.name}
-                                >
-                                  <FileCheck2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
-                                  <span className="flex-1 truncate text-foreground/80">{p.name}</span>
-                                  <Download className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                                </button>
-                              ))}
+
+                        {editable ? (
+                          <>
+                            <div>
+                              <label className="text-[11px] text-muted-foreground mb-1 block">自评分</label>
+                              <Input
+                                type="number"
+                                value={it.selfScore}
+                                min={0}
+                                max={it.itemScore}
+                                step="0.5"
+                                onChange={(e) => updateSelf(it.__idx, { selfScore: Number(e.target.value) })}
+                                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.target as HTMLInputElement).blur(); } }}
+                                className="h-8 text-sm font-mono bg-background"
+                              />
                             </div>
-                          ) : (
-                            <div className="text-xs text-muted-foreground px-2 py-1.5">未提供证明材料</div>
-                          )}
-                        </div>
+                            <div>
+                              <label className="text-[11px] text-muted-foreground mb-1 block">评分依据</label>
+                              <Textarea
+                                value={it.selfBasis}
+                                onChange={(e) => updateSelf(it.__idx, { selfBasis: e.target.value })}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    (e.target as HTMLTextAreaElement).blur();
+                                  }
+                                }}
+                                placeholder="请输入自评依据，回车确认（Shift+Enter 换行）"
+                                className="text-xs resize-none bg-background"
+                                rows={3}
+                              />
+                            </div>
+                            <div>
+                              <div className="flex items-center justify-between mb-1">
+                                <label className="text-[11px] text-muted-foreground">证明材料</label>
+                                <button
+                                  onClick={() => triggerProofUpload(it.__idx)}
+                                  className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline"
+                                >
+                                  <Plus className="h-3 w-3" />添加附件
+                                </button>
+                              </div>
+                              {it.proofs.length ? (
+                                <div className="flex flex-col gap-1.5">
+                                  {it.proofs.map((p, k) => (
+                                    <div
+                                      key={k}
+                                      className="flex items-center gap-1.5 px-2 py-1.5 rounded border border-border bg-background text-xs"
+                                      title={p.name}
+                                    >
+                                      <FileCheck2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
+                                      <span className="flex-1 truncate text-foreground/80">{p.name}</span>
+                                      <button
+                                        onClick={() => removeProof(it.__idx, k)}
+                                        className="text-muted-foreground hover:text-destructive"
+                                        title="删除"
+                                      >
+                                        <X className="h-3.5 w-3.5" />
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => triggerProofUpload(it.__idx)}
+                                  className="w-full flex items-center justify-center gap-1.5 px-2 py-3 rounded border border-dashed border-border bg-background hover:border-primary/40 hover:bg-primary/5 text-xs text-muted-foreground"
+                                >
+                                  <Upload className="h-3.5 w-3.5" />点击上传证明材料
+                                </button>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div>
+                              <div className="text-[11px] text-muted-foreground mb-1">评分依据</div>
+                              <div className="text-xs text-foreground/80 leading-relaxed min-h-[44px] rounded bg-muted/30 px-2 py-1.5">
+                                {it.selfBasis || <span className="text-muted-foreground">—</span>}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-[11px] text-muted-foreground mb-1">证明材料</div>
+                              {it.proofs.length ? (
+                                <div className="flex flex-col gap-1.5">
+                                  {it.proofs.map((p, k) => (
+                                    <button
+                                      key={k}
+                                      onClick={() => toast.success(`正在下载 ${p.name}`)}
+                                      className="flex items-center gap-1.5 px-2 py-1.5 rounded border border-border bg-card hover:border-primary/40 hover:bg-primary/5 text-left text-xs"
+                                      title={p.name}
+                                    >
+                                      <FileCheck2 className="h-3.5 w-3.5 text-success flex-shrink-0" />
+                                      <span className="flex-1 truncate text-foreground/80">{p.name}</span>
+                                      <Download className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                                    </button>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="text-xs text-muted-foreground px-2 py-1.5">未提供证明材料</div>
+                              )}
+                            </div>
+                          </>
+                        )}
                       </div>
 
-                      {/* 政府考评（只读） */}
+                      {/* 政府考评（始终只读） */}
                       <div className="rounded-md border border-warning/30 bg-warning/5 p-3 space-y-2.5">
                         <div className="flex items-center justify-between">
                           <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
                             <span className="inline-block h-3 w-1 rounded-sm bg-warning" />
-                            政府考评
+                            政府考评{editable && <span className="text-[10px] text-muted-foreground">（仅查看）</span>}
                           </div>
                           <div className="inline-flex items-center gap-1 text-xs">
                             <span className="text-muted-foreground">满分</span>

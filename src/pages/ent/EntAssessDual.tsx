@@ -50,14 +50,6 @@ export default function EntAssessDual() {
   const ent = energyAssess[0];
   const allRows = useMemo(() => getEntAssess(ent.id), [ent.id]);
 
-  if (entType === "city") {
-    return (
-      <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
-        <EntAssessDualBqBody />
-      </AppLayout>
-    );
-  }
-
   // 用户手动选择的考核结果（按年份保存）
   const [resultOverride, setResultOverride] = useState<Record<number, "完成" | "未完成" | "">>({});
   // 用户填写的备注（按年份保存）
@@ -98,6 +90,14 @@ export default function EntAssessDual() {
       </Badge>
     );
   };
+
+  if (entType === "city") {
+    return (
+      <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
+        <EntAssessDualBqBody editable />
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle={`${year} 年度`}>
