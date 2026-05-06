@@ -215,7 +215,7 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
                         <div className="flex items-center justify-between">
                           <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
                             <span className={`inline-block h-3 w-1 rounded-sm ${canEdit ? "bg-primary" : "bg-muted-foreground/60"}`} />
-                            企业自评{canEdit && <span className="text-[10px] text-primary">（可编辑）</span>}{editable && !canEdit && <span className="text-[10px] text-muted-foreground">（已锁定）</span>}
+                            企业自评
                           </div>
                           <div className="inline-flex items-center gap-1 text-xs">
                             <span className="text-muted-foreground">{canEdit ? "满分" : "自评分"}</span>
