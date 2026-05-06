@@ -119,50 +119,26 @@ export default function AssessGoal() {
         </div>
       </div>
 
-      <div className="flex items-center justify-end mb-4 flex-wrap gap-2">
-        {!isCity && (
-          <>
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) handleUpload(f);
-                e.target.value = "";
-              }}
-            />
-            {currentDoc ? (
-              <>
-                <Button variant="outline" size="sm" className="h-9" onClick={handleDownload} title="点击下载">
-                  <FileCheck2 className="h-3.5 w-3.5 mr-1 text-success" />
-                  {currentDoc.name}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 text-muted-foreground hover:text-destructive"
-                  onClick={() => setStampedDoc((m) => ({ ...m, [year]: undefined }))}
-                  title="删除"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
-                <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
-                  <Upload className="h-3.5 w-3.5 mr-1" />重新上传
-                </Button>
-              </>
-            ) : (
-              <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
-                <Upload className="h-3.5 w-3.5 mr-1" />上传盖章证明
-              </Button>
-            )}
-          </>
-        )}
-        <Button variant="outline" size="sm" className="h-9" onClick={() => toast.success("已导出 Excel")}>
-          <Download className="h-3.5 w-3.5 mr-1" />导出
-        </Button>
-      </div>
+      {isCity && (
+        <div className="flex items-center justify-end mb-4">
+          <Button variant="outline" size="sm" className="h-9" onClick={() => toast.success("已导出 Excel")}>
+            <Download className="h-3.5 w-3.5 mr-1" />导出
+          </Button>
+        </div>
+      )}
+      {!isCity && (
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleUpload(f);
+            e.target.value = "";
+          }}
+        />
+      )}
 
 
       {isCity ? (
@@ -224,6 +200,35 @@ export default function AssessGoal() {
                 重置
               </Button>
             )}
+            <div className="ml-auto flex items-end gap-2 flex-wrap">
+              {currentDoc ? (
+                <>
+                  <Button variant="outline" size="sm" className="h-9" onClick={handleDownload} title="点击下载">
+                    <FileCheck2 className="h-3.5 w-3.5 mr-1 text-success" />
+                    {currentDoc.name}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-9 text-muted-foreground hover:text-destructive"
+                    onClick={() => setStampedDoc((m) => ({ ...m, [year]: undefined }))}
+                    title="删除"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
+                    <Upload className="h-3.5 w-3.5 mr-1" />重新上传
+                  </Button>
+                </>
+              ) : (
+                <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
+                  <Upload className="h-3.5 w-3.5 mr-1" />上传盖章证明
+                </Button>
+              )}
+              <Button variant="outline" size="sm" className="h-9" onClick={() => toast.success("已导出 Excel")}>
+                <Download className="h-3.5 w-3.5 mr-1" />导出
+              </Button>
+            </div>
           </div>
           <CarbonGoalTable rows={filteredRows} mode="district-view" onInlineSave={handleSaveEdit} />
         </div>
