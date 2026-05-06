@@ -110,10 +110,40 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
           </Button>
         )}
         <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
-        {editable && (
-          <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已保存企业自评")}>
-            <Save className="h-3.5 w-3.5 mr-1" />保存
+        {editable && canEdit && (
+          <>
+            <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已保存企业自评")}>
+              <Save className="h-3.5 w-3.5 mr-1" />保存
+            </Button>
+            <Button
+              size="sm"
+              className="h-9 bg-gradient-primary text-primary-foreground"
+              onClick={() => {
+                updateBqEnt(row.id, { status: "已提交" });
+                toast.success("已提交考核，等待政府审核");
+              }}
+            >
+              <Send className="h-3.5 w-3.5 mr-1" />提交
+            </Button>
+          </>
+        )}
+        {editable && row.status === "已提交" && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-9 text-warning border-warning/40 hover:text-warning"
+            onClick={() => {
+              updateBqEnt(row.id, { status: "待提交" });
+              toast.success("已退回，可重新编辑");
+            }}
+          >
+            <Undo2 className="h-3.5 w-3.5 mr-1" />退回
           </Button>
+        )}
+        {editable && govDone && (
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <Lock className="h-3.5 w-3.5" />政府已完成考评，如需修改请联系主管部门
+          </span>
         )}
       </div>
 
