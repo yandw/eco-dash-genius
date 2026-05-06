@@ -241,7 +241,7 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
                                 step="0.5"
                                 onChange={(e) => updateSelf(it.__idx, { selfScore: Number(e.target.value) })}
                                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.target as HTMLInputElement).blur(); } }}
-                                className="h-8 text-sm font-mono bg-background"
+                                className="h-8 text-sm font-mono bg-white"
                               />
                             </div>
                             <div>
