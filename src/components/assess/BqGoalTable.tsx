@@ -50,9 +50,9 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, paginated }: Props) 
           </tr>
         </thead>
         <tbody>
-          {rows.map((r, idx) => (
+          {pageRows.map((r, idx) => (
             <tr key={r.id} className={cn("border-b border-border hover:bg-accent/30", r.status === "modified" && "bg-warning/5")}>
-              <td className={cn(cellRO, "border-r border-border text-center")}>{idx + 1}</td>
+              <td className={cn(cellRO, "border-r border-border text-center")}>{showPager ? (page - 1) * pageSize + idx + 1 : idx + 1}</td>
               <td className={cn(cellRO, "border-r border-border")}>{r.districtName}</td>
               <td className={cn(cellRO, "border-r border-border font-mono")}>{r.creditCode}</td>
               <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
@@ -94,6 +94,17 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, paginated }: Props) 
           ))}
         </tbody>
       </table>
+      </div>
+      {showPager && (
+        <ListPagination
+          total={rows.length}
+          page={page}
+          pageSize={pageSize}
+          onPageChange={setPage}
+          onPageSizeChange={setPageSize}
+        />
+      )}
     </div>
   );
 }
+
