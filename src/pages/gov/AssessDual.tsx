@@ -10,14 +10,12 @@ import { DistrictListTable } from "@/components/assess/DistrictListTable";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import { StampedDocDialog } from "@/components/assess/StampedDocDialog";
 import { BqEntAssessTable } from "@/components/assess/BqEntAssessTable";
-import { BqEntAssessDetailDialog } from "@/components/assess/BqEntAssessDetailDialog";
 import {
   energyAssess,
   districtAssessSummary,
-  bqEntAssessList,
   type EnergyAssessRow,
-  type BqEntAssessRow,
 } from "@/mocks/assess";
+import { useBqAssessStore, setBqReport } from "@/mocks/bqAssessStore";
 import {
   useAssessStatusStore,
   submitAssess,
