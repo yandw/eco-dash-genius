@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, AlertCircle, Lock, Info } from "lucide-react";
+import { CheckCircle2, AlertCircle, Lock } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
