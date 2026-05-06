@@ -41,9 +41,9 @@ export default function AssessGoal() {
   const summary = useMemo(() => {
     const total = rows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
     const avgIntensity = (rows.filter((r) => r.intensity2026).reduce((s, r) => s + (r.intensity2026 ?? 0), 0) / Math.max(1, rows.filter((r) => r.intensity2026).length)).toFixed(3);
-    const submitted = rows.filter((r) => r.status !== "draft").length;
+    const completed = rows.filter((r) => r.total2026 != null || r.intensity2026 != null).length;
     const modified = rows.filter((r) => r.status === "modified").length;
-    return { total, avgIntensity, submitted, modified, count: rows.length };
+    return { total, avgIntensity, completed, modified, count: rows.length };
   }, [rows]);
 
   const isCity = role === "city_admin";
@@ -183,7 +183,7 @@ export default function AssessGoal() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{summary.count}</div></Card>
-            <Card className="p-3"><div className="text-[11px] text-muted-foreground">已提交</div><div className="text-lg font-semibold text-success">{summary.submitted}</div></Card>
+            <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{summary.completed}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">已修改</div><div className="text-lg font-semibold text-warning">{summary.modified}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{summary.total.toLocaleString()}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">平均强度</div><div className="text-lg font-semibold">{summary.avgIntensity}</div></Card>
