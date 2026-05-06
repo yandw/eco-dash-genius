@@ -24,19 +24,33 @@ const CURRENT_YEAR = 2026;
 
 type EntStatus = "draft" | "submitted" | "modified";
 
+// 不同年度的初始填报状态：演示历史已提交、当期草稿、过往草稿等不同情形
+const INITIAL_YEAR_STATUS: Record<number, EntStatus> = {
+  2026: "draft",       // 本期 · 草稿（未提交）
+  2025: "submitted",   // 已提交
+  2024: "submitted",   // 已提交
+  2023: "modified",    // 区级已修改 · 待重新提交
+  2022: "submitted",   // 已提交
+};
+
 export default function EntAssessGoal() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [scope, setScope] = useState<"district" | "city">("district");
-  // 默认初始化为草稿，便于演示完整业务流程
-  const [myRow, setMyRow] = useState<CarbonGoalRow>({ ...carbonGoals[0], status: "draft" });
-  const [bqRow, setBqRow] = useState<BqGoalRow>({ ...bqGoals[1], status: "draft" });
+  // 按年度维护填报状态
+  const [yearStatusDistrict, setYearStatusDistrict] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
+  const [yearStatusCity, setYearStatusCity] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
+
+  const currentYearStatus = scope === "district" ? yearStatusDistrict[year] : yearStatusCity[year];
+
+  const [myRow, setMyRow] = useState<CarbonGoalRow>({ ...carbonGoals[0], status: currentYearStatus });
+  const [bqRow, setBqRow] = useState<BqGoalRow>({ ...bqGoals[1], status: currentYearStatus });
   const [submitOpen, setSubmitOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
 
   const updateMy = (_id: string, patch: Partial<CarbonGoalRow>) => setMyRow((r) => ({ ...r, ...patch }));
   const updateBq = (_id: string, patch: Partial<BqGoalRow>) => setBqRow((r) => ({ ...r, ...patch }));
 
-  const status = (scope === "district" ? myRow.status : bqRow.status) as EntStatus;
+  const status: EntStatus = currentYearStatus ?? "draft";
   const submitted = status === "submitted";
   // 政府侧修改后回退到企业侧时（modified），企业可再次编辑并重新提交
   const editable = !submitted;
@@ -50,9 +64,18 @@ export default function EntAssessGoal() {
     </Tabs>
   );
 
+  const setYearStatus = (s: EntStatus) => {
+    if (scope === "district") {
+      setYearStatusDistrict((m) => ({ ...m, [year]: s }));
+      setMyRow((r) => ({ ...r, status: s }));
+    } else {
+      setYearStatusCity((m) => ({ ...m, [year]: s }));
+      setBqRow((r) => ({ ...r, status: s }));
+    }
+  };
+
   const handleSaveDraft = () => {
-    if (scope === "district") setMyRow((r) => ({ ...r, status: "draft" }));
-    else setBqRow((r) => ({ ...r, status: "draft" }));
+    setYearStatus("draft");
     toast.success("已保存草稿", {
       description: `${year} 年度目标分解填报内容已暂存，可稍后继续编辑。`,
     });
@@ -60,9 +83,20 @@ export default function EntAssessGoal() {
 
   const handleConfirmSubmit = () => {
     setSubmitOpen(false);
-    if (scope === "district") setMyRow((r) => ({ ...r, status: "submitted" }));
-    else setBqRow((r) => ({ ...r, status: "submitted" }));
+    setYearStatus("submitted");
     setSuccessOpen(true);
+  };
+
+  const yearStatusMap = scope === "district" ? yearStatusDistrict : yearStatusCity;
+  const yearDotClass = (s: EntStatus | undefined) => {
+    if (s === "submitted") return "bg-emerald-500";
+    if (s === "modified") return "bg-amber-500";
+    return "bg-muted-foreground/50"; // draft / 未提交
+  };
+  const yearStatusLabel = (s: EntStatus | undefined) => {
+    if (s === "submitted") return "已提交";
+    if (s === "modified") return "区级已修改";
+    return "未提交";
   };
 
   const statusBadge = () => {
@@ -99,26 +133,35 @@ export default function EntAssessGoal() {
           报告年度
         </span>
         <div className="flex flex-wrap gap-2">
-          {YEARS.map((y) => (
-            <div key={y} className="relative">
-              <Button
-                size="sm"
-                variant={year === y ? "default" : "outline"}
-                className={cn(
-                  "h-8 min-w-[68px]",
-                  year === y && "bg-gradient-primary text-primary-foreground border-0",
+          {YEARS.map((y) => {
+            const s = yearStatusMap[y];
+            const active = year === y;
+            return (
+              <div key={y} className="relative">
+                <Button
+                  size="sm"
+                  variant={active ? "default" : "outline"}
+                  className={cn(
+                    "h-8 min-w-[92px] gap-1.5",
+                    active && "bg-gradient-primary text-primary-foreground border-0",
+                  )}
+                  onClick={() => setYear(y)}
+                  title={`${y} 年 · ${yearStatusLabel(s)}`}
+                >
+                  <span className={cn("inline-block h-1.5 w-1.5 rounded-full", yearDotClass(s))} />
+                  {y}
+                  <span className={cn("text-[10px] font-normal", active ? "text-primary-foreground/85" : "text-muted-foreground")}>
+                    {yearStatusLabel(s)}
+                  </span>
+                </Button>
+                {y === CURRENT_YEAR && (
+                  <span className="absolute -top-1.5 -right-1.5 px-1.5 h-4 leading-4 rounded-full bg-primary text-primary-foreground text-[10px] font-medium shadow-sm pointer-events-none">
+                    本期
+                  </span>
                 )}
-                onClick={() => setYear(y)}
-              >
-                {y}
-              </Button>
-              {y === CURRENT_YEAR && (
-                <span className="absolute -top-1.5 -right-1.5 px-1.5 h-4 leading-4 rounded-full bg-primary text-primary-foreground text-[10px] font-medium shadow-sm pointer-events-none">
-                  本期
-                </span>
-              )}
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
       </div>
 
