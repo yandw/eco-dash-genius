@@ -240,7 +240,7 @@ export default function EntAssessDual() {
                       [year]: v as "完成" | "未完成",
                     }))
                   }
-                  className="flex items-center gap-6 min-h-[80px] px-3 py-2 rounded-md border border-input bg-background"
+                  className="flex items-center gap-6 min-h-[80px]"
                 >
                   <div className="flex items-center gap-2">
                     <RadioGroupItem value="完成" id={`result-done-${year}`} />
