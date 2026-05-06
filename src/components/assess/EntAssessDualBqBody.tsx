@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { bqAssessDetail, bqEntAssessList, type BqAssessDetailRow } from "@/mocks/assess";
 import { useBqAssessStore, updateBqEnt } from "@/mocks/bqAssessStore";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 interface Group {
