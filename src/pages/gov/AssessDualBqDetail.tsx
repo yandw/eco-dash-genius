@@ -28,6 +28,7 @@ export default function AssessDualBqDetail() {
   const reportInput = useRef<HTMLInputElement>(null);
 
   const [detail, setDetail] = useState<BqAssessDetailRow[]>(() => bqAssessDetail.map((d) => ({ ...d })));
+  const [activeTab, setActiveTab] = useState<string>("all");
 
   useEffect(() => {
     setDetail(bqAssessDetail.map((d) => ({ ...d })));
