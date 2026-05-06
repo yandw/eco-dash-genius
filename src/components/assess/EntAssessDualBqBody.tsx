@@ -28,6 +28,7 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
   const row = list[0];
   const proofInput = useRef<HTMLInputElement>(null);
   const [proofTargetIdx, setProofTargetIdx] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("all");
   // "已完成"=政府已考评，企业不可退回；"已提交"=待政府审核，企业可退回；"待提交"=可编辑
   const govDone = row.status === "已完成" || row.status === "考核中";
   const canEdit = editable && row.status === "待提交";
