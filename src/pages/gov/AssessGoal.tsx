@@ -31,8 +31,6 @@ export default function AssessGoal() {
   const [stampedDoc, setStampedDoc] = useState<Record<number, { name: string; size: number } | undefined>>({});
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // 区级编辑
-  const [editing, setEditing] = useState<CarbonGoalRow | null>(null);
 
   const summary = useMemo(() => {
     const total = rows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
