@@ -256,7 +256,7 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
                                   }
                                 }}
                                 placeholder="请输入自评依据，回车确认（Shift+Enter 换行）"
-                                className="text-xs resize-none bg-background"
+                                className="text-xs resize-none bg-white"
                                 rows={3}
                               />
                             </div>
