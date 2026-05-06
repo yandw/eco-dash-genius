@@ -109,6 +109,11 @@ export default function EntAssessDual() {
           {YEARS.map((y) => {
             const s = yearStatusMap[y];
             const active = year === y;
+            const labelColor = active
+              ? "text-primary-foreground/90"
+              : s === "passed"
+                ? "text-success"
+                : "text-destructive";
             return (
               <div key={y} className="relative">
                 <Button
@@ -121,9 +126,8 @@ export default function EntAssessDual() {
                   onClick={() => setYear(y)}
                   title={`${y} 年 · ${yearStatusLabel(s)}`}
                 >
-                  <span className={cn("inline-block h-1.5 w-1.5 rounded-full", yearDotClass(s))} />
                   {y}
-                  <span className={cn("text-[10px] font-normal", active ? "text-primary-foreground/85" : "text-muted-foreground")}>
+                  <span className={cn("text-[10px] font-medium", labelColor)}>
                     {yearStatusLabel(s)}
                   </span>
                 </Button>
