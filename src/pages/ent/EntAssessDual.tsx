@@ -40,10 +40,10 @@ function Field({ label, children, className }: { label: React.ReactNode; childre
 }
 
 const ro = "px-3 py-2 rounded-md bg-muted/50 border border-border text-sm min-h-[36px] flex items-center";
+const roEditable = "px-3 py-2 rounded-md bg-background border border-input text-sm min-h-[36px] flex items-center";
 
 function rowStatus(r: EntAssessYearRow | undefined): AssessStatus {
-  if (!r) return "pending";
-  if (r.assessResult === "—") return "pending";
+  if (!r) return "failed";
   return r.assessResult === "完成" ? "passed" : "failed";
 }
 
@@ -51,13 +51,13 @@ export default function EntAssessDual() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const ent = energyAssess[0];
   const allRows = useMemo(() => getEntAssess(ent.id), [ent.id]);
-  const role = getCurrentRole();
-  const isDistrictAdmin = role === "district_admin";
 
-  // 区级管理员手动覆盖的考核结果（按年份保存）
+  // 用户手动选择的考核结果（按年份保存）
   const [resultOverride, setResultOverride] = useState<Record<number, "完成" | "未完成" | "">>({});
+  // 用户填写的备注（按年份保存）
+  const [remarkInput, setRemarkInput] = useState<Record<number, string>>({});
 
-  // 年度状态映射：手动覆盖优先，其次系统判定
+  // 年度状态映射：手动选择优先，其次系统判定
   const yearStatusMap = useMemo<Record<number, AssessStatus>>(() => {
     const map: Record<number, AssessStatus> = {};
     YEARS.forEach((y) => {
@@ -66,7 +66,7 @@ export default function EntAssessDual() {
       else if (override === "未完成") map[y] = "failed";
       else {
         const r = allRows.find((x) => x.year === y);
-        map[y] = r ? rowStatus(r) : "pending";
+        map[y] = rowStatus(r);
       }
     });
     return map;
@@ -75,12 +75,9 @@ export default function EntAssessDual() {
   const currentRow = allRows.find((r) => r.year === year);
   const status = yearStatusMap[year];
   const currentOverride = resultOverride[year] || "";
-  const effectiveResult: string = currentOverride || (currentRow?.assessResult ?? "—");
+  const effectiveResult: string = currentOverride || (currentRow?.assessResult && currentRow.assessResult !== "—" ? currentRow.assessResult : "");
 
-  const yearDotClass = (s: AssessStatus) =>
-    s === "passed" ? "bg-emerald-500" : s === "failed" ? "bg-destructive" : "bg-muted-foreground/50";
-  const yearStatusLabel = (s: AssessStatus) =>
-    s === "passed" ? "已达标" : s === "failed" ? "未达标" : "未考核";
+  const yearStatusLabel = (s: AssessStatus) => (s === "passed" ? "已达标" : "未达标");
 
   const statusBadge = () => {
     if (status === "passed")
@@ -89,15 +86,9 @@ export default function EntAssessDual() {
           <CheckCircle2 className="h-3.5 w-3.5" />已达标
         </Badge>
       );
-    if (status === "failed")
-      return (
-        <Badge className="bg-destructive/10 text-destructive border border-destructive/30 hover:bg-destructive/10 inline-flex items-center gap-1">
-          <AlertCircle className="h-3.5 w-3.5" />未达标
-        </Badge>
-      );
     return (
-      <Badge variant="outline" className="text-xs border-muted-foreground/40 text-muted-foreground">
-        暂未考核
+      <Badge className="bg-destructive/10 text-destructive border border-destructive/30 hover:bg-destructive/10 inline-flex items-center gap-1">
+        <AlertCircle className="h-3.5 w-3.5" />未达标
       </Badge>
     );
   };
