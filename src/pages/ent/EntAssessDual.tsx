@@ -148,12 +148,8 @@ export default function EntAssessDual() {
         </div>
       </div>
 
-      {/* 状态条 */}
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">考核状态</span>
-          {statusBadge()}
-        </div>
+      {/* 系统判定提示 */}
+      <div className="flex items-center justify-end mb-3">
         <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
           <Lock className="h-3.5 w-3.5" />考核结果由系统自动判定，如有异议请联系主管部门
         </span>
@@ -196,12 +192,32 @@ export default function EntAssessDual() {
 
       {currentRow && (
         <div className="space-y-4">
-          <Card className="p-5">
-            <SectionTitle>企业基础信息</SectionTitle>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
-              <Field label="所属区"><div className={ro}>青浦区</div></Field>
-              <Field label="统一信用代码"><div className={cn(ro, "font-mono")}>{ent.creditCode}</div></Field>
-              <Field label="企业名称"><div className={ro}>{ent.entName}</div></Field>
+          <Card className="p-4">
+            <div className="text-sm font-semibold mb-3 inline-flex items-center gap-2">
+              <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
+              企业基础信息
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div className="space-y-1">
+                <div className="text-[11px] text-muted-foreground">所属区</div>
+                <div className="text-sm font-medium text-foreground">青浦区</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-[11px] text-muted-foreground">统一信用代码</div>
+                <div className="text-sm font-medium text-foreground font-mono">{ent.creditCode}</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-[11px] text-muted-foreground">企业名称</div>
+                <div className="text-sm font-medium text-foreground truncate" title={ent.entName}>{ent.entName}</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-[11px] text-muted-foreground">考核年份</div>
+                <div className="text-sm font-medium text-foreground">{year}年</div>
+              </div>
+              <div className="space-y-1">
+                <div className="text-[11px] text-muted-foreground">考核状态</div>
+                <div>{statusBadge()}</div>
+              </div>
             </div>
           </Card>
 
