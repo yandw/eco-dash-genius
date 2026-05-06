@@ -139,23 +139,6 @@ export default function Archives() {
       title="节能管理档案"
       subtitle={`审核 ${CURRENT_YEAR} 年度全市重点用能企业节能档案，跟踪上报与整改进度`}
     >
-      {/* KPI 行 */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5">
-        <KpiCard label="应报企业" value={kpi.total} unit="家" icon={Building2} tone="primary" />
-        <KpiCard label="已上报" value={kpi.reported} unit="家" icon={TrendingUp} tone="primary" />
-        <KpiCard
-          label="上报率"
-          value={kpi.rate}
-          unit="%"
-          icon={TrendingUp}
-          tone="primary"
-          highlight
-        />
-        <KpiCard label="待我审核" value={kpi.submitted} unit="家" icon={Clock} tone="warning" />
-        <KpiCard label="已通过" value={kpi.approved} unit="家" icon={CheckCircle2} tone="success" />
-        <KpiCard label="已退回" value={kpi.rejected} unit="家" icon={AlertOctagon} tone="danger" />
-      </div>
-
       {/* 报告年度选择 */}
       <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
         <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
@@ -184,6 +167,23 @@ export default function Archives() {
         )}
       </div>
 
+      {/* KPI 行 */}
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5">
+        <KpiCard label="应报企业" value={kpi.total} unit="家" icon={Building2} tone="primary" />
+        <KpiCard label="已上报" value={kpi.reported} unit="家" icon={TrendingUp} tone="primary" />
+        <KpiCard
+          label="上报率"
+          value={kpi.rate}
+          unit="%"
+          icon={TrendingUp}
+          tone="primary"
+          highlight
+        />
+        <KpiCard label="待我审核" value={kpi.submitted} unit="家" icon={Clock} tone="warning" />
+        <KpiCard label="已通过" value={kpi.approved} unit="家" icon={CheckCircle2} tone="success" />
+        <KpiCard label="已退回" value={kpi.rejected} unit="家" icon={AlertOctagon} tone="danger" />
+      </div>
+
       {/* 筛选区 */}
       <div className="panel p-4 mb-4 space-y-3">
         {/* 顶部快搜行 */}
@@ -197,30 +197,31 @@ export default function Archives() {
               onChange={(e) => setKeyword(e.target.value)}
             />
           </div>
-          <span className="text-xs text-muted-foreground ml-2">本期状态：</span>
-          {(
-            [
-              { v: "all", l: "全部" },
-              { v: "submitted", l: "待审核" },
-              { v: "approved", l: "已通过" },
-              { v: "rejected", l: "已退回" },
-              { v: "pending", l: "未上报" },
-            ] as const
-          ).map((opt) => (
-            <Button
-              key={opt.v}
-              variant={statusFilter === opt.v ? "default" : "outline"}
-              size="sm"
-              className={
-                statusFilter === opt.v
-                  ? "h-8 bg-gradient-primary text-primary-foreground border-0"
-                  : "h-8"
-              }
-              onClick={() => setStatusFilter(opt.v as any)}
-            >
-              {opt.l}
-            </Button>
-          ))}
+          <div className="inline-flex items-center gap-0.5 ml-2 p-0.5 rounded-md bg-muted/60 border border-border/60">
+            {(
+              [
+                { v: "all", l: "全部" },
+                { v: "submitted", l: "待审核" },
+                { v: "approved", l: "已通过" },
+                { v: "rejected", l: "已退回" },
+                { v: "pending", l: "未上报" },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.v}
+                type="button"
+                onClick={() => setStatusFilter(opt.v as any)}
+                className={cn(
+                  "px-3 h-7 rounded text-xs font-medium transition-all",
+                  statusFilter === opt.v
+                    ? "bg-background text-primary shadow-sm border border-border/70"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {opt.l}
+              </button>
+            ))}
+          </div>
           <div className="ml-auto flex flex-wrap gap-2">
             <Button
               size="sm"
