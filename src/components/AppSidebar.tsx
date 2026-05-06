@@ -7,6 +7,7 @@ import {
   Gauge,
   FolderArchive,
   ClipboardCheck,
+  ClipboardList,
   Boxes,
   Leaf,
   Crosshair,
@@ -82,6 +83,12 @@ export const govItems: NavItem[] = [
     children: [
       { title: "目标分解", url: "/gov/assess/goal", icon: Target },
       { title: "双控考核", url: "/gov/assess/dual", icon: ClipboardCheck },
+      ...(isCityAdmin()
+        ? [
+            { title: "任务管理", url: "/gov/assess/tasks", icon: ClipboardList },
+            { title: "区/集团管理", url: "/gov/assess/orgs", icon: Building2 },
+          ]
+        : []),
     ],
   },
   { title: "固定资产管理", url: "/gov/assets", icon: Boxes },
