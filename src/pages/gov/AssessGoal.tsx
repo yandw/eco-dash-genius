@@ -5,6 +5,9 @@ import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
 import { BqGoalTable } from "@/components/assess/BqGoalTable";
@@ -29,6 +32,8 @@ export default function AssessGoal() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [rows, setRows] = useState<CarbonGoalRow[]>(carbonGoals);
   const [stampedDoc, setStampedDoc] = useState<Record<number, { name: string; size: number } | undefined>>({});
+  const [keyword, setKeyword] = useState("");
+  const [modifiedFilter, setModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
   const fileRef = useRef<HTMLInputElement>(null);
 
 
@@ -42,6 +47,18 @@ export default function AssessGoal() {
 
   const isCity = role === "city_admin";
   const currentDoc = stampedDoc[year];
+
+  const filteredRows = useMemo(() => {
+    return rows.filter((r) => {
+      if (modifiedFilter === "modified" && r.status !== "modified") return false;
+      if (modifiedFilter === "unmodified" && r.status === "modified") return false;
+      if (keyword.trim()) {
+        const k = keyword.trim().toLowerCase();
+        if (!r.entName.toLowerCase().includes(k) && !r.creditCode.toLowerCase().includes(k)) return false;
+      }
+      return true;
+    });
+  }, [rows, keyword, modifiedFilter]);
 
   const handleSaveEdit = (id: string, patch: Partial<CarbonGoalRow>, changes: ChangeRecord[]) => {
     setRows((prev) =>
@@ -102,52 +119,51 @@ export default function AssessGoal() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-        <div className="flex items-center gap-2">
-          {!isCity && (
-            <>
-              <input
-                ref={fileRef}
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleUpload(f);
-                  e.target.value = "";
-                }}
-              />
-              {currentDoc ? (
-                <>
-                  <Button variant="outline" size="sm" className="h-9" onClick={handleDownload}>
-                    <FileCheck2 className="h-3.5 w-3.5 mr-1 text-success" />
-                    {currentDoc.name}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-9 text-muted-foreground hover:text-destructive"
-                    onClick={() => setStampedDoc((m) => ({ ...m, [year]: undefined }))}
-                    title="删除"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
-                    <Upload className="h-3.5 w-3.5 mr-1" />重新上传
-                  </Button>
-                </>
-              ) : (
-                <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
-                  <Upload className="h-3.5 w-3.5 mr-1" />上传盖章证明
+      <div className="flex items-center justify-end mb-4 flex-wrap gap-2">
+        {!isCity && (
+          <>
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleUpload(f);
+                e.target.value = "";
+              }}
+            />
+            {currentDoc ? (
+              <>
+                <Button variant="outline" size="sm" className="h-9" onClick={handleDownload} title="点击下载">
+                  <FileCheck2 className="h-3.5 w-3.5 mr-1 text-success" />
+                  {currentDoc.name}
                 </Button>
-              )}
-            </>
-          )}
-        </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-9 text-muted-foreground hover:text-destructive"
+                  onClick={() => setStampedDoc((m) => ({ ...m, [year]: undefined }))}
+                  title="删除"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+                <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
+                  <Upload className="h-3.5 w-3.5 mr-1" />重新上传
+                </Button>
+              </>
+            ) : (
+              <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
+                <Upload className="h-3.5 w-3.5 mr-1" />上传盖章证明
+              </Button>
+            )}
+          </>
+        )}
         <Button variant="outline" size="sm" className="h-9" onClick={() => toast.success("已导出 Excel")}>
           <Download className="h-3.5 w-3.5 mr-1" />导出
         </Button>
       </div>
+
 
       {isCity ? (
         <Tabs defaultValue="district">
@@ -179,7 +195,37 @@ export default function AssessGoal() {
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{summary.total.toLocaleString()}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">平均强度</div><div className="text-lg font-semibold">{summary.avgIntensity}</div></Card>
           </div>
-          <CarbonGoalTable rows={rows} mode="district-view" onInlineSave={handleSaveEdit} />
+          <div className="panel p-3 flex items-end gap-3 flex-wrap">
+            <div className="flex flex-col gap-1">
+              <span className="text-[11px] text-muted-foreground">企业名称 / 信用代码</span>
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <Input
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder="输入关键字搜索"
+                  className="h-9 pl-7 w-64"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-[11px] text-muted-foreground">是否已修改</span>
+              <Select value={modifiedFilter} onValueChange={(v) => setModifiedFilter(v as typeof modifiedFilter)}>
+                <SelectTrigger className="h-9 w-40"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">全部</SelectItem>
+                  <SelectItem value="modified">已修改</SelectItem>
+                  <SelectItem value="unmodified">未修改</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {(keyword || modifiedFilter !== "all") && (
+              <Button variant="ghost" size="sm" className="h-9" onClick={() => { setKeyword(""); setModifiedFilter("all"); }}>
+                重置
+              </Button>
+            )}
+          </div>
+          <CarbonGoalTable rows={filteredRows} mode="district-view" onInlineSave={handleSaveEdit} />
         </div>
       )}
     </AppLayout>
