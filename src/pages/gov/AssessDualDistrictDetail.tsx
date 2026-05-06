@@ -1,9 +1,10 @@
-import { ArrowLeft, ChevronRight, Download } from "lucide-react";
+import { ArrowLeft, ChevronRight, Download, Undo2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import { districts, energyAssess } from "@/mocks/assess";
+import { useAssessStatusStore, rollbackAssess } from "@/mocks/assessStatusStore";
 import { toast } from "sonner";
 
 export default function AssessDualDistrictDetail() {
@@ -12,6 +13,9 @@ export default function AssessDualDistrictDetail() {
   const district = districts.find((d) => d.id === districtId);
   const districtName = district?.name ?? "未知区";
   const isQingpu = districtId === "qingpu";
+  const store = useAssessStatusStore();
+  const entry = districtId ? store[districtId] : undefined;
+  const submitted = entry?.status === "完成考核";
 
   return (
     <AppLayout side="gov" title="双控考核" subtitle={`${districtName} 下属企业能耗目标考评`}>
@@ -27,9 +31,43 @@ export default function AssessDualDistrictDetail() {
         <Button variant="ghost" size="sm" className="h-8" onClick={() => navigate("/gov/assess/dual")}>
           <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回列表
         </Button>
-        <Button variant="outline" size="sm" className="h-8" onClick={() => toast.success("已导出")}>
-          <Download className="h-3.5 w-3.5 mr-1" />导出
-        </Button>
+        <div className="flex items-center gap-2">
+          {entry?.doc && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8"
+              onClick={() => {
+                const a = document.createElement("a");
+                a.href = entry.doc!.url;
+                a.download = entry.doc!.name;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                toast.success(`正在下载 ${entry.doc!.name}`);
+              }}
+            >
+              <Download className="h-3.5 w-3.5 mr-1" />下载盖章证明
+            </Button>
+          )}
+          <Button variant="outline" size="sm" className="h-8" onClick={() => toast.success("已导出")}>
+            <Download className="h-3.5 w-3.5 mr-1" />导出
+          </Button>
+          {submitted && districtId && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 text-warning border-warning/40 hover:text-warning"
+              onClick={() => {
+                rollbackAssess(districtId);
+                toast.success("已退回，列表状态变更为待考核");
+                navigate("/gov/assess/dual");
+              }}
+            >
+              <Undo2 className="h-3.5 w-3.5 mr-1" />退回
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground mb-3">
