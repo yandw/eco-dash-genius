@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Save, Send } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
-import { BqGoalTable } from "@/components/assess/BqGoalTable";
+import { EntCarbonGoalForm } from "@/components/assess/EntCarbonGoalForm";
+import { EntBqGoalForm } from "@/components/assess/EntBqGoalForm";
 import { ChangeAlert } from "@/components/assess/ChangeAlert";
 import { AssessYearPicker } from "@/components/assess/AssessYearPicker";
 import { carbonGoals, bqGoals, type CarbonGoalRow, type BqGoalRow } from "@/mocks/assess";
@@ -13,20 +13,28 @@ import { toast } from "sonner";
 
 export default function EntAssessGoal() {
   const [year, setYear] = useState(2026);
-  // 企业用户取第一条作为本企业
+  const [scope, setScope] = useState<"district" | "city">("district");
   const [myRow, setMyRow] = useState<CarbonGoalRow>(carbonGoals[0]);
   const [bqRow, setBqRow] = useState<BqGoalRow>(bqGoals[1]);
 
   const updateMy = (_id: string, patch: Partial<CarbonGoalRow>) => setMyRow((r) => ({ ...r, ...patch }));
   const updateBq = (_id: string, patch: Partial<BqGoalRow>) => setBqRow((r) => ({ ...r, ...patch }));
 
+  const status = scope === "district" ? myRow.status : bqRow.status;
+
   return (
-    <AppLayout side="ent" title="目标分解" subtitle="重点用能单位 / 百千家通信业 — 碳排放目标分解填报">
-      <div className="flex items-center justify-between mb-4">
+    <AppLayout side="ent" title="目标分解" subtitle="碳排放目标分解填报">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <AssessYearPicker year={year} onChange={setYear} />
+          <Tabs value={scope} onValueChange={(v) => setScope(v as "district" | "city")}>
+            <TabsList className="h-9">
+              <TabsTrigger value="district" className="h-7 text-xs px-4">区管企业</TabsTrigger>
+              <TabsTrigger value="city" className="h-7 text-xs px-4">市管企业</TabsTrigger>
+            </TabsList>
+          </Tabs>
           <Badge variant="outline" className="text-xs border-primary/40 text-primary">
-            状态：{myRow.status === "modified" ? "区级已修改" : myRow.status === "submitted" ? "已提交" : "草稿"}
+            状态：{status === "modified" ? "区级已修改" : status === "submitted" ? "已提交" : "草稿"}
           </Badge>
         </div>
         <div className="flex items-center gap-2">
@@ -39,25 +47,13 @@ export default function EntAssessGoal() {
         </div>
       </div>
 
-      <ChangeAlert changes={myRow.changes} />
+      {scope === "district" && <ChangeAlert changes={myRow.changes} />}
 
-      <Tabs defaultValue="district">
-        <TabsList>
-          <TabsTrigger value="district">区下属单位碳排放目标分解</TabsTrigger>
-          <TabsTrigger value="bq">"百家"、"千家"、通信业企业碳排放目标分解</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="district" className="mt-4">
-          <CarbonGoalTable rows={[myRow]} mode="ent-edit" onChange={updateMy} />
-          <p className="text-[11px] text-muted-foreground mt-2">
-            ※ 推荐值由系统根据上一年实际碳排放与减排任务自动测算，仅供参考。
-          </p>
-        </TabsContent>
-
-        <TabsContent value="bq" className="mt-4">
-          <BqGoalTable rows={[bqRow]} mode="ent-edit" onChange={updateBq} />
-        </TabsContent>
-      </Tabs>
+      {scope === "district" ? (
+        <EntCarbonGoalForm row={myRow} onChange={updateMy} />
+      ) : (
+        <EntBqGoalForm row={bqRow} onChange={updateBq} />
+      )}
     </AppLayout>
   );
 }
