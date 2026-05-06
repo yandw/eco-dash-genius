@@ -286,19 +286,37 @@ export function getEntAssess(entId: string): EntAssessYearRow[] {
     const totalActualNet = Math.round(base.totalActualNetGreen * factor);
     const intensityActual = Number((base.intensityActual * factor).toFixed(3));
     const intensityActualNet = Number((base.intensityActualNetGreen * factor).toFixed(3));
+    const totalPass = passByValue(base.totalGoal, totalActualNet);
+    const intensityPass = passByValue(base.intensityGoal, intensityActualNet);
+    const dualPass: "完成" | "未完成" | "—" =
+      totalPass === "—" || intensityPass === "—"
+        ? "—"
+        : totalPass === "达标" && intensityPass === "达标"
+          ? "完成"
+          : "未完成";
+    // 演示破例：2024 年双控未完成，但考核结果完成（需在备注中说明原因）
+    const isException = y === 2024;
+    const assessResult: "完成" | "未完成" | "—" = isException ? "完成" : dualPass;
+    const remark = isException
+      ? "因企业新增重点产能项目经主管部门核定，准予本年度考核通过"
+      : i === 1
+        ? "完成全年节能任务"
+        : "";
     return {
       year: y,
       totalGoal: base.totalGoal,
       totalActual,
       totalActualNetGreen: totalActualNet,
-      totalPass: passByValue(base.totalGoal, totalActualNet),
+      totalPass,
       intensityIndicator: base.intensityIndicator,
       intensityUnit: base.intensityUnit,
       intensityGoal: base.intensityGoal,
       intensityActual,
       intensityActualNetGreen: intensityActualNet,
-      intensityPass: passByValue(base.intensityGoal, intensityActualNet),
-      remark: i === 1 ? "完成全年节能任务" : "",
+      intensityPass,
+      dualPass: isException ? "未完成" : dualPass,
+      assessResult,
+      remark,
     };
   });
 }
