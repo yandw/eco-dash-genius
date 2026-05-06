@@ -14,7 +14,7 @@ interface Props {
   mode: "ent-edit" | "district-view" | "city-view";
   onEdit?: (row: CarbonGoalRow) => void;
   onChange?: (id: string, patch: Partial<CarbonGoalRow>) => void;
-  /** Inline save (used by district-view inline editing). */
+  /** Inline save (used by district-view / city-view inline editing). */
   onInlineSave?: (id: string, patch: Partial<CarbonGoalRow>, changes: ChangeRecord[]) => void;
   /** Show pagination footer. Defaults to true for district/city views. */
   paginated?: boolean;
@@ -24,15 +24,22 @@ interface Props {
 const cellRO = "px-3 py-2 align-middle text-xs text-foreground/90 bg-muted/40";
 const cellEdit = "px-2 py-1 align-middle text-xs";
 
+type EditableNumField = "total2025" | "intensity2025" | "recommendTotal" | "total2026" | "intensity2026";
+type EditableTextField = "intensityIndicator" | "intensityUnit" | "remark";
+
+const NUM_FIELDS: EditableNumField[] = ["total2025", "intensity2025", "recommendTotal", "total2026", "intensity2026"];
+const TEXT_FIELDS: EditableTextField[] = ["intensityIndicator", "intensityUnit", "remark"];
+
 export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, paginated, pageSize: initialSize }: Props) {
   const editable = mode === "ent-edit";
+  const inlineEditable = mode === "district-view" || mode === "city-view";
   const showPager = paginated ?? (mode !== "ent-edit");
+  const editorName = mode === "city-view" ? "市级管理员" : "区级管理员";
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialSize ?? 10);
   const pageRows = useMemo(() => (showPager ? paginate(rows, page, pageSize) : rows), [rows, page, pageSize, showPager]);
 
-  // Inline editing state for district-view
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Partial<CarbonGoalRow>>({});
 
@@ -44,7 +51,16 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
   const startEdit = (r: CarbonGoalRow) => {
     if (onEdit) onEdit(r);
     setEditingId(r.id);
-    setDraft({ total2026: r.total2026, intensity2026: r.intensity2026, remark: r.remark });
+    setDraft({
+      total2025: r.total2025,
+      intensity2025: r.intensity2025,
+      recommendTotal: r.recommendTotal,
+      total2026: r.total2026,
+      intensity2026: r.intensity2026,
+      intensityIndicator: r.intensityIndicator,
+      intensityUnit: r.intensityUnit,
+      remark: r.remark,
+    });
   };
 
   const cancelEdit = () => {
@@ -54,14 +70,27 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
 
   const saveInline = (r: CarbonGoalRow) => {
     const changes: ChangeRecord[] = [];
-    (["total2026", "intensity2026"] as const).forEach((f) => {
+    NUM_FIELDS.forEach((f) => {
       if (draft[f] !== undefined && draft[f] !== r[f]) {
         changes.push({
           field: f,
           oldValue: r[f] as number | null,
           newValue: draft[f] as number | null,
           remark: (draft.remark as string) || r.remark || "—",
-          by: "区级管理员",
+          by: editorName,
+          at: new Date().toLocaleString("zh-CN"),
+        });
+      }
+    });
+    TEXT_FIELDS.forEach((f) => {
+      if (f === "remark") return;
+      if (draft[f] !== undefined && draft[f] !== r[f]) {
+        changes.push({
+          field: f,
+          oldValue: (r[f] as string) ?? "",
+          newValue: (draft[f] as string) ?? "",
+          remark: (draft.remark as string) || r.remark || "—",
+          by: editorName,
           at: new Date().toLocaleString("zh-CN"),
         });
       }
@@ -75,6 +104,48 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
     onInlineSave?.(r.id, { ...draft, status: changes.length ? "modified" : r.status }, changes);
     toast.success("已保存修改");
     cancelEdit();
+  };
+
+  const numCell = (r: CarbonGoalRow, isEditing: boolean, field: EditableNumField, opts?: { step?: string; showBadge?: boolean; primary?: boolean }) => {
+    const cur = isEditing ? { ...r, ...draft } : r;
+    return (
+      <td className={cn(isEditing ? cellEdit : cellRO, "border-r border-border text-right", opts?.primary && !isEditing && "text-primary")}>
+        {isEditing ? (
+          <Input
+            value={(cur[field] as number | null) ?? ""}
+            onChange={(e) => setDraft((d) => ({ ...d, [field]: e.target.value === "" ? null : Number(e.target.value) }))}
+            className="h-7 text-right text-xs"
+            type="number"
+            step={opts?.step}
+          />
+        ) : (
+          <span className="inline-flex items-center justify-end">
+            {(r[field] as number | null) ?? "—"}
+            {opts?.showBadge && <ChangeBadge changes={r.changes} field={field} />}
+          </span>
+        )}
+      </td>
+    );
+  };
+
+  const textCell = (r: CarbonGoalRow, isEditing: boolean, field: EditableTextField, placeholder?: string) => {
+    const cur = isEditing ? { ...r, ...draft } : r;
+    return (
+      <td className={cn(isEditing ? cellEdit : cellRO, "border-r border-border")}>
+        {isEditing ? (
+          <Input
+            value={(cur[field] as string) ?? ""}
+            onChange={(e) => setDraft((d) => ({ ...d, [field]: e.target.value }))}
+            className="h-7 text-xs"
+            placeholder={placeholder}
+          />
+        ) : (r[field] as string) ? (
+          <span>{r[field] as string}</span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        )}
+      </td>
+    );
   };
 
   return (
@@ -106,7 +177,6 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
           <tbody>
             {pageRows.map((r, idx) => {
               const isInlineEditing = editingId === r.id;
-              const cur = isInlineEditing ? { ...r, ...draft } : r;
               return (
                 <tr
                   key={r.id}
@@ -122,10 +192,21 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                   <td className={cn(cellRO, "border-r border-border")}>{r.districtId === "qingpu" ? "青浦区" : r.districtId}</td>
                   <td className={cn(cellRO, "border-r border-border font-mono")}>{r.creditCode}</td>
                   <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
-                  <td className={cn(cellRO, "border-r border-border text-right")}>{r.total2025 || "—"}</td>
-                  <td className={cn(cellRO, "border-r border-border text-right")}>{r.intensity2025 || "—"}</td>
-                  <td className={cn(cellRO, "border-r border-border text-right text-primary")}>{r.recommendTotal ?? "—"}</td>
 
+                  {/* 2025 总量 */}
+                  {editable ? (
+                    <td className={cn(cellRO, "border-r border-border text-right")}>{r.total2025 || "—"}</td>
+                  ) : numCell(r, isInlineEditing, "total2025")}
+                  {/* 2025 强度 */}
+                  {editable ? (
+                    <td className={cn(cellRO, "border-r border-border text-right")}>{r.intensity2025 || "—"}</td>
+                  ) : numCell(r, isInlineEditing, "intensity2025", { step: "0.001" })}
+                  {/* 推荐值 */}
+                  {editable ? (
+                    <td className={cn(cellRO, "border-r border-border text-right text-primary")}>{r.recommendTotal ?? "—"}</td>
+                  ) : numCell(r, isInlineEditing, "recommendTotal", { primary: true })}
+
+                  {/* 2026 总量 */}
                   <td className={cn(editable || isInlineEditing ? cellEdit : cellRO, "border-r border-border text-right")}>
                     {editable ? (
                       <Input
@@ -136,7 +217,7 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                       />
                     ) : isInlineEditing ? (
                       <Input
-                        value={cur.total2026 ?? ""}
+                        value={(draft.total2026 ?? r.total2026) ?? ""}
                         onChange={(e) => setDraft((d) => ({ ...d, total2026: e.target.value === "" ? null : Number(e.target.value) }))}
                         className="h-7 text-right text-xs"
                         type="number"
@@ -149,6 +230,7 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                       </span>
                     )}
                   </td>
+                  {/* 2026 强度 */}
                   <td className={cn(editable || isInlineEditing ? cellEdit : cellRO, "border-r border-border text-right")}>
                     {editable ? (
                       <Input
@@ -160,7 +242,7 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                       />
                     ) : isInlineEditing ? (
                       <Input
-                        value={cur.intensity2026 ?? ""}
+                        value={(draft.intensity2026 ?? r.intensity2026) ?? ""}
                         onChange={(e) => setDraft((d) => ({ ...d, intensity2026: e.target.value === "" ? null : Number(e.target.value) }))}
                         className="h-7 text-right text-xs"
                         type="number"
@@ -173,8 +255,17 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                       </span>
                     )}
                   </td>
-                  <td className={cn(cellRO, "border-r border-border")}>{r.intensityIndicator}</td>
-                  <td className={cn(cellRO, "border-r border-border")}>{r.intensityUnit}</td>
+
+                  {/* 强度指标 */}
+                  {editable ? (
+                    <td className={cn(cellRO, "border-r border-border")}>{r.intensityIndicator}</td>
+                  ) : textCell(r, isInlineEditing, "intensityIndicator")}
+                  {/* 强度单位 */}
+                  {editable ? (
+                    <td className={cn(cellRO, "border-r border-border")}>{r.intensityUnit}</td>
+                  ) : textCell(r, isInlineEditing, "intensityUnit")}
+
+                  {/* 备注 */}
                   <td className={cn(editable || isInlineEditing ? cellEdit : cellRO, "border-r border-border")}>
                     {editable ? (
                       <Input
@@ -184,7 +275,7 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                       />
                     ) : isInlineEditing ? (
                       <Input
-                        value={(cur.remark as string) ?? ""}
+                        value={(draft.remark as string) ?? ""}
                         onChange={(e) => setDraft((d) => ({ ...d, remark: e.target.value }))}
                         className="h-7 text-xs"
                         placeholder="修改原因"
@@ -195,9 +286,10 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                       <span className="text-muted-foreground">—</span>
                     )}
                   </td>
+
                   {!editable && (
                     <td className="px-2 py-1 text-center">
-                      {mode === "district-view" ? (
+                      {inlineEditable ? (
                         isInlineEditing ? (
                           <div className="inline-flex items-center gap-1">
                             <Button size="icon" variant="ghost" className="h-7 w-7 text-success hover:text-success" onClick={() => saveInline(r)} title="保存">
@@ -208,9 +300,12 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                             </Button>
                           </div>
                         ) : (
-                          <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => startEdit(r)} disabled={!!editingId}>
-                            <Pencil className="h-3 w-3 mr-1" />编辑
-                          </Button>
+                          <div className="inline-flex items-center gap-1">
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => startEdit(r)} disabled={!!editingId}>
+                              <Pencil className="h-3 w-3 mr-1" />编辑
+                            </Button>
+                            {r.status === "modified" && <PassBadge value="已修改" />}
+                          </div>
                         )
                       ) : (
                         r.status === "modified" && <PassBadge value="已修改" />

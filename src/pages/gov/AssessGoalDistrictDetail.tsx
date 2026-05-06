@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
-import { carbonGoals, districts } from "@/mocks/assess";
+import { carbonGoals, districts, type CarbonGoalRow } from "@/mocks/assess";
 import { toast } from "sonner";
 
 type ModifiedFilter = "all" | "modified" | "unmodified";
@@ -27,9 +27,8 @@ export default function AssessGoalDistrictDetail() {
   const [keyword, setKeyword] = useState("");
   const [modifiedFilter, setModifiedFilter] = useState<ModifiedFilter>("all");
 
-  const allRows = useMemo(
-    () => carbonGoals.filter((r) => r.districtId === districtId),
-    [districtId],
+  const [allRows, setAllRows] = useState<CarbonGoalRow[]>(() =>
+    carbonGoals.filter((r) => r.districtId === districtId),
   );
 
   const rows = useMemo(() => {
@@ -120,7 +119,13 @@ export default function AssessGoalDistrictDetail() {
       </div>
 
       {allRows.length > 0 ? (
-        <CarbonGoalTable rows={rows} mode="city-view" />
+        <CarbonGoalTable
+          rows={rows}
+          mode="city-view"
+          onInlineSave={(id, patch, changes) =>
+            setAllRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch, changes: [...r.changes, ...changes] } : r)))
+          }
+        />
       ) : (
         <div className="rounded-md border border-border bg-card py-16 text-center text-sm text-muted-foreground">
           演示数据仅包含青浦区，其它区显示样式相同。
