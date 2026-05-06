@@ -26,12 +26,32 @@ type EntStatus = "draft" | "submitted" | "modified";
 
 // 不同年度的初始填报状态：演示历史已提交、当期已被中心修改、过往草稿等不同情形
 const INITIAL_YEAR_STATUS: Record<number, EntStatus> = {
-  2026: "draft",       // 本期 · 未提交（企业可编辑），但中心已对部分字段进行同步调整
+  2026: "draft",       // 本期 · 未提交（企业可编辑）
   2025: "submitted",   // 已提交
-  2024: "submitted",   // 已提交
+  2024: "modified",    // 已提交 · 中心已调整
   2023: "draft",       // 未提交
   2022: "submitted",   // 已提交
 };
+
+// 2024 年中心负责人修改记录（演示）
+const YEAR_CHANGES_2024 = [
+  {
+    field: "total2026",
+    oldValue: 29171,
+    newValue: 28300,
+    remark: "总量目标按区考核要求收紧 3%",
+    by: "节能中心 · 王磊",
+    at: "2024-04-12 14:08",
+  },
+  {
+    field: "intensity2026",
+    oldValue: 0.221,
+    newValue: 0.205,
+    remark: "强度目标同步收紧",
+    by: "节能中心 · 王磊",
+    at: "2024-04-12 14:08",
+  },
+];
 
 export default function EntAssessGoal() {
   const [year, setYear] = useState(CURRENT_YEAR);
@@ -54,9 +74,11 @@ export default function EntAssessGoal() {
   const updateBq = (_id: string, patch: Partial<BqGoalRow>) => setBqRow((r) => ({ ...r, ...patch }));
 
   const status: EntStatus = currentYearStatus ?? "draft";
-  const submitted = status === "submitted";
-  // 仅已提交锁定；未提交（含中心已同步调整）均可编辑
-  const editable = !submitted;
+  const submitted = status === "submitted" || status === "modified";
+  // 仅未提交（草稿）可编辑；已提交或中心已调整后均锁定
+  const editable = status === "draft";
+  // 演示：2024 年含中心负责人调整记录
+  const yearChanges = scope === "district" && year === 2024 ? YEAR_CHANGES_2024 : myRow.changes;
 
   const headerScope = (
     <Tabs value={scope} onValueChange={(v) => setScope(v as "district" | "city")}>
@@ -103,7 +125,13 @@ export default function EntAssessGoal() {
   };
 
   const statusBadge = () => {
-    if (submitted)
+    if (status === "modified")
+      return (
+        <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-400/50 hover:bg-amber-500/10 inline-flex items-center gap-1">
+          <CheckCircle2 className="h-3.5 w-3.5" />已提交 · 中心已调整
+        </Badge>
+      );
+    if (status === "submitted")
       return (
         <Badge className="bg-primary/10 text-primary border border-primary/30 hover:bg-primary/10 inline-flex items-center gap-1">
           <CheckCircle2 className="h-3.5 w-3.5" />已提交
@@ -119,8 +147,8 @@ export default function EntAssessGoal() {
   return (
     <AppLayout
       side="ent"
-      title="目标分解"
-      subtitle={`${year}年重点单位碳排放双控目标分解`}
+      title="重点单位碳排放双控目标分解"
+      subtitle={`${year} 年度`}
       headerExtra={headerScope}
     >
       {/* 报告年度 */}
@@ -190,7 +218,7 @@ export default function EntAssessGoal() {
         </div>
       </div>
 
-      {scope === "district" && myRow.changes.length > 0 && <ChangeAlert changes={myRow.changes} />}
+      {scope === "district" && yearChanges.length > 0 && <ChangeAlert changes={yearChanges} year={year} />}
 
       {submitted && (
         <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
@@ -206,7 +234,7 @@ export default function EntAssessGoal() {
 
       <fieldset disabled={!editable} className={cn(!editable && "[&_input]:cursor-not-allowed [&_textarea]:cursor-not-allowed")}>
         {scope === "district" ? (
-          <EntCarbonGoalForm row={myRow} onChange={updateMy} />
+          <EntCarbonGoalForm row={{ ...myRow, changes: yearChanges }} onChange={updateMy} />
         ) : (
           <EntBqGoalForm row={bqRow} onChange={updateBq} />
         )}
