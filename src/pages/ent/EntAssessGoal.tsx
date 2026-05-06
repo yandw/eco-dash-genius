@@ -117,11 +117,11 @@ export default function EntAssessGoal() {
   const yearDotClass = (s: EntStatus | undefined) => {
     if (s === "submitted") return "bg-emerald-500";
     if (s === "modified") return "bg-amber-500";
-    return "bg-muted-foreground/50"; // draft / 未提交
+    return "bg-muted-foreground/50";
   };
   const yearStatusLabel = (s: EntStatus | undefined) => {
     if (s === "submitted") return "已提交";
-    if (s === "modified") return "区级已修改";
+    if (s === "modified") return "中心已调整";
     return "未提交";
   };
 
@@ -132,10 +132,10 @@ export default function EntAssessGoal() {
           <CheckCircle2 className="h-3.5 w-3.5" />已提交
         </Badge>
       );
-    if (status === "modified")
+    if (modified)
       return (
-        <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 dark:text-amber-400">
-          区级已修改 · 待重新提交
+        <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 dark:text-amber-400 inline-flex items-center gap-1">
+          <CheckCircle2 className="h-3.5 w-3.5" />已提交 · 中心已调整目标值
         </Badge>
       );
     return (
