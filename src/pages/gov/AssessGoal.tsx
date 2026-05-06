@@ -41,9 +41,9 @@ export default function AssessGoal() {
   const summary = useMemo(() => {
     const total = rows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
     const avgIntensity = (rows.filter((r) => r.intensity2026).reduce((s, r) => s + (r.intensity2026 ?? 0), 0) / Math.max(1, rows.filter((r) => r.intensity2026).length)).toFixed(3);
-    const submitted = rows.filter((r) => r.status !== "draft").length;
+    const completed = rows.filter((r) => r.total2026 != null || r.intensity2026 != null).length;
     const modified = rows.filter((r) => r.status === "modified").length;
-    return { total, avgIntensity, submitted, modified, count: rows.length };
+    return { total, avgIntensity, completed, modified, count: rows.length };
   }, [rows]);
 
   const isCity = role === "city_admin";
