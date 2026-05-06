@@ -332,15 +332,15 @@ export interface DistrictAssessSummary {
 }
 
 export const districtAssessSummary: DistrictAssessSummary[] = districts.map((d) => {
-  const status: "待考核" | "考核中" | "已考核" =
-    d.id === "qingpu" ? "考核中" : d.id === "jiading" || d.id === "xuhui" ? "已考核" : "待考核";
+  const status: "待考核" | "考核中" | "已考核" | "完成考核" =
+    d.id === "qingpu" ? "考核中" : d.id === "jiading" || d.id === "xuhui" ? "完成考核" : "待考核";
   return {
     districtId: d.id,
     name: d.name,
     count: districtCounts[d.id],
     status,
-    assessTime: status === "已考核" ? "2026-03-20" : null,
-    hasStampedDoc: status === "已考核",
+    assessTime: status === "完成考核" || status === "已考核" ? "2026-03-20" : null,
+    hasStampedDoc: status === "完成考核" || status === "已考核",
   };
 });
 
