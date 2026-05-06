@@ -183,7 +183,37 @@ export default function AssessGoal() {
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{summary.total.toLocaleString()}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">平均强度</div><div className="text-lg font-semibold">{summary.avgIntensity}</div></Card>
           </div>
-          <CarbonGoalTable rows={rows} mode="district-view" onInlineSave={handleSaveEdit} />
+          <div className="panel p-3 flex items-end gap-3 flex-wrap">
+            <div className="flex flex-col gap-1">
+              <span className="text-[11px] text-muted-foreground">企业名称 / 信用代码</span>
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <Input
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder="输入关键字搜索"
+                  className="h-9 pl-7 w-64"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-[11px] text-muted-foreground">是否已修改</span>
+              <Select value={modifiedFilter} onValueChange={(v) => setModifiedFilter(v as typeof modifiedFilter)}>
+                <SelectTrigger className="h-9 w-40"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">全部</SelectItem>
+                  <SelectItem value="modified">已修改</SelectItem>
+                  <SelectItem value="unmodified">未修改</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {(keyword || modifiedFilter !== "all") && (
+              <Button variant="ghost" size="sm" className="h-9" onClick={() => { setKeyword(""); setModifiedFilter("all"); }}>
+                重置
+              </Button>
+            )}
+          </div>
+          <CarbonGoalTable rows={filteredRows} mode="district-view" onInlineSave={handleSaveEdit} />
         </div>
       )}
     </AppLayout>
