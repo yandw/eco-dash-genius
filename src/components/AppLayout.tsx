@@ -14,6 +14,8 @@ interface AppLayoutProps {
   side?: UserSide;
   /** When true, show a fullscreen button in the header that opens current URL in a new browser window. */
   fullscreen?: boolean;
+  /** Optional content rendered in the header right area, before the notification bell. */
+  headerExtra?: React.ReactNode;
 }
 
 function findBreadcrumb(side: UserSide, pathname: string): string[] {
@@ -57,7 +59,7 @@ function findBreadcrumb(side: UserSide, pathname: string): string[] {
   return [];
 }
 
-export function AppLayout({ title, subtitle, children, side = "gov", fullscreen }: AppLayoutProps) {
+export function AppLayout({ title, subtitle, children, side = "gov", fullscreen, headerExtra }: AppLayoutProps) {
   const location = useLocation();
   const isAssessRoute = location.pathname.includes("/assess/");
   const showRoleSwitcher = isAssessRoute && side === "gov";
@@ -112,6 +114,8 @@ export function AppLayout({ title, subtitle, children, side = "gov", fullscreen 
 
             <div className="ml-auto flex items-center gap-3">
               {showRoleSwitcher && <RoleSwitcher side={side} />}
+
+              {headerExtra}
 
               {fullscreen && (
                 <Button
