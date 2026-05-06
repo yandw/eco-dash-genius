@@ -112,7 +112,13 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                     <Input
                       value={r.remark}
                       onChange={(e) => onChange?.(r.id, { remark: e.target.value })}
-                      placeholder={result === "完成" && auto === "未完成" ? "请说明原因 *" : ""}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          (e.target as HTMLInputElement).blur();
+                        }
+                      }}
+                      placeholder={result === "完成" && auto === "未完成" ? "请说明原因 *" : "回车确认"}
                       className={cn("h-7 text-xs", result === "完成" && auto === "未完成" && !r.remark && "border-destructive")}
                     />
                   ) : r.remark ? (
