@@ -211,21 +211,21 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                       {/* 企业自评 */}
-                      <div className={`rounded-md border p-3 space-y-2.5 ${editable ? "border-primary/30 bg-primary/5" : "border-border bg-background"}`}>
+                      <div className={`rounded-md border p-3 space-y-2.5 ${canEdit ? "border-primary/30 bg-primary/5" : "border-border bg-background"}`}>
                         <div className="flex items-center justify-between">
                           <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
-                            <span className={`inline-block h-3 w-1 rounded-sm ${editable ? "bg-primary" : "bg-muted-foreground/60"}`} />
-                            企业自评{editable && <span className="text-[10px] text-primary">（可编辑）</span>}
+                            <span className={`inline-block h-3 w-1 rounded-sm ${canEdit ? "bg-primary" : "bg-muted-foreground/60"}`} />
+                            企业自评{canEdit && <span className="text-[10px] text-primary">（可编辑）</span>}{editable && !canEdit && <span className="text-[10px] text-muted-foreground">（已锁定）</span>}
                           </div>
                           <div className="inline-flex items-center gap-1 text-xs">
-                            <span className="text-muted-foreground">{editable ? "满分" : "自评分"}</span>
-                            {!editable && (
+                            <span className="text-muted-foreground">{canEdit ? "满分" : "自评分"}</span>
+                            {!canEdit && (
                               <>
                                 <span className="font-mono font-semibold text-foreground tabular-nums">{it.selfScore}</span>
                                 <span className="text-muted-foreground">/</span>
                               </>
                             )}
-                            <span className={`font-mono ${editable ? "text-foreground/70" : "text-muted-foreground"} tabular-nums`}>{it.itemScore}</span>
+                            <span className={`font-mono ${canEdit ? "text-foreground/70" : "text-muted-foreground"} tabular-nums`}>{it.itemScore}</span>
                           </div>
                         </div>
 
