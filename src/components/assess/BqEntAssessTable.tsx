@@ -83,7 +83,7 @@ export function BqEntAssessTable({ rows, onOpenDetail, onUploadReport }: Props) 
                     {r.reportFile ? (
                       <button
                         onClick={() => downloadReport(r)}
-                        className="inline-flex items-center gap-1 text-success hover:underline"
+                        className="inline-flex items-center gap-1 text-primary hover:underline"
                         title={r.reportFile.name}
                       >
                         <Download className="h-3.5 w-3.5" />
