@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { bqAssessDetail, type BqAssessDetailRow } from "@/mocks/assess";
 import { useBqAssessStore, getBqEnt, setBqReport, rollbackBqEnt } from "@/mocks/bqAssessStore";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -27,6 +28,7 @@ export default function AssessDualBqDetail() {
   const reportInput = useRef<HTMLInputElement>(null);
 
   const [detail, setDetail] = useState<BqAssessDetailRow[]>(() => bqAssessDetail.map((d) => ({ ...d })));
+  const [activeTab, setActiveTab] = useState<string>("all");
 
   useEffect(() => {
     setDetail(bqAssessDetail.map((d) => ({ ...d })));
@@ -174,8 +176,23 @@ export default function AssessDualBqDetail() {
           </div>
         </Card>
 
+        {/* 分类切换 */}
+        {groups.length > 0 && (
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/60 p-1">
+              <TabsTrigger value="all" className="text-xs">全部</TabsTrigger>
+              {groups.map((g, gi) => (
+                <TabsTrigger key={gi} value={String(gi)} className="text-xs">
+                  {gi + 1}. {g.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        )}
+
         {/* 三大分组卡片 */}
         {groups.map((g, gi) => {
+          if (activeTab !== "all" && activeTab !== String(gi)) return null;
           const reviewSum = groupReviewSum(g);
           const selfSum = groupSelfSum(g);
           return (
