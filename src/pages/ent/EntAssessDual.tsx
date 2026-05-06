@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,13 +14,12 @@ import {
 } from "@/components/ui/select";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { getEntAssess, energyAssess, type EntAssessYearRow } from "@/mocks/assess";
-import { getCurrentRole } from "@/mocks/currentUser";
 import { cn } from "@/lib/utils";
 
 const YEARS = [2026, 2025, 2024, 2023, 2022];
 const CURRENT_YEAR = 2026;
 
-type AssessStatus = "passed" | "failed" | "pending";
+type AssessStatus = "passed" | "failed";
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
