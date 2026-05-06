@@ -132,15 +132,9 @@ export default function EntAssessGoal() {
           <CheckCircle2 className="h-3.5 w-3.5" />已提交
         </Badge>
       );
-    if (modified)
-      return (
-        <Badge variant="outline" className="text-xs border-amber-400 text-amber-600 dark:text-amber-400 inline-flex items-center gap-1">
-          <CheckCircle2 className="h-3.5 w-3.5" />已提交 · 中心已调整目标值
-        </Badge>
-      );
     return (
       <Badge variant="outline" className="text-xs border-muted-foreground/40 text-muted-foreground">
-        草稿
+        未提交
       </Badge>
     );
   };
