@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, AlertCircle, Lock } from "lucide-react";
+import { CheckCircle2, AlertCircle, Lock, Info } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,8 +35,8 @@ const ro = "px-3 py-2 rounded-md bg-muted/50 border border-border text-sm min-h-
 
 function rowStatus(r: EntAssessYearRow | undefined): AssessStatus {
   if (!r) return "pending";
-  if (r.totalPass === "—" || r.intensityPass === "—") return "pending";
-  return r.totalPass === "达标" && r.intensityPass === "达标" ? "passed" : "failed";
+  if (r.assessResult === "—") return "pending";
+  return r.assessResult === "完成" ? "passed" : "failed";
 }
 
 export default function EntAssessDual() {
@@ -138,6 +138,15 @@ export default function EntAssessDual() {
         </span>
       </div>
 
+      {/* 考核说明 */}
+      <div className="mb-4 rounded-md border border-border bg-muted/40 p-3 flex items-start gap-2">
+        <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <span className="text-foreground font-medium">考核说明：</span>
+          考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有 1 项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
+        </p>
+      </div>
+
       {/* 总体结论横幅 */}
       {currentRow && status === "passed" && (
         <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
@@ -219,9 +228,34 @@ export default function EntAssessDual() {
           </Card>
 
           <Card className="p-5">
-            <SectionTitle>备注</SectionTitle>
-            <div className={cn(ro, "min-h-[60px] items-start py-2")}>
-              {currentRow.remark || <span className="text-muted-foreground">—</span>}
+            <SectionTitle>双控考核结论</SectionTitle>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <Field label="双控指标完成情况">
+                <div className={cn(ro, "justify-start")}>
+                  {currentRow.dualPass === "—"
+                    ? <span className="text-muted-foreground">—</span>
+                    : <PassBadge value={currentRow.dualPass} />}
+                </div>
+              </Field>
+              <Field label="考核结果">
+                <div className={cn(ro, "justify-start")}>
+                  {currentRow.assessResult === "—"
+                    ? <span className="text-muted-foreground">—</span>
+                    : <PassBadge value={currentRow.assessResult} />}
+                </div>
+              </Field>
+              <Field label="备注" className="md:col-span-2">
+                <div
+                  className={cn(
+                    ro,
+                    "min-h-[60px] items-start py-2",
+                    currentRow.dualPass === "未完成" && currentRow.assessResult === "完成" &&
+                      "border-warning/40 bg-warning/5",
+                  )}
+                >
+                  {currentRow.remark || <span className="text-muted-foreground">—</span>}
+                </div>
+              </Field>
             </div>
           </Card>
 

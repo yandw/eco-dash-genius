@@ -1,41 +1,43 @@
-## 企业侧考核结果界面 重新设计
+## 企业侧考核结果界面 — 增加"双控考核完成情况 / 考核结果 / 备注" 与考核说明
 
-参照"目标分解"页面（`EntAssessGoal.tsx`）的视觉与信息架构，把考核结果重新组织为"按年度查看 + 卡片化分组"的只读详情页，并删除整改任务、考核申诉两个 Tab。
+### 1. 新增"考核说明"提示条
+在 `EntAssessDual.tsx` 页面顶部、考核状态条之后（总体结论横幅之前）增加一个浅色提示条：
 
-### 页面结构（自上而下）
+- 样式：`rounded-md border border-border bg-muted/40 p-3` + `Info` 图标 + 小字
+- 文案（完整保留）：
+  > 考核说明：考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有1项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
 
-1. **页面标题**：`重点单位能耗双控考核结果`，副标题 `{year} 年度`
-2. **报告年度选择器**（panel）
-   - 复用目标分解的样式：年份按钮含状态点 + 文案
-   - 状态来源：每年根据 `dualResult` 自动得出 `已达标 / 未达标 / 未考核`
-   - `本期` 角标标在 2026
-3. **考核状态条**：左侧"考核状态"标签 + 状态徽章（绿色"已达标" / 红色"未达标" / 灰色"暂未考核"）；右侧自动判定提示文字（`Lock` 图标 + "考核结果由系统自动判定，如有异议请联系主管部门"）
-4. **总体结论横幅**（参照目标分解的"已提交"横幅）
-   - 已达标：primary 色调 + `CheckCircle2`，文案"X 年度能耗双控考核已通过"
-   - 未达标：destructive 色调 + `AlertCircle`，文案"X 年度能耗双控考核未通过，请关注下方未达标项"
-5. **卡片分组（替换原表格）** —— 与目标分解一致的 SectionTitle + 只读 `ro` 字段样式
-   - **企业基础信息**：所属区 / 统一信用代码 / 企业名称
-   - **能耗总量目标完成情况**：目标值、实际值、扣除绿电绿证后能耗总量、是否达标（PassBadge）
-   - **能耗强度目标完成情况**：能耗强度指标、能耗强度单位、目标值、实际值、扣除绿电绿证后强度、是否达标
-   - **备注**：只读展示文本
-6. **底部说明**：保留原有 `※ 实际值与扣除绿电绿证可再生能源后的能耗值由系统自动从年度能源利用状况报告中提取…`
+### 2. 新增"双控考核结论"卡片（替代原"备注"卡片，备注合并入此卡片）
+在"能耗强度目标完成情况"卡片之后，新增一个 `Card`：标题 `双控考核结论`，含 3 个只读字段（与现有 `ro` 样式一致）：
 
-### 删除内容
+| 字段 | 取值 |
+|------|------|
+| 双控指标完成情况 | "完成"（总量&强度均达标）/ "未完成"（任一未达标）/ "—"（暂未考核），渲染为 `PassBadge` |
+| 考核结果 | "完成" / "未完成" / "—"，渲染为 `PassBadge`；逻辑默认与"双控指标完成情况"一致，但 mock 中允许差异（见下） |
+| 备注 | 文本只读，多行；当"双控指标=未完成"且"考核结果=完成"时高亮（`border-warning/40 bg-warning/5`）以强调说明原因 |
 
-- `Tabs` 容器及 `rectify`、`appeal` 两个 `TabsContent`
-- 不再使用旧的 `EntAssessResultTable`（保留组件文件本身，仅本页不引用）
-- 不再使用 `AssessYearPicker`（改用与目标分解一致的年度按钮）
+原"备注"卡片删除（备注合并到本卡片中），保持页面紧凑。
 
-### 技术细节
+### 3. Mock 数据扩展
+`src/mocks/assess.ts` 的 `EntAssessYearRow` 新增两字段：
+- `dualPass: "完成" | "未完成" | "—"`
+- `assessResult: "完成" | "未完成" | "—"`
 
-- 文件：`src/pages/ent/EntAssessDual.tsx` 重写
-- 新增小组件结构内联（SectionTitle / Field / `ro` 类）与 `EntCarbonGoalForm` 的样式保持一致
-- 数据：`getEntAssess(ent.id)` 已返回多年的 `EntAssessYearRow`，按 `year` 取当年行渲染；`yearStatusMap` 由各年的 `totalPass` & `intensityPass` 综合计算（两项均"达标" → `passed`，存在"未达标" → `failed`，否则 `pending`）
-- `statusBadge()`、`yearDotClass()`、`yearStatusLabel()` 仿照 `EntAssessGoal.tsx`，调整为达标/未达标语义色（success / destructive / muted）
-- 引入 `CheckCircle2 / AlertCircle / Lock` 图标
-- 移除导入：`Tabs / TabsList / TabsTrigger / TabsContent`、`Card`（按需保留）、`AssessYearPicker`、`EntAssessResultTable`、`Bell / FileWarning`
-- `AppLayout` 的 `title` 更新为"重点单位能耗双控考核结果"，并在页面顶部增加大号 `<h1>`（与目标分解页一致）
+`getEntAssess()` 计算规则：
+- `dualPass`：`totalPass` 与 `intensityPass` 任一为 "—" → "—"；均为"达标" → "完成"；否则 "未完成"
+- `assessResult`：默认等于 `dualPass`；为演示"双控未完成但考核完成"的破例情况，mock 中将其中一年（如 2024）手动覆盖为：`dualPass="未完成"`、`assessResult="完成"`、`remark="因 XX 客观原因，经主管部门核定准予通过"`
 
-### 颜色 / 设计令牌
+### 4. 顶部状态条与年度状态联动调整
+`rowStatus()` 改为以 `assessResult` 为准（passed = "完成"，failed = "未完成"，其他 pending），让年度按钮、状态徽章、总体结论横幅与"考核结果"字段保持一致。
 
-仅使用语义色：`primary`、`success`、`destructive`、`muted-foreground`、`border`，不引入新颜色。
+### 5. PassBadge 兼容
+`PassBadge.tsx` 已支持 "完成 / 未完成"（pass / fail），无需改动。
+
+### 文件改动清单
+- `src/mocks/assess.ts`：`EntAssessYearRow` 新增 `dualPass`、`assessResult` 字段，`getEntAssess()` 填充逻辑 + 一年破例数据
+- `src/pages/ent/EntAssessDual.tsx`：
+  - 顶部新增"考核说明"提示条（`Info` 图标）
+  - 新增"双控考核结论"卡片（3 字段 + 备注高亮）
+  - 删除原独立"备注"卡片
+  - `rowStatus()` 改为基于 `assessResult`
+  - 引入 `Info` 图标
