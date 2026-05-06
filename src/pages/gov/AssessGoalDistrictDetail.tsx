@@ -48,6 +48,14 @@ export default function AssessGoalDistrictDetail() {
 
   const modifiedCount = allRows.filter((r) => r.status === "modified").length;
 
+  const stats = useMemo(() => {
+    const total = allRows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
+    const intensRows = allRows.filter((r) => r.intensity2026);
+    const avgIntensity = (intensRows.reduce((s, r) => s + (r.intensity2026 ?? 0), 0) / Math.max(1, intensRows.length)).toFixed(3);
+    const completed = allRows.filter((r) => r.total2026 != null || r.intensity2026 != null).length;
+    return { count: allRows.length, completed, modified: modifiedCount, total, avgIntensity };
+  }, [allRows, modifiedCount]);
+
   const reset = () => {
     setKeyword("");
     setModifiedFilter("all");
@@ -63,18 +71,24 @@ export default function AssessGoalDistrictDetail() {
         <span className="text-foreground">{districtName} 下属企业碳排放目标分解</span>
       </div>
 
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div className="flex items-center mb-4">
         <Button variant="ghost" size="sm" className="h-8" onClick={() => navigate("/gov/assess/goal")}>
           <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回列表
         </Button>
-        <Button variant="outline" size="sm" className="h-8" onClick={() => toast.success("已导出 Excel")}>
-          <Download className="h-3.5 w-3.5 mr-1" />导出
-        </Button>
+      </div>
+
+      {/* 统计卡片 */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+        <div className="panel p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{stats.count}</div></div>
+        <div className="panel p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{stats.completed}</div></div>
+        <div className="panel p-3"><div className="text-[11px] text-muted-foreground">已修改</div><div className="text-lg font-semibold text-warning">{stats.modified}</div></div>
+        <div className="panel p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{stats.total.toLocaleString()}</div></div>
+        <div className="panel p-3"><div className="text-[11px] text-muted-foreground">平均强度</div><div className="text-lg font-semibold">{stats.avgIntensity}</div></div>
       </div>
 
       {/* 筛选区 */}
-      <div className="panel p-4 mb-4 grid grid-cols-1 md:grid-cols-[1fr_200px_auto] gap-3 items-end">
-        <div>
+      <div className="panel p-4 mb-4 flex items-end gap-3 flex-wrap">
+        <div className="flex-1 min-w-[240px]">
           <Label className="text-xs text-muted-foreground mb-1 inline-block">企业名称 / 信用代码</Label>
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -86,7 +100,7 @@ export default function AssessGoalDistrictDetail() {
             />
           </div>
         </div>
-        <div>
+        <div className="w-[200px]">
           <Label className="text-xs text-muted-foreground mb-1 inline-block">是否已修改</Label>
           <Select value={modifiedFilter} onValueChange={(v) => setModifiedFilter(v as ModifiedFilter)}>
             <SelectTrigger className="h-9 text-xs">
@@ -99,9 +113,10 @@ export default function AssessGoalDistrictDetail() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="h-9" onClick={reset}>重置</Button>
-        </div>
+        <Button variant="outline" size="sm" className="h-9" onClick={reset}>重置</Button>
+        <Button variant="outline" size="sm" className="h-9 ml-auto" onClick={() => toast.success("已导出 Excel")}>
+          <Download className="h-3.5 w-3.5 mr-1" />导出
+        </Button>
       </div>
 
       {allRows.length > 0 ? (

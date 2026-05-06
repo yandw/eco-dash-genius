@@ -141,13 +141,6 @@ export default function AssessGoal() {
         </div>
       </div>
 
-      {isCity && (
-        <div className="flex items-center justify-end mb-4">
-          <Button variant="outline" size="sm" className="h-9" onClick={() => toast.success("已导出 Excel")}>
-            <Download className="h-3.5 w-3.5 mr-1" />导出
-          </Button>
-        </div>
-      )}
       <StampedDocDialog
         open={uploadOpen}
         onOpenChange={setUploadOpen}
