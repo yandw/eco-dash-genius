@@ -48,6 +48,18 @@ export default function AssessGoal() {
   const isCity = role === "city_admin";
   const currentDoc = stampedDoc[year];
 
+  const filteredRows = useMemo(() => {
+    return rows.filter((r) => {
+      if (modifiedFilter === "modified" && r.status !== "modified") return false;
+      if (modifiedFilter === "unmodified" && r.status === "modified") return false;
+      if (keyword.trim()) {
+        const k = keyword.trim().toLowerCase();
+        if (!r.entName.toLowerCase().includes(k) && !r.creditCode.toLowerCase().includes(k)) return false;
+      }
+      return true;
+    });
+  }, [rows, keyword, modifiedFilter]);
+
   const handleSaveEdit = (id: string, patch: Partial<CarbonGoalRow>, changes: ChangeRecord[]) => {
     setRows((prev) =>
       prev.map((r) =>
