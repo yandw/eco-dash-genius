@@ -59,18 +59,15 @@ export default function AssessGoal() {
           <Button variant="outline" size="sm" className="h-9" onClick={() => toast.success("已导出 Excel")}>
             <Download className="h-3.5 w-3.5 mr-1" />导出
           </Button>
-          {!isCity && (
-            <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已批量提交至市级")}>
-              <Send className="h-3.5 w-3.5 mr-1" />批量提交
-            </Button>
-          )}
         </div>
       </div>
 
       <Tabs defaultValue="district">
         <TabsList>
           <TabsTrigger value="district">区下属单位碳排放目标分解</TabsTrigger>
-          <TabsTrigger value="bq">"百家"、"千家"、通信业企业碳排放目标分解</TabsTrigger>
+          {isCity && (
+            <TabsTrigger value="bq">"百家"、"千家"、通信业企业碳排放目标分解</TabsTrigger>
+          )}
         </TabsList>
 
         {/* ========= 区下属 ========= */}
