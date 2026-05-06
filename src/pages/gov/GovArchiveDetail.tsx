@@ -128,29 +128,6 @@ export default function GovArchiveDetail() {
             completed={yr.detail.completed}
             annotationsByStep={annotationsByStep}
           />
-          <div className="mt-3 px-2 pb-2 text-[11px] text-muted-foreground leading-relaxed">
-            提示：发现问题时点击下方「标注问题」对字段添加批注，提交退回时一并发送给企业。
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            onClick={() => {
-              const next: FieldAnnotationItem = {
-                step: active,
-                field: prompt("请输入字段名（示例：年能源消费量）") || "未命名字段",
-                comment: prompt("请输入批注内容") || "",
-                by: "中心管理员",
-                at: new Date().toLocaleString("zh-CN"),
-              };
-              if (next.comment) {
-                setAnnotations((a) => [...a, next]);
-                toast.success("批注已添加");
-              }
-            }}
-          >
-            <MessageSquareWarning className="h-3.5 w-3.5 mr-1" /> 标注问题
-          </Button>
         </aside>
         <div className="panel p-6 min-w-0">
           <ArchiveStepContent
@@ -179,7 +156,7 @@ export default function GovArchiveDetail() {
             )}
             <div>
               <div className="text-xs text-muted-foreground mb-1.5">
-                <span className="text-destructive">*</span> 退回意见（企业将收到完整内容）
+                <span className="text-destructive">*</span> 退回意见
               </div>
               <Textarea
                 rows={5}
