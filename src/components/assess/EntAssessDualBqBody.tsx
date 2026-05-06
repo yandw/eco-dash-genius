@@ -241,7 +241,7 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
                                 step="0.5"
                                 onChange={(e) => updateSelf(it.__idx, { selfScore: Number(e.target.value) })}
                                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.target as HTMLInputElement).blur(); } }}
-                                className="h-8 text-sm font-mono bg-background"
+                                className="h-8 text-sm font-mono bg-white"
                               />
                             </div>
                             <div>
@@ -256,7 +256,7 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
                                   }
                                 }}
                                 placeholder="请输入自评依据，回车确认（Shift+Enter 换行）"
-                                className="text-xs resize-none bg-background"
+                                className="text-xs resize-none bg-white"
                                 rows={3}
                               />
                             </div>
