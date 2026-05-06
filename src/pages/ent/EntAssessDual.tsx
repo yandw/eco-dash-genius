@@ -5,13 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { getEntAssess, energyAssess, type EntAssessYearRow } from "@/mocks/assess";
 import { cn } from "@/lib/utils";
@@ -237,7 +232,7 @@ export default function EntAssessDual() {
             <SectionTitle>双控考核结论</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <Field label="考核结果">
-                <Select
+                <RadioGroup
                   value={currentOverride || ""}
                   onValueChange={(v) =>
                     setResultOverride((prev) => ({
@@ -245,15 +240,17 @@ export default function EntAssessDual() {
                       [year]: v as "完成" | "未完成",
                     }))
                   }
+                  className="flex items-center gap-6 min-h-[80px] px-3 py-2 rounded-md border border-input bg-background"
                 >
-                  <SelectTrigger className="min-h-[80px] h-auto py-2 bg-background">
-                    <SelectValue placeholder="请选择考核结果" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="完成">完成</SelectItem>
-                    <SelectItem value="未完成">未完成</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="完成" id={`result-done-${year}`} />
+                    <Label htmlFor={`result-done-${year}`} className="cursor-pointer text-sm font-normal">完成</Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="未完成" id={`result-undone-${year}`} />
+                    <Label htmlFor={`result-undone-${year}`} className="cursor-pointer text-sm font-normal">未完成</Label>
+                  </div>
+                </RadioGroup>
               </Field>
               <Field label="备注">
                 <Textarea
