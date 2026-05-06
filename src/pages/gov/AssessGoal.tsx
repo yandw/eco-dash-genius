@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
 import { BqGoalTable } from "@/components/assess/BqGoalTable";
 import { DistrictListTable } from "@/components/assess/DistrictListTable";
-import { EditWithRemarkSheet } from "@/components/assess/EditWithRemarkSheet";
+
 import {
   carbonGoals,
   bqGoals,
