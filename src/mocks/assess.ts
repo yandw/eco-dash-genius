@@ -373,7 +373,7 @@ export interface BqEntAssessRow {
   entName: string;
   selfScore: number;
   totalScore: number;
-  status: "已完成" | "考核中" | "待考核" | "待提交";
+  status: "已完成" | "考核中" | "待考核" | "待提交" | "已提交";
   reportFile?: BqEntAssessReportFile;
 }
 
