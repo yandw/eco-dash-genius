@@ -186,9 +186,9 @@ export default function AssessDualBqDetail() {
                   <span className="text-sm font-semibold text-foreground">{g.name}</span>
                   <Badge variant="outline" className="border-primary/30 text-primary">满分 {g.groupScore}</Badge>
                 </div>
-                <div className="flex items-center gap-4 text-xs">
-                  <div>自评 <span className="font-mono font-semibold text-foreground">{selfSum}</span> / {g.groupScore}</div>
-                  <div>考评 <span className="font-mono font-semibold text-warning">{reviewSum}</span> / {g.groupScore}</div>
+                <div className="flex items-center gap-5 text-xs">
+                  <div className="inline-flex items-baseline gap-1"><span className="text-muted-foreground">自评</span><span className="font-mono font-bold text-foreground text-xl tabular-nums leading-none">{selfSum}</span><span className="text-muted-foreground">/ {g.groupScore}</span></div>
+                  <div className="inline-flex items-baseline gap-1"><span className="text-muted-foreground">考评</span><span className="font-mono font-bold text-warning text-xl tabular-nums leading-none">{reviewSum}</span><span className="text-muted-foreground">/ {g.groupScore}</span></div>
                 </div>
               </div>
 
