@@ -8,7 +8,6 @@ interface Props {
 
 export function ChangeAlert({ changes }: Props) {
   if (!changes.length) return null;
-  const latest = changes[changes.length - 1];
   return (
     <Alert className="border-amber-400/50 bg-amber-50 dark:bg-amber-500/10 mb-4">
       <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
