@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
 import { BqGoalTable } from "@/components/assess/BqGoalTable";
 import { DistrictListTable } from "@/components/assess/DistrictListTable";
-import { EditWithRemarkSheet } from "@/components/assess/EditWithRemarkSheet";
+
 import {
   carbonGoals,
   bqGoals,
@@ -31,8 +31,6 @@ export default function AssessGoal() {
   const [stampedDoc, setStampedDoc] = useState<Record<number, { name: string; size: number } | undefined>>({});
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // 区级编辑
-  const [editing, setEditing] = useState<CarbonGoalRow | null>(null);
 
   const summary = useMemo(() => {
     const total = rows.reduce((s, r) => s + (r.total2026 ?? 0), 0);
@@ -181,16 +179,9 @@ export default function AssessGoal() {
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{summary.total.toLocaleString()}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">平均强度</div><div className="text-lg font-semibold">{summary.avgIntensity}</div></Card>
           </div>
-          <CarbonGoalTable rows={rows} mode="district-view" onEdit={setEditing} />
+          <CarbonGoalTable rows={rows} mode="district-view" onInlineSave={handleSaveEdit} />
         </div>
       )}
-
-      <EditWithRemarkSheet
-        open={!!editing}
-        row={editing}
-        onClose={() => setEditing(null)}
-        onSave={handleSaveEdit}
-      />
     </AppLayout>
   );
 }
