@@ -24,25 +24,50 @@ const CURRENT_YEAR = 2026;
 
 type EntStatus = "draft" | "submitted" | "modified";
 
-// 不同年度的初始填报状态：演示历史已提交、当期草稿、过往草稿等不同情形
+// 不同年度的初始填报状态：演示历史已提交、当期已被中心修改、过往草稿等不同情形
 const INITIAL_YEAR_STATUS: Record<number, EntStatus> = {
-  2026: "draft",       // 本期 · 草稿（未提交）
+  2026: "modified",    // 本期 · 中心负责人已修改，需企业确认后重新提交
   2025: "submitted",   // 已提交
   2024: "submitted",   // 已提交
-  2023: "modified",    // 区级已修改 · 待重新提交
+  2023: "draft",       // 未提交
   2022: "submitted",   // 已提交
 };
+
+// 演示用：中心负责人对 2026 年目标的修改记录
+const DEMO_CHANGES_2026 = [
+  {
+    field: "total2026",
+    oldValue: 29171,
+    newValue: 28300,
+    remark: "根据全市年度减排任务下调企业总量目标",
+    by: "节能中心 · 王磊",
+    at: "2026-04-12 14:08",
+  },
+  {
+    field: "intensity2026",
+    oldValue: 0.221,
+    newValue: 0.205,
+    remark: "强度目标同步收紧",
+    by: "节能中心 · 王磊",
+    at: "2026-04-12 14:08",
+  },
+];
 
 export default function EntAssessGoal() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [scope, setScope] = useState<"district" | "city">("district");
-  // 按年度维护填报状态
   const [yearStatusDistrict, setYearStatusDistrict] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
   const [yearStatusCity, setYearStatusCity] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
 
   const currentYearStatus = scope === "district" ? yearStatusDistrict[year] : yearStatusCity[year];
 
-  const [myRow, setMyRow] = useState<CarbonGoalRow>({ ...carbonGoals[0], status: currentYearStatus });
+  const [myRow, setMyRow] = useState<CarbonGoalRow>({
+    ...carbonGoals[0],
+    status: "modified",
+    total2026: 28300,
+    intensity2026: 0.205,
+    changes: DEMO_CHANGES_2026,
+  });
   const [bqRow, setBqRow] = useState<BqGoalRow>({ ...bqGoals[1], status: currentYearStatus });
   const [submitOpen, setSubmitOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
@@ -52,7 +77,7 @@ export default function EntAssessGoal() {
 
   const status: EntStatus = currentYearStatus ?? "draft";
   const submitted = status === "submitted";
-  // 政府侧修改后回退到企业侧时（modified），企业可再次编辑并重新提交
+  // 未提交（draft）与中心已修改（modified）均可编辑；仅已提交锁定
   const editable = !submitted;
 
   const headerScope = (
