@@ -74,9 +74,11 @@ export default function EntAssessGoal() {
   const updateBq = (_id: string, patch: Partial<BqGoalRow>) => setBqRow((r) => ({ ...r, ...patch }));
 
   const status: EntStatus = currentYearStatus ?? "draft";
-  const submitted = status === "submitted";
-  // 仅已提交锁定；未提交（含中心已同步调整）均可编辑
-  const editable = !submitted;
+  const submitted = status === "submitted" || status === "modified";
+  // 仅未提交（草稿）可编辑；已提交或中心已调整后均锁定
+  const editable = status === "draft";
+  // 演示：2024 年含中心负责人调整记录
+  const yearChanges = scope === "district" && year === 2024 ? YEAR_CHANGES_2024 : myRow.changes;
 
   const headerScope = (
     <Tabs value={scope} onValueChange={(v) => setScope(v as "district" | "city")}>
