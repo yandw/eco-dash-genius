@@ -77,8 +77,9 @@ export default function EntAssessGoal() {
 
   const status: EntStatus = currentYearStatus ?? "draft";
   const submitted = status === "submitted";
-  // 未提交（draft）与中心已修改（modified）均可编辑；仅已提交锁定
-  const editable = !submitted;
+  const modified = status === "modified";
+  // 仅草稿状态可编辑；已提交、中心已修改均锁定（中心修改后无需企业再次确认提交）
+  const editable = status === "draft";
 
   const headerScope = (
     <Tabs value={scope} onValueChange={(v) => setScope(v as "district" | "city")}>
