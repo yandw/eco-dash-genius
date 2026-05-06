@@ -326,7 +326,7 @@ export interface DistrictAssessSummary {
   districtId: DistrictId;
   name: string;
   count: number;
-  status: "待考核" | "考核中" | "已考核";
+  status: "待考核" | "考核中" | "已考核" | "完成考核";
   assessTime: string | null;
   hasStampedDoc: boolean;
 }
