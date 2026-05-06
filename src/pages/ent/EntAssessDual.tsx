@@ -220,15 +220,8 @@ export default function EntAssessDual() {
 
           <Card className="p-5">
             <SectionTitle>双控考核结论</SectionTitle>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-              <Field label="双控指标完成情况">
-                <div className={cn(ro, "justify-start")}>
-                  {currentRow.dualPass === "—"
-                    ? <span className="text-muted-foreground">—</span>
-                    : <PassBadge value={currentRow.dualPass} />}
-                </div>
-              </Field>
-              <Field label="考核结果">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
+              <Field label="考核结果" className="md:col-span-1">
                 <div className={cn(ro, "justify-start")}>
                   {currentRow.assessResult === "—"
                     ? <span className="text-muted-foreground">—</span>
@@ -236,15 +229,24 @@ export default function EntAssessDual() {
                 </div>
               </Field>
               <Field label="备注" className="md:col-span-2">
-                <div
-                  className={cn(
-                    ro,
-                    "min-h-[60px] items-start py-2",
-                    currentRow.dualPass === "未完成" && currentRow.assessResult === "完成" &&
-                      "border-warning/40 bg-warning/5",
-                  )}
-                >
-                  {currentRow.remark || <span className="text-muted-foreground">—</span>}
+                <div className="space-y-2">
+                  <div className="flex items-start gap-1.5 text-[11px] text-muted-foreground leading-relaxed">
+                    <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                    <span>
+                      <span className="text-foreground font-medium">考核说明：</span>
+                      考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有 1 项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
+                    </span>
+                  </div>
+                  <div
+                    className={cn(
+                      ro,
+                      "min-h-[60px] items-start py-2",
+                      currentRow.dualPass === "未完成" && currentRow.assessResult === "完成" &&
+                        "border-warning/40 bg-warning/5",
+                    )}
+                  >
+                    {currentRow.remark || <span className="text-muted-foreground">—</span>}
+                  </div>
                 </div>
               </Field>
             </div>
