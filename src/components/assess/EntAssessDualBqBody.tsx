@@ -338,7 +338,7 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
                         <div className="flex items-center justify-between">
                           <div className="text-xs font-medium text-foreground inline-flex items-center gap-1.5">
                             <span className="inline-block h-3 w-1 rounded-sm bg-warning" />
-                            政府考评{editable && <span className="text-[10px] text-muted-foreground">（仅查看）</span>}
+                            政府考评
                           </div>
                           <div className="inline-flex items-center gap-1 text-xs">
                             <span className="text-muted-foreground">满分</span>
