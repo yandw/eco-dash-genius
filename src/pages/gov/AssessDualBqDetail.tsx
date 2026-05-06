@@ -305,23 +305,6 @@ export default function AssessDualBqDetail() {
           );
         })}
 
-        {/* 底部小计 */}
-        <Card className="p-4 sticky bottom-2 z-10 shadow-lg">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="text-sm font-semibold text-foreground">合计</div>
-            <div className="flex items-center gap-6 text-sm">
-              <div>满分 <span className="font-mono font-semibold text-foreground tabular-nums">{totals.total}</span></div>
-              <div>企业自评 <span className="font-mono font-semibold text-foreground tabular-nums">{totals.self}</span></div>
-              <div>政府考评 <span className="font-mono font-semibold text-warning text-base tabular-nums">{totals.review}</span></div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="h-9" onClick={() => navigate(-1)}>取消</Button>
-              <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已保存考评分")}>
-                <Save className="h-3.5 w-3.5 mr-1" />保存
-              </Button>
-            </div>
-          </div>
-        </Card>
       </div>
     </AppLayout>
   );
