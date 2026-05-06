@@ -27,9 +27,8 @@ export default function AssessGoalDistrictDetail() {
   const [keyword, setKeyword] = useState("");
   const [modifiedFilter, setModifiedFilter] = useState<ModifiedFilter>("all");
 
-  const allRows = useMemo(
-    () => carbonGoals.filter((r) => r.districtId === districtId),
-    [districtId],
+  const [allRows, setAllRows] = useState<CarbonGoalRow[]>(() =>
+    carbonGoals.filter((r) => r.districtId === districtId),
   );
 
   const rows = useMemo(() => {
