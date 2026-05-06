@@ -1,55 +1,41 @@
-## 修改范围
-仅企业侧 `src/pages/ent/EntAssessGoal.tsx`，不影响政府侧 `gov/AssessGoal.tsx`。
+## 企业侧考核结果界面 重新设计
 
-## 1. 文案 + 切换位置改造
+参照"目标分解"页面（`EntAssessGoal.tsx`）的视觉与信息架构，把考核结果重新组织为"按年度查看 + 卡片化分组"的只读详情页，并删除整改任务、考核申诉两个 Tab。
 
-将原 Tabs 两项的文案变更：
-- "区下属单位碳排放目标分解" → **"区管企业"**
-- "百家、千家、通信业企业碳排放目标分解" → **"市管企业"**
+### 页面结构（自上而下）
 
-并把这个切换从内容区中部的 `TabsList` 移到**顶部栏**（与年度选择器同行，参考图1中"市级管理员"那种 segmented 样式），用 `Tabs` + 紧凑型 `TabsList`（h-9，rounded-md，与 AssessYearPicker 同高），放在年度选择器右侧或紧邻位置。
+1. **页面标题**：`重点单位能耗双控考核结果`，副标题 `{year} 年度`
+2. **报告年度选择器**（panel）
+   - 复用目标分解的样式：年份按钮含状态点 + 文案
+   - 状态来源：每年根据 `dualResult` 自动得出 `已达标 / 未达标 / 未考核`
+   - `本期` 角标标在 2026
+3. **考核状态条**：左侧"考核状态"标签 + 状态徽章（绿色"已达标" / 红色"未达标" / 灰色"暂未考核"）；右侧自动判定提示文字（`Lock` 图标 + "考核结果由系统自动判定，如有异议请联系主管部门"）
+4. **总体结论横幅**（参照目标分解的"已提交"横幅）
+   - 已达标：primary 色调 + `CheckCircle2`，文案"X 年度能耗双控考核已通过"
+   - 未达标：destructive 色调 + `AlertCircle`，文案"X 年度能耗双控考核未通过，请关注下方未达标项"
+5. **卡片分组（替换原表格）** —— 与目标分解一致的 SectionTitle + 只读 `ro` 字段样式
+   - **企业基础信息**：所属区 / 统一信用代码 / 企业名称
+   - **能耗总量目标完成情况**：目标值、实际值、扣除绿电绿证后能耗总量、是否达标（PassBadge）
+   - **能耗强度目标完成情况**：能耗强度指标、能耗强度单位、目标值、实际值、扣除绿电绿证后强度、是否达标
+   - **备注**：只读展示文本
+6. **底部说明**：保留原有 `※ 实际值与扣除绿电绿证可再生能源后的能耗值由系统自动从年度能源利用状况报告中提取…`
 
-> 说明：实际企业侧用户只属于其中一种，这里仍保留两项切换以便演示/Demo 切换查看。
+### 删除内容
 
-## 2. 表格 → 表单 改造
+- `Tabs` 容器及 `rectify`、`appeal` 两个 `TabsContent`
+- 不再使用旧的 `EntAssessResultTable`（保留组件文件本身，仅本页不引用）
+- 不再使用 `AssessYearPicker`（改用与目标分解一致的年度按钮）
 
-不再在企业侧使用 `CarbonGoalTable` / `BqGoalTable`（横向多列、需要滚动），改为竖向**详情表单**：左侧标签、右侧值（只读字段灰底，可填字段为输入框），按业务分组成 Section。
+### 技术细节
 
-### 区管企业（CarbonGoalRow）表单分组
+- 文件：`src/pages/ent/EntAssessDual.tsx` 重写
+- 新增小组件结构内联（SectionTitle / Field / `ro` 类）与 `EntCarbonGoalForm` 的样式保持一致
+- 数据：`getEntAssess(ent.id)` 已返回多年的 `EntAssessYearRow`，按 `year` 取当年行渲染；`yearStatusMap` 由各年的 `totalPass` & `intensityPass` 综合计算（两项均"达标" → `passed`，存在"未达标" → `failed`，否则 `pending`）
+- `statusBadge()`、`yearDotClass()`、`yearStatusLabel()` 仿照 `EntAssessGoal.tsx`，调整为达标/未达标语义色（success / destructive / muted）
+- 引入 `CheckCircle2 / AlertCircle / Lock` 图标
+- 移除导入：`Tabs / TabsList / TabsTrigger / TabsContent`、`Card`（按需保留）、`AssessYearPicker`、`EntAssessResultTable`、`Bell / FileWarning`
+- `AppLayout` 的 `title` 更新为"重点单位能耗双控考核结果"，并在页面顶部增加大号 `<h1>`（与目标分解页一致）
 
-- **企业基础信息**（只读）：所属区、统一信用代码、企业名称
-- **2025 年碳排放数据**（只读）：总量（万吨CO₂）、单位产值碳排放
-- **推荐值（系统预留）**（只读，主色高亮）：总量推荐值（万吨CO₂）
-- **2026 年碳排放目标**（可编辑）：总量目标（万吨CO₂）、强度目标、强度指标、强度单位
-- **备注**（可编辑，textarea）
+### 颜色 / 设计令牌
 
-底部保留区级修改提示 `ChangeAlert`。
-
-### 市管企业（BqGoalRow）表单分组
-
-- **企业基础信息**（只读）：所属区、统一信用代码、企业名称
-- **2025 年碳排放数据**（只读）：总量（吨CO₂）、单位产值碳排放（吨CO₂/万元）
-- **推荐值**（只读高亮）：总量推荐值（万吨CO₂）
-- **2026 年碳排放目标**（可编辑）：总量目标值（万吨CO₂）、强度目标值、强度指标、强度单位
-- **备注**（可编辑）
-
-### UI 实现细节
-
-- 用 `Card` 包裹每个 Section，标题用左侧色条 + `text-sm font-medium`。
-- 字段使用 `grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4` 布局。
-- 标签：`text-xs text-muted-foreground`；只读值：`text-sm`；可编辑：`Input`/`Textarea`（shadcn）。
-- 顶部右侧仍保留"保存草稿 / 提交"按钮。
-
-## 3. 新建文件
-
-- `src/components/assess/EntCarbonGoalForm.tsx`：渲染区管企业表单（接收 `row` + `onChange`）。
-- `src/components/assess/EntBqGoalForm.tsx`：渲染市管企业表单。
-
-## 4. 修改文件
-
-- `src/pages/ent/EntAssessGoal.tsx`：
-  - 顶部 toolbar 改为：`AssessYearPicker` + 归属切换 `Tabs`（区管/市管）+ 状态 Badge + 操作按钮。
-  - 中间内容改为渲染对应表单组件，移除原 `TabsList` 在中部的写法（直接用 `TabsContent` 受控）。
-
-## 政府侧
-保持不变：`gov/AssessGoal.tsx` 仍使用原表格 + 原文案。
+仅使用语义色：`primary`、`success`、`destructive`、`muted-foreground`、`border`，不引入新颜色。
