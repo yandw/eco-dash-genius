@@ -80,8 +80,34 @@ export function EntBqGoalForm({ row, onChange }: Props) {
               className="h-9 bg-white dark:bg-background border-primary/40"
             />
           </Field>
-          <Field label="强度指标"><div className={ro}>{row.intensityIndicator || "—"}</div></Field>
-          <Field label="强度单位"><div className={ro}>{row.intensityUnit || "—"}</div></Field>
+          <Field label="强度指标">
+            <Input
+              list="ent-bq-intensity-indicator-options"
+              value={row.intensityIndicator ?? ""}
+              onChange={(e) => onChange(row.id, { intensityIndicator: e.target.value })}
+              placeholder="请选择或输入强度指标"
+              className="h-9 bg-white dark:bg-background border-primary/40"
+            />
+            <datalist id="ent-bq-intensity-indicator-options">
+              <option value="单位产值碳排放" />
+              <option value="单位产品碳排放" />
+              <option value="单位增加值碳排放" />
+            </datalist>
+          </Field>
+          <Field label="强度单位">
+            <Input
+              list="ent-bq-intensity-unit-options"
+              value={row.intensityUnit ?? ""}
+              onChange={(e) => onChange(row.id, { intensityUnit: e.target.value })}
+              placeholder="请选择或输入强度单位"
+              className="h-9 bg-white dark:bg-background border-primary/40"
+            />
+            <datalist id="ent-bq-intensity-unit-options">
+              <option value="吨CO2/万元" />
+              <option value="吨CO2/吨产品" />
+              <option value="千克CO2/件" />
+            </datalist>
+          </Field>
         </div>
       </Card>
 
