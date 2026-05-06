@@ -294,7 +294,7 @@ export default function AssessDualBqDetail() {
                             onKeyDown={(e) => {
                               if (e.key === "Enter") { e.preventDefault(); (e.target as HTMLInputElement).blur(); }
                             }}
-                            className="h-8 text-sm font-mono"
+                            className="h-8 text-sm font-mono bg-white"
                           />
                         </div>
                         <div>
