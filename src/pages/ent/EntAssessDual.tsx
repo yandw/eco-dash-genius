@@ -4,8 +4,16 @@ import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PassBadge } from "@/components/assess/PassBadge";
 import { getEntAssess, energyAssess, type EntAssessYearRow } from "@/mocks/assess";
+import { getCurrentRole } from "@/mocks/currentUser";
 import { cn } from "@/lib/utils";
 
 const YEARS = [2026, 2025, 2024, 2023, 2022];
@@ -43,19 +51,31 @@ export default function EntAssessDual() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const ent = energyAssess[0];
   const allRows = useMemo(() => getEntAssess(ent.id), [ent.id]);
+  const role = getCurrentRole();
+  const isDistrictAdmin = role === "district_admin";
 
-  // 年度状态映射：基于 mock 现有 3 年（2024/2025/2026），其余年份给一个演示状态
+  // 区级管理员手动覆盖的考核结果（按年份保存）
+  const [resultOverride, setResultOverride] = useState<Record<number, "完成" | "未完成" | "">>({});
+
+  // 年度状态映射：手动覆盖优先，其次系统判定
   const yearStatusMap = useMemo<Record<number, AssessStatus>>(() => {
     const map: Record<number, AssessStatus> = {};
     YEARS.forEach((y) => {
-      const r = allRows.find((x) => x.year === y);
-      map[y] = r ? rowStatus(r) : "pending";
+      const override = resultOverride[y];
+      if (override === "完成") map[y] = "passed";
+      else if (override === "未完成") map[y] = "failed";
+      else {
+        const r = allRows.find((x) => x.year === y);
+        map[y] = r ? rowStatus(r) : "pending";
+      }
     });
     return map;
-  }, [allRows]);
+  }, [allRows, resultOverride]);
 
   const currentRow = allRows.find((r) => r.year === year);
   const status = yearStatusMap[year];
+  const currentOverride = resultOverride[year] || "";
+  const effectiveResult: string = currentOverride || (currentRow?.assessResult ?? "—");
 
   const yearDotClass = (s: AssessStatus) =>
     s === "passed" ? "bg-emerald-500" : s === "failed" ? "bg-destructive" : "bg-muted-foreground/50";
@@ -220,20 +240,50 @@ export default function EntAssessDual() {
 
           <Card className="p-5">
             <SectionTitle>双控考核结论</SectionTitle>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
-              <Field label="考核结果" className="md:col-span-1">
-                <div className={cn(ro, "justify-start")}>
-                  {currentRow.assessResult === "—"
-                    ? <span className="text-muted-foreground">—</span>
-                    : <PassBadge value={currentRow.assessResult} />}
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <Field label={
+                <span className="inline-flex items-center gap-1.5">
+                  考核结果
+                  {isDistrictAdmin && (
+                    <span className="text-[10px] text-primary">（区级可手动调整，优先级最高）</span>
+                  )}
+                </span>
+              }>
+                {isDistrictAdmin ? (
+                  <Select
+                    value={currentOverride || "__auto__"}
+                    onValueChange={(v) =>
+                      setResultOverride((prev) => ({
+                        ...prev,
+                        [year]: v === "__auto__" ? "" : (v as "完成" | "未完成"),
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="min-h-[60px] h-auto py-2">
+                      <SelectValue placeholder="请选择" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__auto__">
+                        系统判定（{currentRow.assessResult === "—" ? "未判定" : currentRow.assessResult}）
+                      </SelectItem>
+                      <SelectItem value="完成">完成</SelectItem>
+                      <SelectItem value="未完成">未完成</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className={cn(ro, "min-h-[60px] items-start py-2 justify-start")}>
+                    {effectiveResult === "—"
+                      ? <span className="text-muted-foreground">—</span>
+                      : <PassBadge value={effectiveResult} />}
+                  </div>
+                )}
               </Field>
-              <Field label="备注" className="md:col-span-2">
+              <Field label="备注">
                 <div
                   className={cn(
                     ro,
                     "min-h-[60px] items-start py-2",
-                    currentRow.dualPass === "未完成" && currentRow.assessResult === "完成" &&
+                    currentRow.dualPass === "未完成" && effectiveResult === "完成" &&
                       "border-warning/40 bg-warning/5",
                   )}
                 >
