@@ -44,7 +44,8 @@ export default function AssessOrgs() {
   const [tab, setTab] = useState<OrgTab>("district");
   const districts = useDistrictOrgs();
   const groups = useGroupOrgs();
-
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 5;
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AssessOrg | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm("district"));
