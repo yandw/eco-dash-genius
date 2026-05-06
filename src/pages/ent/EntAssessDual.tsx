@@ -164,7 +164,7 @@ export default function EntAssessDual() {
               <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
               企业基础信息
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="space-y-1">
                 <div className="text-[11px] text-muted-foreground">所属区</div>
                 <div className="text-sm font-medium text-foreground">青浦区</div>
@@ -176,10 +176,6 @@ export default function EntAssessDual() {
               <div className="space-y-1">
                 <div className="text-[11px] text-muted-foreground">企业名称</div>
                 <div className="text-sm font-medium text-foreground truncate" title={ent.entName}>{ent.entName}</div>
-              </div>
-              <div className="space-y-1">
-                <div className="text-[11px] text-muted-foreground">考核年份</div>
-                <div className="text-sm font-medium text-foreground">{year}年</div>
               </div>
               <div className="space-y-1">
                 <div className="text-[11px] text-muted-foreground">考核状态</div>
