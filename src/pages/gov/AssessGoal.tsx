@@ -230,32 +230,12 @@ export default function AssessGoal() {
               </Button>
             </div>
           </div>
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                <Input
-                  value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
-                  placeholder="输入关键字搜索"
-                  className="h-9 pl-7 w-64"
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-[11px] text-muted-foreground">是否已修改</span>
-              <Select value={modifiedFilter} onValueChange={(v) => setModifiedFilter(v as typeof modifiedFilter)}>
-                <SelectTrigger className="h-9 w-40"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">全部</SelectItem>
-                  <SelectItem value="modified">已修改</SelectItem>
-                  <SelectItem value="unmodified">未修改</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {(keyword || modifiedFilter !== "all") && (
-              <Button variant="ghost" size="sm" className="h-9" onClick={() => { setKeyword(""); setModifiedFilter("all"); }}>
-                重置
-              </Button>
-            )}
-          </div>
+          <CarbonGoalTable rows={filteredRows} mode="district-view" onInlineSave={handleSaveEdit} />
+        </div>
+      )}
+    </AppLayout>
+  );
+}
           <CarbonGoalTable rows={filteredRows} mode="district-view" onInlineSave={handleSaveEdit} />
         </div>
       )}
