@@ -358,3 +358,154 @@ export const districtGoalSummary: DistrictGoalSummary[] = districts.map((d) => (
   count: districtCounts[d.id],
   status: d.id === "putuo" || d.id === "chongming" ? "进行中" : "已完成",
 }));
+
+// ====================== 百千家·通信业 企业能耗考核（市级管理员） ======================
+
+export interface BqEntAssessReportFile {
+  name: string;
+  url: string;
+  uploadedAt: string;
+}
+
+export interface BqEntAssessRow {
+  id: string;
+  year: number;
+  entName: string;
+  selfScore: number;
+  totalScore: number;
+  status: "已完成" | "考核中" | "待考核";
+  reportFile?: BqEntAssessReportFile;
+}
+
+const _bqEntNames: Array<[string, number, number]> = [
+  ["东方有线网络有限公司", 70, 71],
+  ["中国电信股份有限公司上海分公司", 82, 76],
+  ["中国联合网络通信有限公司上海市分公司", 75, 76],
+  ["中国移动通信集团上海有限公司", 94, 81],
+  ["上海华谊能源化工有限公司", 70, 64],
+  ["上海氯碱化工股份有限公司", 89, 87],
+  ["国网上海市电力公司", 100, 83],
+  ["远纺工业（上海）有限公司", 66, 67],
+  ["宝山钢铁股份有限公司", 98, 77],
+  ["宝武碳业科技股份有限公司", 98, 76],
+  ["中国石化上海高桥石油化工有限公司", 81, 73],
+  ["中国石化上海石油化工股份有限公司", 92, 86],
+  ["科思创聚合物（中国）有限公司", 77, 76],
+  ["上海赛科石油化工有限责任公司", 95, 93],
+];
+
+export const bqEntAssessList: BqEntAssessRow[] = _bqEntNames.map(([name, self, total], idx) => ({
+  id: `bqea-${idx + 1}`,
+  year: 2024,
+  entName: name,
+  selfScore: self,
+  totalScore: total,
+  status: "已完成",
+  reportFile: idx === 6 ? { name: "国网上海市电力公司2024考核报告.pdf", url: "#", uploadedAt: "2025-01-15" } : undefined,
+}));
+
+// 评分明细行
+export interface BqAssessDetailRow {
+  no: string;
+  groupName?: string;        // 顶层指标分组（用于合并行）
+  groupScore?: number;       // 分组分值
+  itemScore: number;         // 单项分值
+  criterion: string;         // 评分标准
+  selfScore: number;
+  selfBasis: string;
+  proofs: { name: string; url: string }[];
+  reviewScore: number;
+  reviewBasis: string;
+}
+
+export const bqAssessDetail: BqAssessDetailRow[] = [
+  // 1. 能耗总量和强度目标 (30)
+  { no: "1.1", groupName: "能耗总量和强度目标", groupScore: 30, itemScore: 15,
+    criterion: "能耗总量目标完成情况：以《上海市经济信息化委关于下达2024年规上工业和通信业节能目标的通知》（沪经信节〔2024〕463号）为准，依据市统计局统计数据进行考核。完成2024年总量控制目标的，得15分；总量超过控制目标的10%以内，得10分；总量超过控制目标的10%以上，不得分。",
+    selfScore: 15, selfBasis: "2024年能耗总量（等价值…",
+    proofs: [{ name: "东方有线网络有限公司2024能源利用状况报告（年报）-已盖章.pdf", url: "#" }],
+    reviewScore: 15, reviewBasis: "2024年能耗总量（等价…" },
+  { no: "1.2", itemScore: 15,
+    criterion: "能耗强度目标完成情况：以《上海市经济信息化委关于下达2024年规上工业和通信业节能目标的通知》（沪经信节〔2024〕463号）为准，依据市统计局统计数据进行考核。除国网上海市电力公司外，其他企业完成能耗强度控制目标的，得15分；未完成目标但能耗强度同比下降的，得10分；能耗强度同比未有下降的，不得分。国网上海市电力公司产品单耗完成目标的，得15分；未完成目标的，不得分。",
+    selfScore: 15, selfBasis: "2024年强度目标类型为吨…",
+    proofs: [{ name: "东方有线网络有限公司2024能源利用状况报告（年报）-已盖章.pdf", url: "#" }],
+    reviewScore: 15, reviewBasis: "2024年单位电信业务总…" },
+
+  // 2. 节能管理制度落实情况 (30)
+  { no: "2.1", groupName: "节能管理制度落实情况", groupScore: 30, itemScore: 4,
+    criterion: "建立节能工作组织保障体系情况：设有节能工作领导小组，单位主要领导担任负责人的，得1分；设有能源管理岗位，聘有能源管理负责人并报备案的，得1分；设有能源管理机构，并有能源计量、统计、审计等能源管理岗位并报备案的，得1分；设有节能监察机构，并有专人负责的，得1分。",
+    selfScore: 4, selfBasis: "1、东方有线节能减排领…",
+    proofs: [{ name: "东方有线节能减排领导和工作小组组织架构图&岗位备案表（已盖章）.pdf", url: "#" }],
+    reviewScore: 4, reviewBasis: "设有工作领导小组、能…" },
+  { no: "2.2", itemScore: 2,
+    criterion: "节能目标责任制建立情况：建立节能目标责任制，并合理分解目标，落实到相应层级或岗位的，得1分；定期组织内部考核的，得1分。",
+    selfScore: 2, selfBasis: "1、东方有线能源管理办…",
+    proofs: [{ name: "节能目标责任制相关附件（已盖章）.pdf", url: "#" }],
+    reviewScore: 2, reviewBasis: "建立并落实能源管理制…" },
+  { no: "2.3", itemScore: 4,
+    criterion: "制定并实施年度节能计划和节能措施的，得1分；有建立能源管理制度的，得1分；有建立能源统计管理制度的，得1分；有建立能源计量管理制度的，得1分。",
+    selfScore: 4, selfBasis: "1、东方有线能源管理办…",
+    proofs: [{ name: "年度节能计划和措施相关附件（已盖章）.pdf", url: "#" }],
+    reviewScore: 4, reviewBasis: "证明材料中有制定年度…" },
+  { no: "2.4", itemScore: 2,
+    criterion: "节能奖惩制度建立情况。制定节能奖惩制度办法的，得1分；有落实节能奖惩制度的，得1分。",
+    selfScore: 1, selfBasis: "东方有线能源管理办法",
+    proofs: [{ name: "东方有线能源管理办法（已盖章）.pdf", url: "#" }],
+    reviewScore: 1, reviewBasis: "制定节能奖惩制度" },
+  { no: "2.5", itemScore: 3,
+    criterion: "落实固定资产投资项目节能审查制度情况：提供企业2024年固定资产投资项目台账的，得1分；台账中项目均落实节能审查制度的，得1分；完全落实节能审查意见的，得1分。",
+    selfScore: 3, selfBasis: "2024年度不涉及固定资产…",
+    proofs: [],
+    reviewScore: 3, reviewBasis: "未涉及" },
+  { no: "2.6", itemScore: 6,
+    criterion: "落实高耗能设备淘汰工作情况：企业按时上报高耗能落后淘汰年报季报的，得2分；企业在2024年度已完成全部高耗能落后设备淘汰工作的，得4分。",
+    selfScore: 2, selfBasis: "企业落后机电设备（产…",
+    proofs: [{ name: "（产品）、工艺自查淘汰计划表（东方有线2024年第4季度）241231-提交版（已盖章）.pdf", url: "#" }],
+    reviewScore: 3, reviewBasis: "中心数据，按时上报，…" },
+  { no: "2.7", itemScore: 2,
+    criterion: "能源利用状况报告上报情况：以市节能中心统计数据为准，按时上报2024年能源利用状况报告的，得2分。",
+    selfScore: 2, selfBasis: "东方有线网络有限公司20…",
+    proofs: [{ name: "东方有线网络有限公司2024能源利用状况报告（年报）-已盖章.pdf", url: "#" }],
+    reviewScore: 2, reviewBasis: "中心数据，按时上报" },
+  { no: "2.8", itemScore: 5,
+    criterion: "2024年节能月报上报情况：以市节能中心统计数据为准，2024年节能月报上报率达到100%的，得5分；上报率达到90%及以上的，得3分；上报率达到80%及以上的，得2分；未达到80%的，不得分。",
+    selfScore: 5, selfBasis: "2024年节能月报上报率10…",
+    proofs: [{ name: "2024年节能月报上报率100%-平台截图（已盖章）.pdf", url: "#" }],
+    reviewScore: 5, reviewBasis: "中心数据，按时上报" },
+  { no: "2.9", itemScore: 2,
+    criterion: "能源管理体系建设情况：开展能源管理体系评价工作的，得1分；已取得能源管理体系认证的，得2分。",
+    selfScore: 1, selfBasis: "东方有线能源管理办法",
+    proofs: [{ name: "东方有线能源管理办法（已盖章）.pdf", url: "#" }],
+    reviewScore: 0, reviewBasis: "无相关证明材料" },
+
+  // 3. 节能重点工作落实情况 (40)
+  { no: "3.1", groupName: "节能重点工作落实情况", groupScore: 40, itemScore: 10,
+    criterion: '在"十四五"期间开展能源审计工作的，得2分；未开展的，不得分；能源审计中列入的节能技改措施已开展实施的，得6分；未开展的，不得分；开展节能技改采用合同能源方式的，得2分。',
+    selfScore: 8, selfBasis: "1、东方有线十四五能源…",
+    proofs: [{ name: "能源审计相关附件（已盖章）-压缩版.pdf", url: "#" }],
+    reviewScore: 8, reviewBasis: "正在进行能源审计，无…" },
+  { no: "3.2", itemScore: 6,
+    criterion: "落实节能降碳改造实施方案，累计完成十四五节能量目标80%（含）以上得6分,70%（含）-80%得4分，60%（含）-70%得2分，60%以下不得分。",
+    selfScore: 6, selfBasis: "", proofs: [], reviewScore: 6, reviewBasis: "" },
+  { no: "3.3", itemScore: 6,
+    criterion: '行业能效水平对标情况，能效优于标杆水平的，得4分；达到基准水平的，得2分；低于基准水平的，不得分；入选上海市能效"领跑者"名单的，得2分。',
+    selfScore: 6, selfBasis: "通信业无标杆水平和基准…",
+    proofs: [], reviewScore: 4, reviewBasis: "不涉及能效对标，未入…" },
+  { no: "3.4", itemScore: 4,
+    criterion: "开展绿色工厂、绿色产品、绿色供应链、零碳工厂等相关创建工作的，得2分；获得国家或本市绿色制造示范单位荣誉的，得2分。",
+    selfScore: 0, selfBasis: "", proofs: [], reviewScore: 0, reviewBasis: "" },
+  { no: "3.5", itemScore: 6,
+    criterion: "分布式光伏发电及其它新能源：推动企业分布式光伏发电及其它新能源应用，得2分；企业可利用的建筑屋顶光伏安装比例达到50%及以上的，得4分。",
+    selfScore: 0, selfBasis: "", proofs: [], reviewScore: 0, reviewBasis: "" },
+  { no: "3.6", itemScore: 4,
+    criterion: "清洁生产审核开展情况：开展清洁生产审核的，得2分；完成清洁生产项目改造验收的，得2分。",
+    selfScore: 4, selfBasis: "", proofs: [], reviewScore: 4, reviewBasis: "不涉及" },
+  { no: "3.7", itemScore: 2,
+    criterion: "应用国家和本市推广的节能、环保、节水、绿色技术产品的，得2分。",
+    selfScore: 2, selfBasis: "2023年通信机房绿色改造…",
+    proofs: [{ name: "2023年通信机房绿色改造典型案例-证书（已盖章）.pdf", url: "#" }],
+    reviewScore: 2, reviewBasis: "证书" },
+  { no: "3.8", itemScore: 2,
+    criterion: "推进碳管理工作：围绕产品碳足迹评价与碳标签、数字化碳管理平台、碳管理体系、供应链碳管理、碳标准建设及应用、碳金融产品创新、低碳技术产品示范应用等七大领域积极推荐申报工业碳管理试点项目的，得2分。",
+    selfScore: 2, selfBasis: "", proofs: [], reviewScore: 2, reviewBasis: "" },
+];

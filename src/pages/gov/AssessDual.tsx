@@ -9,10 +9,14 @@ import { cn } from "@/lib/utils";
 import { DistrictListTable } from "@/components/assess/DistrictListTable";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import { StampedDocDialog } from "@/components/assess/StampedDocDialog";
+import { BqEntAssessTable } from "@/components/assess/BqEntAssessTable";
+import { BqEntAssessDetailDialog } from "@/components/assess/BqEntAssessDetailDialog";
 import {
   energyAssess,
   districtAssessSummary,
+  bqEntAssessList,
   type EnergyAssessRow,
+  type BqEntAssessRow,
 } from "@/mocks/assess";
 import {
   useAssessStatusStore,
@@ -66,7 +70,24 @@ export default function AssessDual() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [rows, setRows] = useState<EnergyAssessRow[]>(energyAssess);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [bqRows, setBqRows] = useState<BqEntAssessRow[]>(bqEntAssessList);
+  const [bqDetailRow, setBqDetailRow] = useState<BqEntAssessRow | null>(null);
   const statusStore = useAssessStatusStore();
+
+  const bqStats = useMemo(() => ({
+    total: bqRows.length,
+    done: bqRows.filter((r) => r.status === "已完成").length,
+    doing: bqRows.filter((r) => r.status === "考核中").length,
+    pending: bqRows.filter((r) => r.status === "待考核").length,
+    uploaded: bqRows.filter((r) => !!r.reportFile).length,
+  }), [bqRows]);
+
+  const updateBqReport = (id: string, file: { name: string; url: string; uploadedAt: string }) => {
+    setBqRows((prev) => prev.map((r) => (r.id === id ? { ...r, reportFile: file } : r)));
+  };
+  const rollbackBq = (id: string) => {
+    setBqRows((prev) => prev.map((r) => (r.id === id ? { ...r, status: "待考核" as const } : r)));
+  };
 
   // 当前区（区级管理员）
   const myDistrictId = (currentUser as unknown as { districtId?: string }).districtId ?? "qingpu";
@@ -130,8 +151,26 @@ export default function AssessDual() {
             <DistrictListTable variant="assess" rows={mergedSummary} year={year} onAction={(id) => navigate(`/gov/assess/dual/district/${id}`)} />
           </TabsContent>
 
-          <TabsContent value="bq" className="mt-4">
-            <Card className="p-6 text-sm text-muted-foreground">"百家"、"千家"、通信业企业能耗考核大表（与区下属考评样式一致），已对接年报数据。</Card>
+          <TabsContent value="bq" className="mt-4 space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{bqStats.total}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{bqStats.done}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">考核中</div><div className="text-lg font-semibold text-warning">{bqStats.doing}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">待考核</div><div className="text-lg font-semibold text-muted-foreground">{bqStats.pending}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">已上传报告</div><div className="text-lg font-semibold text-primary">{bqStats.uploaded}</div></Card>
+            </div>
+            <BqEntAssessTable
+              rows={bqRows}
+              onOpenDetail={setBqDetailRow}
+              onUploadReport={updateBqReport}
+            />
+            <BqEntAssessDetailDialog
+              open={!!bqDetailRow}
+              row={bqDetailRow}
+              onClose={() => setBqDetailRow(null)}
+              onRollback={rollbackBq}
+              onUploadReport={updateBqReport}
+            />
           </TabsContent>
         </Tabs>
 
