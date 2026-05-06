@@ -75,7 +75,7 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
         {row.changes.length > 0 && (
           <div className="mb-4 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive flex items-start gap-2">
             <span className="mt-0.5">⚠</span>
-            <span>中心负责人已修改下列高亮字段，原填报值已被覆盖。请确认后重新提交。</span>
+            <span>中心负责人已调整下列高亮字段，最终目标以中心调整后的值为准，无需重新提交。</span>
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
