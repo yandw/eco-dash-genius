@@ -36,6 +36,8 @@ export default function AssessGoal() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [modifiedFilter, setModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
+  const [bqKeyword, setBqKeyword] = useState("");
+  const [bqModifiedFilter, setBqModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
 
 
   const summary = useMemo(() => {
