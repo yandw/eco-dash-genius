@@ -21,7 +21,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { SimplePagination, paginate } from "@/components/ui/simple-pagination";
+import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import {
   AssessOrg, OrgTab, CENTER_CONTACTS,
   useDistrictOrgs, useGroupOrgs, addOrg, updateOrg, removeOrg,
@@ -45,7 +45,7 @@ export default function AssessOrgs() {
   const districts = useDistrictOrgs();
   const groups = useGroupOrgs();
   const [page, setPage] = useState(1);
-  const PAGE_SIZE = 5;
+  const [pageSize, setPageSize] = useState(10);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AssessOrg | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm("district"));
@@ -54,8 +54,8 @@ export default function AssessOrgs() {
   const [confirmDelete, setConfirmDelete] = useState<AssessOrg | null>(null);
 
   const list = tab === "district" ? districts : groups;
-  const pageItems = paginate(list, page, PAGE_SIZE);
-  const startIdx = (Math.min(Math.max(1, page), Math.max(1, Math.ceil(list.length / PAGE_SIZE))) - 1) * PAGE_SIZE;
+  const pageItems = paginate(list, page, pageSize);
+  const startIdx = (Math.min(Math.max(1, page), Math.max(1, Math.ceil(list.length / pageSize))) - 1) * pageSize;
   const groupColLabel = "集团";
 
   const openAdd = () => {
