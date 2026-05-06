@@ -139,23 +139,6 @@ export default function Archives() {
       title="节能管理档案"
       subtitle={`审核 ${CURRENT_YEAR} 年度全市重点用能企业节能档案，跟踪上报与整改进度`}
     >
-      {/* KPI 行 */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5">
-        <KpiCard label="应报企业" value={kpi.total} unit="家" icon={Building2} tone="primary" />
-        <KpiCard label="已上报" value={kpi.reported} unit="家" icon={TrendingUp} tone="primary" />
-        <KpiCard
-          label="上报率"
-          value={kpi.rate}
-          unit="%"
-          icon={TrendingUp}
-          tone="primary"
-          highlight
-        />
-        <KpiCard label="待我审核" value={kpi.submitted} unit="家" icon={Clock} tone="warning" />
-        <KpiCard label="已通过" value={kpi.approved} unit="家" icon={CheckCircle2} tone="success" />
-        <KpiCard label="已退回" value={kpi.rejected} unit="家" icon={AlertOctagon} tone="danger" />
-      </div>
-
       {/* 报告年度选择 */}
       <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
         <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
@@ -182,6 +165,23 @@ export default function Archives() {
         {selectedYear === CURRENT_YEAR && (
           <span className="text-[11px] text-primary ml-1">本期</span>
         )}
+      </div>
+
+      {/* KPI 行 */}
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5">
+        <KpiCard label="应报企业" value={kpi.total} unit="家" icon={Building2} tone="primary" />
+        <KpiCard label="已上报" value={kpi.reported} unit="家" icon={TrendingUp} tone="primary" />
+        <KpiCard
+          label="上报率"
+          value={kpi.rate}
+          unit="%"
+          icon={TrendingUp}
+          tone="primary"
+          highlight
+        />
+        <KpiCard label="待我审核" value={kpi.submitted} unit="家" icon={Clock} tone="warning" />
+        <KpiCard label="已通过" value={kpi.approved} unit="家" icon={CheckCircle2} tone="success" />
+        <KpiCard label="已退回" value={kpi.rejected} unit="家" icon={AlertOctagon} tone="danger" />
       </div>
 
       {/* 筛选区 */}
