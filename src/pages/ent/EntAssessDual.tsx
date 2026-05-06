@@ -138,6 +138,15 @@ export default function EntAssessDual() {
         </span>
       </div>
 
+      {/* 考核说明 */}
+      <div className="mb-4 rounded-md border border-border bg-muted/40 p-3 flex items-start gap-2">
+        <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <span className="text-foreground font-medium">考核说明：</span>
+          考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有 1 项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
+        </p>
+      </div>
+
       {/* 总体结论横幅 */}
       {currentRow && status === "passed" && (
         <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
