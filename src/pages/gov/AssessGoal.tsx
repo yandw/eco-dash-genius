@@ -223,7 +223,13 @@ export default function AssessGoal() {
                       <Download className="h-3.5 w-3.5 mr-1" />导出
                     </Button>
                   </div>
-                  <BqGoalTable rows={bqFiltered} mode="city-view" />
+                  <BqGoalTable
+                    rows={bqFiltered}
+                    mode="city-view"
+                    onInlineSave={(id, patch, changes) =>
+                      setBqRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch, changes: [...r.changes, ...changes] } : r)))
+                    }
+                  />
                 </>
               );
             })()}
