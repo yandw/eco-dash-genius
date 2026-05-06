@@ -229,7 +229,7 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
                           </div>
                         </div>
 
-                        {editable ? (
+                        {canEdit ? (
                           <>
                             <div>
                               <label className="text-[11px] text-muted-foreground mb-1 block">自评分</label>
