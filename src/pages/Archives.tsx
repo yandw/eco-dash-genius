@@ -42,9 +42,10 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const CURRENT_YEAR = 2024;
-const YEARS = [2024, 2025];
+const YEARS = [2025, 2024, 2023, 2022, 2021, 2020];
 
 export default function Archives() {
+  const [selectedYear, setSelectedYear] = useState<number>(CURRENT_YEAR);
   const [keyword, setKeyword] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | ArchiveStatus>("all");
   const [exportOpen, setExportOpen] = useState(false);
@@ -113,15 +114,15 @@ export default function Archives() {
       const matchIndustry = industrySelected.size === 0 || industrySelected.has(e.industry);
       const matchStatus =
         statusFilter === "all" ||
-        e.years.some((y) => y.year === CURRENT_YEAR && y.status === statusFilter);
+        e.years.some((y) => y.year === selectedYear && y.status === statusFilter);
       return matchKw && matchDistrict && matchIndustry && matchStatus;
     });
-  }, [keyword, districtSelected, industrySelected, statusFilter]);
+  }, [keyword, districtSelected, industrySelected, statusFilter, selectedYear]);
 
-  // KPI based on current year across ALL enterprises
+  // KPI based on selected year across ALL enterprises
   const kpi = useMemo(() => {
     const currentYears = enterprises.map(
-      (e) => e.years.find((y) => y.year === CURRENT_YEAR)?.status ?? "pending",
+      (e) => e.years.find((y) => y.year === selectedYear)?.status ?? "pending",
     );
     const total = currentYears.length;
     const reported = currentYears.filter((s) => s !== "pending").length;
@@ -130,7 +131,7 @@ export default function Archives() {
     const rejected = currentYears.filter((s) => s === "rejected").length;
     const rate = total ? Math.round((reported / total) * 100) : 0;
     return { total, reported, submitted, approved, rejected, rate };
-  }, []);
+  }, [selectedYear]);
 
   return (
     <AppLayout
@@ -153,6 +154,34 @@ export default function Archives() {
         <KpiCard label="待我审核" value={kpi.submitted} unit="家" icon={Clock} tone="warning" />
         <KpiCard label="已通过" value={kpi.approved} unit="家" icon={CheckCircle2} tone="success" />
         <KpiCard label="已退回" value={kpi.rejected} unit="家" icon={AlertOctagon} tone="danger" />
+      </div>
+
+      {/* 报告年度选择 */}
+      <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
+        <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
+          <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
+          报告年度
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {YEARS.map((y) => (
+            <Button
+              key={y}
+              size="sm"
+              variant={selectedYear === y ? "default" : "outline"}
+              className={
+                selectedYear === y
+                  ? "h-8 min-w-[68px] bg-gradient-primary text-primary-foreground border-0"
+                  : "h-8 min-w-[68px]"
+              }
+              onClick={() => setSelectedYear(y)}
+            >
+              {y}
+            </Button>
+          ))}
+        </div>
+        {selectedYear === CURRENT_YEAR && (
+          <span className="text-[11px] text-primary ml-1">本期</span>
+        )}
       </div>
 
       {/* 筛选区 */}
@@ -259,8 +288,8 @@ export default function Archives() {
       </div>
 
 
-      {/* 企业 × 年度矩阵 */}
-      <EnterpriseYearMatrix rows={filtered} years={YEARS} currentYear={CURRENT_YEAR} />
+      {/* 企业上报明细 */}
+      <EnterpriseYearMatrix rows={filtered} year={selectedYear} />
 
       <div className="text-[11px] text-muted-foreground mt-3 px-1">
         共 {filtered.length} 家企业 · 点击单元格进入审核详情
