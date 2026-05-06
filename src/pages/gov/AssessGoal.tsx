@@ -174,12 +174,12 @@ export default function AssessGoal() {
 
           <TabsContent value="bq" className="mt-4 space-y-4">
             {(() => {
-              const bqTotal = bqGoals.reduce((s, r) => s + (r.totalGoal ?? 0), 0);
-              const bqIntens = bqGoals.filter((r) => r.intensityGoal != null);
+              const bqTotal = bqRows.reduce((s, r) => s + (r.totalGoal ?? 0), 0);
+              const bqIntens = bqRows.filter((r) => r.intensityGoal != null);
               const bqAvgIntensity = (bqIntens.reduce((s, r) => s + (r.intensityGoal ?? 0), 0) / Math.max(1, bqIntens.length)).toFixed(3);
-              const bqCompleted = bqGoals.filter((r) => r.totalGoal != null || r.intensityGoal != null).length;
-              const bqModified = bqGoals.filter((r) => r.status === "modified").length;
-              const bqFiltered = bqGoals.filter((r) => {
+              const bqCompleted = bqRows.filter((r) => r.totalGoal != null || r.intensityGoal != null).length;
+              const bqModified = bqRows.filter((r) => r.status === "modified").length;
+              const bqFiltered = bqRows.filter((r) => {
                 if (bqModifiedFilter === "modified" && r.status !== "modified") return false;
                 if (bqModifiedFilter === "unmodified" && r.status === "modified") return false;
                 if (bqKeyword.trim()) {
@@ -191,7 +191,7 @@ export default function AssessGoal() {
               return (
                 <>
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                    <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{bqGoals.length}</div></Card>
+                    <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{bqRows.length}</div></Card>
                     <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{bqCompleted}</div></Card>
                     <Card className="p-3"><div className="text-[11px] text-muted-foreground">已修改</div><div className="text-lg font-semibold text-warning">{bqModified}</div></Card>
                     <Card className="p-3"><div className="text-[11px] text-muted-foreground">总量目标（万吨CO₂）</div><div className="text-lg font-semibold text-primary">{bqTotal.toLocaleString()}</div></Card>
