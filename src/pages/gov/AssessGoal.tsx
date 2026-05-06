@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Download, Upload, FileCheck2, Trash2 } from "lucide-react";
+import { Download, Upload, FileCheck2, Trash2, Eye } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { CarbonGoalTable } from "@/components/assess/CarbonGoalTable";
 import { BqGoalTable } from "@/components/assess/BqGoalTable";
 import { DistrictListTable } from "@/components/assess/DistrictListTable";
+import { StampedDocDialog, type StampedDocFile } from "@/components/assess/StampedDocDialog";
 
 import {
   carbonGoals,
@@ -31,10 +32,10 @@ export default function AssessGoal() {
   const navigate = useNavigate();
   const [year, setYear] = useState(CURRENT_YEAR);
   const [rows, setRows] = useState<CarbonGoalRow[]>(carbonGoals);
-  const [stampedDoc, setStampedDoc] = useState<Record<number, { name: string; size: number } | undefined>>({});
+  const [stampedDoc, setStampedDoc] = useState<Record<number, StampedDocFile | undefined>>({});
+  const [uploadOpen, setUploadOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [modifiedFilter, setModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
-  const fileRef = useRef<HTMLInputElement>(null);
 
 
   const summary = useMemo(() => {
@@ -70,14 +71,35 @@ export default function AssessGoal() {
     );
   };
 
-  const handleUpload = (file: File) => {
-    setStampedDoc((m) => ({ ...m, [year]: { name: file.name, size: file.size } }));
-    toast.success(`已上传盖章证明：${file.name}`);
+  const handleUploadConfirm = (file: StampedDocFile) => {
+    setStampedDoc((m) => {
+      const prev = m[year];
+      if (prev) URL.revokeObjectURL(prev.url);
+      return { ...m, [year]: file };
+    });
+  };
+
+  const handleRemoveDoc = () => {
+    const prev = stampedDoc[year];
+    if (prev) URL.revokeObjectURL(prev.url);
+    setStampedDoc((m) => ({ ...m, [year]: undefined }));
+    toast.success("已删除盖章证明");
   };
 
   const handleDownload = () => {
     if (!currentDoc) return;
+    const a = document.createElement("a");
+    a.href = currentDoc.url;
+    a.download = currentDoc.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     toast.success(`正在下载 ${currentDoc.name}`);
+  };
+
+  const handlePreview = () => {
+    if (!currentDoc) return;
+    window.open(currentDoc.url, "_blank", "noopener");
   };
 
   return (
@@ -126,19 +148,14 @@ export default function AssessGoal() {
           </Button>
         </div>
       )}
-      {!isCity && (
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".pdf,.jpg,.jpeg,.png"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) handleUpload(f);
-            e.target.value = "";
-          }}
-        />
-      )}
+      <StampedDocDialog
+        open={uploadOpen}
+        onOpenChange={setUploadOpen}
+        year={year}
+        initialFile={currentDoc}
+        onConfirm={handleUploadConfirm}
+      />
+
 
 
       {isCity ? (
@@ -205,23 +222,26 @@ export default function AssessGoal() {
                 <>
                   <Button variant="outline" size="sm" className="h-9" onClick={handleDownload} title="点击下载">
                     <FileCheck2 className="h-3.5 w-3.5 mr-1 text-success" />
-                    {currentDoc.name}
+                    <span className="max-w-[180px] truncate">{currentDoc.name}</span>
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground" onClick={handlePreview} title="预览">
+                    <Eye className="h-3.5 w-3.5" />
                   </Button>
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="h-9 text-muted-foreground hover:text-destructive"
-                    onClick={() => setStampedDoc((m) => ({ ...m, [year]: undefined }))}
+                    size="icon"
+                    className="h-9 w-9 text-muted-foreground hover:text-destructive"
+                    onClick={handleRemoveDoc}
                     title="删除"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
+                  <Button variant="outline" size="sm" className="h-9" onClick={() => setUploadOpen(true)}>
                     <Upload className="h-3.5 w-3.5 mr-1" />重新上传
                   </Button>
                 </>
               ) : (
-                <Button variant="outline" size="sm" className="h-9" onClick={() => fileRef.current?.click()}>
+                <Button variant="outline" size="sm" className="h-9" onClick={() => setUploadOpen(true)}>
                   <Upload className="h-3.5 w-3.5 mr-1" />上传盖章证明
                 </Button>
               )}
