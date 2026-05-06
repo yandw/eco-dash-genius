@@ -23,10 +23,13 @@ interface Props {
 
 /** 市管企业 — 百千家通信业能耗考核结果 */
 export function EntAssessDualBqBody({ editable = false }: Props) {
-  useBqAssessStore();
-  const row = bqEntAssessList[0];
+  const list = useBqAssessStore();
+  const row = list[0];
   const proofInput = useRef<HTMLInputElement>(null);
   const [proofTargetIdx, setProofTargetIdx] = useState<number | null>(null);
+  // "已完成"=政府已考评，企业不可退回；"已提交"=待政府审核，企业可退回；"待提交"=可编辑
+  const govDone = row.status === "已完成" || row.status === "考核中";
+  const canEdit = editable && row.status === "待提交";
 
   const [detail, setDetail] = useState<BqAssessDetailRow[]>(() => bqAssessDetail.map((d) => ({ ...d, proofs: [...d.proofs] })));
 
