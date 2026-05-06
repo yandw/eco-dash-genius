@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import { PassBadge } from "./PassBadge";
+import { getAssessEntry } from "@/mocks/assessStatusStore";
+import { toast } from "sonner";
 import type { DistrictAssessSummary, DistrictGoalSummary } from "@/mocks/assess";
 
 type Variant = "goal" | "assess";
@@ -53,7 +55,25 @@ export function DistrictListTable({ variant, rows, year, onAction }: Props) {
                 {isAssess && (
                   <TableCell>
                     {ar.hasStampedDoc ? (
-                      <Button variant="ghost" size="sm" className="h-7 text-xs text-primary px-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs text-primary px-2"
+                        onClick={() => {
+                          const doc = getAssessEntry(r.districtId)?.doc;
+                          if (doc) {
+                            const a = document.createElement("a");
+                            a.href = doc.url;
+                            a.download = doc.name;
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                            toast.success(`正在下载 ${doc.name}`);
+                          } else {
+                            toast.success("已下载证明（演示）");
+                          }
+                        }}
+                      >
                         <Download className="h-3 w-3 mr-1" />下载证明
                       </Button>
                     ) : (
