@@ -1,7 +1,9 @@
+import { useMemo, useState } from "react";
 import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChangeBadge } from "./ChangeBadge";
+import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import type { BqGoalRow } from "@/mocks/assess";
 import { cn } from "@/lib/utils";
 
@@ -10,15 +12,21 @@ interface Props {
   mode: "ent-edit" | "district-view" | "city-view";
   onEdit?: (row: BqGoalRow) => void;
   onChange?: (id: string, patch: Partial<BqGoalRow>) => void;
+  paginated?: boolean;
 }
 
 const cellRO = "px-3 py-2 align-middle text-xs text-foreground/90 bg-muted/40";
 const cellEdit = "px-2 py-1 align-middle text-xs";
 
-export function BqGoalTable({ rows, mode, onEdit, onChange }: Props) {
+export function BqGoalTable({ rows, mode, onEdit, onChange, paginated }: Props) {
   const editable = mode === "ent-edit";
+  const showPager = paginated ?? (mode !== "ent-edit");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const pageRows = useMemo(() => (showPager ? paginate(rows, page, pageSize) : rows), [rows, page, pageSize, showPager]);
   return (
-    <div className="overflow-x-auto rounded-md border border-border bg-card">
+    <div className="rounded-md border border-border bg-card overflow-hidden">
+      <div className="overflow-x-auto">
       <table className="min-w-[1500px] w-full border-collapse text-xs">
         <thead className="bg-muted/60 text-muted-foreground">
           <tr className="border-b border-border">
