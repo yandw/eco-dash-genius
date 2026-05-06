@@ -148,19 +148,14 @@ export default function AssessGoal() {
           </Button>
         </div>
       )}
-      {!isCity && (
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".pdf,.jpg,.jpeg,.png"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) handleUpload(f);
-            e.target.value = "";
-          }}
-        />
-      )}
+      <StampedDocDialog
+        open={uploadOpen}
+        onOpenChange={setUploadOpen}
+        year={year}
+        initialFile={currentDoc}
+        onConfirm={handleUploadConfirm}
+      />
+
 
 
       {isCity ? (
