@@ -29,15 +29,14 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 function Field({ label, children, className }: { label: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("space-y-1.5", className)}>
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="text-sm">{children}</div>
+    <div className={cn("space-y-1", className)}>
+      <div className="text-[11px] text-muted-foreground">{label}</div>
+      <div className="text-sm font-medium text-foreground">{children}</div>
     </div>
   );
 }
 
-const ro = "px-3 py-2 rounded-md bg-muted/50 border border-border text-sm min-h-[36px] flex items-center";
-const roEditable = "px-3 py-2 rounded-md bg-background border border-input text-sm min-h-[36px] flex items-center";
+const ro = "text-sm font-medium text-foreground";
 
 function rowStatus(r: EntAssessYearRow | undefined): AssessStatus {
   if (!r) return "failed";
