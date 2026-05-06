@@ -114,15 +114,15 @@ export default function Archives() {
       const matchIndustry = industrySelected.size === 0 || industrySelected.has(e.industry);
       const matchStatus =
         statusFilter === "all" ||
-        e.years.some((y) => y.year === CURRENT_YEAR && y.status === statusFilter);
+        e.years.some((y) => y.year === selectedYear && y.status === statusFilter);
       return matchKw && matchDistrict && matchIndustry && matchStatus;
     });
-  }, [keyword, districtSelected, industrySelected, statusFilter]);
+  }, [keyword, districtSelected, industrySelected, statusFilter, selectedYear]);
 
-  // KPI based on current year across ALL enterprises
+  // KPI based on selected year across ALL enterprises
   const kpi = useMemo(() => {
     const currentYears = enterprises.map(
-      (e) => e.years.find((y) => y.year === CURRENT_YEAR)?.status ?? "pending",
+      (e) => e.years.find((y) => y.year === selectedYear)?.status ?? "pending",
     );
     const total = currentYears.length;
     const reported = currentYears.filter((s) => s !== "pending").length;
@@ -131,7 +131,7 @@ export default function Archives() {
     const rejected = currentYears.filter((s) => s === "rejected").length;
     const rate = total ? Math.round((reported / total) * 100) : 0;
     return { total, reported, submitted, approved, rejected, rate };
-  }, []);
+  }, [selectedYear]);
 
   return (
     <AppLayout
