@@ -23,7 +23,7 @@ export default function EntAssessGoal() {
   const status = scope === "district" ? myRow.status : bqRow.status;
 
   return (
-    <AppLayout side="ent" title="目标分解" subtitle="碳排放目标分解填报">
+    <AppLayout side="ent" title="目标分解" subtitle={`${year}年重点单位碳排放双控目标分解`}>
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <AssessYearPicker year={year} onChange={setYear} />
