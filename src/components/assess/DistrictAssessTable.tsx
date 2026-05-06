@@ -8,14 +8,14 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   rows: EnergyAssessRow[];
-  mode: "district-edit" | "city-view";
+  mode: "district-edit" | "city-view" | "city-edit";
   onChange?: (id: string, patch: Partial<EnergyAssessRow>) => void;
 }
 
 const cellRO = "px-3 py-2 align-middle text-xs text-foreground/90 bg-muted/40";
 
 export function DistrictAssessTable({ rows, mode, onChange }: Props) {
-  const editable = mode === "district-edit";
+  const editable = mode === "district-edit" || mode === "city-edit";
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const pageRows = paginate(rows, page, pageSize);
@@ -112,7 +112,13 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                     <Input
                       value={r.remark}
                       onChange={(e) => onChange?.(r.id, { remark: e.target.value })}
-                      placeholder={result === "完成" && auto === "未完成" ? "请说明原因 *" : ""}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          (e.target as HTMLInputElement).blur();
+                        }
+                      }}
+                      placeholder={result === "完成" && auto === "未完成" ? "请说明原因 *" : "回车确认"}
                       className={cn("h-7 text-xs", result === "完成" && auto === "未完成" && !r.remark && "border-destructive")}
                     />
                   ) : r.remark ? (

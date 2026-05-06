@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { ArrowLeft, ChevronRight, Download, Undo2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
-import { districts, energyAssess } from "@/mocks/assess";
+import { districts, energyAssess, type EnergyAssessRow } from "@/mocks/assess";
 import { useAssessStatusStore, rollbackAssess } from "@/mocks/assessStatusStore";
 import { toast } from "sonner";
 
@@ -16,6 +18,19 @@ export default function AssessDualDistrictDetail() {
   const store = useAssessStatusStore();
   const entry = districtId ? store[districtId] : undefined;
   const submitted = entry?.status === "完成考核";
+
+  const [rows, setRows] = useState<EnergyAssessRow[]>(energyAssess);
+  const update = (id: string, patch: Partial<EnergyAssessRow>) => {
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  };
+
+  const summary = {
+    count: rows.length,
+    pass: rows.filter((r) => {
+      if (!r.totalGoal || !r.intensityGoal) return false;
+      return r.totalActualNetGreen <= r.totalGoal && r.intensityActualNetGreen <= r.intensityGoal;
+    }).length,
+  };
 
   return (
     <AppLayout side="gov" title="双控考核" subtitle={`${districtName} 下属企业能耗目标考评`}>
@@ -70,12 +85,21 @@ export default function AssessDualDistrictDetail() {
         </div>
       </div>
 
+      {isQingpu && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+          <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{summary.count}</div></Card>
+          <Card className="p-3"><div className="text-[11px] text-muted-foreground">完成</div><div className="text-lg font-semibold text-success">{summary.pass}</div></Card>
+          <Card className="p-3"><div className="text-[11px] text-muted-foreground">未完成</div><div className="text-lg font-semibold text-destructive">{summary.count - summary.pass}</div></Card>
+          <Card className="p-3"><div className="text-[11px] text-muted-foreground">达标率</div><div className="text-lg font-semibold text-primary">{Math.round((summary.pass / summary.count) * 100)}%</div></Card>
+        </div>
+      )}
+
       <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-[11px] text-muted-foreground mb-3">
         考核说明：考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有1项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
       </div>
 
       {isQingpu ? (
-        <DistrictAssessTable rows={energyAssess} mode="city-view" />
+        <DistrictAssessTable rows={rows} mode="city-edit" onChange={update} />
       ) : (
         <div className="rounded-md border border-border bg-card py-16 text-center text-sm text-muted-foreground">
           演示数据仅包含青浦区，其它区显示样式相同。
