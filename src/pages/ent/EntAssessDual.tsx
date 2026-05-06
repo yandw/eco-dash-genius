@@ -228,13 +228,6 @@ export default function EntAssessDual() {
           </Card>
 
           <Card className="p-5">
-            <SectionTitle>备注</SectionTitle>
-            <div className={cn(ro, "min-h-[60px] items-start py-2")}>
-              {currentRow.remark || <span className="text-muted-foreground">—</span>}
-            </div>
-          </Card>
-
-          <Card className="p-5">
             <SectionTitle>双控考核结论</SectionTitle>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <Field label="双控指标完成情况">
