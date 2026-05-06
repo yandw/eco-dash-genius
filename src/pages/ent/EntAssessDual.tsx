@@ -240,20 +240,50 @@ export default function EntAssessDual() {
 
           <Card className="p-5">
             <SectionTitle>双控考核结论</SectionTitle>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
-              <Field label="考核结果" className="md:col-span-1">
-                <div className={cn(ro, "justify-start")}>
-                  {currentRow.assessResult === "—"
-                    ? <span className="text-muted-foreground">—</span>
-                    : <PassBadge value={currentRow.assessResult} />}
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <Field label={
+                <span className="inline-flex items-center gap-1.5">
+                  考核结果
+                  {isDistrictAdmin && (
+                    <span className="text-[10px] text-primary">（区级可手动调整，优先级最高）</span>
+                  )}
+                </span>
+              }>
+                {isDistrictAdmin ? (
+                  <Select
+                    value={currentOverride || "__auto__"}
+                    onValueChange={(v) =>
+                      setResultOverride((prev) => ({
+                        ...prev,
+                        [year]: v === "__auto__" ? "" : (v as "完成" | "未完成"),
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="min-h-[60px] h-auto py-2">
+                      <SelectValue placeholder="请选择" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__auto__">
+                        系统判定（{currentRow.assessResult === "—" ? "未判定" : currentRow.assessResult}）
+                      </SelectItem>
+                      <SelectItem value="完成">完成</SelectItem>
+                      <SelectItem value="未完成">未完成</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className={cn(ro, "min-h-[60px] items-start py-2 justify-start")}>
+                    {effectiveResult === "—"
+                      ? <span className="text-muted-foreground">—</span>
+                      : <PassBadge value={effectiveResult} />}
+                  </div>
+                )}
               </Field>
-              <Field label="备注" className="md:col-span-2">
+              <Field label="备注">
                 <div
                   className={cn(
                     ro,
                     "min-h-[60px] items-start py-2",
-                    currentRow.dualPass === "未完成" && currentRow.assessResult === "完成" &&
+                    currentRow.dualPass === "未完成" && effectiveResult === "完成" &&
                       "border-warning/40 bg-warning/5",
                   )}
                 >
