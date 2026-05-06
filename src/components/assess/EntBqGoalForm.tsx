@@ -71,7 +71,7 @@ export function EntBqGoalForm({ row, onChange }: Props) {
               className="h-9"
             />
           </Field>
-          <Field label="强度目标值">
+          <Field label={<span className="inline-flex items-center gap-1">强度目标值（吨CO₂/万元）<ChangeBadge changes={row.changes} field="intensityGoal" /></span>}>
             <Input
               type="number"
               step="0.001"
