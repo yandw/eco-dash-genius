@@ -135,6 +135,9 @@ export default function EntAssessDual() {
               </div>
             );
           })}
+        </div>
+      </div>
+
       {/* 系统判定提示 */}
       <div className="flex items-center justify-end mb-3">
         <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
@@ -143,16 +146,6 @@ export default function EntAssessDual() {
       </div>
 
       {!currentRow && (
-        <div className="mb-4 rounded-lg border border-border bg-muted/30 p-4 flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
-          <div className="text-sm">
-            <div className="font-medium text-foreground">{year} 年度暂无考核结果</div>
-            <div className="text-xs text-muted-foreground mt-0.5">
-              该年度尚未完成数据归集或暂未开展考核。
-            </div>
-          </div>
-        </div>
-      )}
         <div className="mb-4 rounded-lg border border-border bg-muted/30 p-4 flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
           <div className="text-sm">
