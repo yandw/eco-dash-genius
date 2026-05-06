@@ -234,6 +234,38 @@ export default function EntAssessDual() {
             </div>
           </Card>
 
+          <Card className="p-5">
+            <SectionTitle>双控考核结论</SectionTitle>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <Field label="双控指标完成情况">
+                <div className={cn(ro, "justify-start")}>
+                  {currentRow.dualPass === "—"
+                    ? <span className="text-muted-foreground">—</span>
+                    : <PassBadge value={currentRow.dualPass} />}
+                </div>
+              </Field>
+              <Field label="考核结果">
+                <div className={cn(ro, "justify-start")}>
+                  {currentRow.assessResult === "—"
+                    ? <span className="text-muted-foreground">—</span>
+                    : <PassBadge value={currentRow.assessResult} />}
+                </div>
+              </Field>
+              <Field label="备注" className="md:col-span-2">
+                <div
+                  className={cn(
+                    ro,
+                    "min-h-[60px] items-start py-2",
+                    currentRow.dualPass === "未完成" && currentRow.assessResult === "完成" &&
+                      "border-warning/40 bg-warning/5",
+                  )}
+                >
+                  {currentRow.remark || <span className="text-muted-foreground">—</span>}
+                </div>
+              </Field>
+            </div>
+          </Card>
+
           <p className="text-[11px] text-muted-foreground">
             ※ 实际值与扣除绿电绿证可再生能源后的能耗值由系统自动从年度能源利用状况报告中提取。是否达标由系统按"扣除绿电绿证后值 ≤ 目标值"规则自动判定。
           </p>
