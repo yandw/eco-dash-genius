@@ -151,8 +151,26 @@ export default function AssessDual() {
             <DistrictListTable variant="assess" rows={mergedSummary} year={year} onAction={(id) => navigate(`/gov/assess/dual/district/${id}`)} />
           </TabsContent>
 
-          <TabsContent value="bq" className="mt-4">
-            <Card className="p-6 text-sm text-muted-foreground">"百家"、"千家"、通信业企业能耗考核大表（与区下属考评样式一致），已对接年报数据。</Card>
+          <TabsContent value="bq" className="mt-4 space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{bqStats.total}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{bqStats.done}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">考核中</div><div className="text-lg font-semibold text-warning">{bqStats.doing}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">待考核</div><div className="text-lg font-semibold text-muted-foreground">{bqStats.pending}</div></Card>
+              <Card className="p-3"><div className="text-[11px] text-muted-foreground">已上传报告</div><div className="text-lg font-semibold text-primary">{bqStats.uploaded}</div></Card>
+            </div>
+            <BqEntAssessTable
+              rows={bqRows}
+              onOpenDetail={setBqDetailRow}
+              onUploadReport={updateBqReport}
+            />
+            <BqEntAssessDetailDialog
+              open={!!bqDetailRow}
+              row={bqDetailRow}
+              onClose={() => setBqDetailRow(null)}
+              onRollback={rollbackBq}
+              onUploadReport={updateBqReport}
+            />
           </TabsContent>
         </Tabs>
 
