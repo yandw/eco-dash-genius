@@ -33,6 +33,7 @@ export default function AssessGoal() {
   const navigate = useNavigate();
   const [year, setYear] = useState(CURRENT_YEAR);
   const [rows, setRows] = useState<CarbonGoalRow[]>(carbonGoals);
+  const [bqRows, setBqRows] = useState<BqGoalRow[]>(bqGoals);
   const [stampedDoc, setStampedDoc] = useState<Record<number, StampedDocFile | undefined>>({});
   const [uploadOpen, setUploadOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
