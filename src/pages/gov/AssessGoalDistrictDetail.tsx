@@ -119,7 +119,13 @@ export default function AssessGoalDistrictDetail() {
       </div>
 
       {allRows.length > 0 ? (
-        <CarbonGoalTable rows={rows} mode="city-view" />
+        <CarbonGoalTable
+          rows={rows}
+          mode="city-view"
+          onInlineSave={(id, patch, changes) =>
+            setAllRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch, changes: [...r.changes, ...changes] } : r)))
+          }
+        />
       ) : (
         <div className="rounded-md border border-border bg-card py-16 text-center text-sm text-muted-foreground">
           演示数据仅包含青浦区，其它区显示样式相同。
