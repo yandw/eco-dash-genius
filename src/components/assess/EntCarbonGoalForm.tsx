@@ -70,18 +70,19 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
         </p>
       </Card>
 
-      <Card className={cn("p-5", row.changes.length > 0 && "border-destructive/40 ring-1 ring-destructive/20")}>
+      <Card className="p-5">
         <SectionTitle>2026 年碳排放目标（待填报）</SectionTitle>
         {row.changes.length > 0 && (
-          <div className="mb-4 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-xs text-destructive flex items-start gap-2">
+          <div className="mb-4 rounded-md border border-amber-400/50 bg-amber-50 dark:bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300 flex items-start gap-2">
             <span className="mt-0.5">⚠</span>
-            <span>中心负责人已调整下列高亮字段，最终目标以中心调整后的值为准，无需重新提交。</span>
+            <span>中心负责人已调整下列高亮字段，最终目标以中心调整后的值为准。</span>
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
           {(() => {
             const tc = row.changes.find((c) => c.field === "total2026");
             const ic = row.changes.find((c) => c.field === "intensity2026");
+            const hl = "border-amber-400 ring-2 ring-amber-300/40 bg-amber-50 dark:bg-amber-500/10";
             return (
               <>
                 <Field label={<span className="inline-flex items-center gap-1">总量（万吨CO₂）<ChangeBadge changes={row.changes} field="total2026" /></span>}>
@@ -89,16 +90,8 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
                     type="number"
                     value={row.total2026 ?? ""}
                     onChange={(e) => onChange(row.id, { total2026: e.target.value === "" ? null : Number(e.target.value) })}
-                    className={cn("h-9", tc && "border-destructive ring-2 ring-destructive/30 bg-destructive/5")}
+                    className={cn("h-9", tc && hl)}
                   />
-                  {tc && (
-                    <div className="mt-1.5 text-[11px] text-muted-foreground">
-                      原值 <span className="line-through">{String(tc.oldValue ?? "—")}</span>
-                      <span className="mx-1">→</span>
-                      <span className="font-semibold text-destructive">{String(tc.newValue ?? "—")}</span>
-                      <span className="ml-2">由 {tc.by} · {tc.at}</span>
-                    </div>
-                  )}
                 </Field>
                 <Field label={<span className="inline-flex items-center gap-1">强度<ChangeBadge changes={row.changes} field="intensity2026" /></span>}>
                   <Input
@@ -106,16 +99,8 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
                     step="0.001"
                     value={row.intensity2026 ?? ""}
                     onChange={(e) => onChange(row.id, { intensity2026: e.target.value === "" ? null : Number(e.target.value) })}
-                    className={cn("h-9", ic && "border-destructive ring-2 ring-destructive/30 bg-destructive/5")}
+                    className={cn("h-9", ic && hl)}
                   />
-                  {ic && (
-                    <div className="mt-1.5 text-[11px] text-muted-foreground">
-                      原值 <span className="line-through">{String(ic.oldValue ?? "—")}</span>
-                      <span className="mx-1">→</span>
-                      <span className="font-semibold text-destructive">{String(ic.newValue ?? "—")}</span>
-                      <span className="ml-2">由 {ic.by} · {ic.at}</span>
-                    </div>
-                  )}
                 </Field>
               </>
             );
