@@ -86,9 +86,8 @@ export function BqEntAssessTable({ rows, onOpenDetail, onUploadReport }: Props) 
                         className="inline-flex items-center gap-1 text-success hover:underline"
                         title={r.reportFile.name}
                       >
-                        <FileCheck2 className="h-3.5 w-3.5" />
-                        <span>已上传</span>
-                        <Download className="h-3 w-3" />
+                        <Download className="h-3.5 w-3.5" />
+                        <span>下载报告</span>
                       </button>
                     ) : (
                       <span className="text-muted-foreground">—</span>
