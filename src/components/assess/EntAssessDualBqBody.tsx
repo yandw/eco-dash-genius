@@ -180,8 +180,23 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
           </div>
         </Card>
 
+        {/* 分类切换 */}
+        {groups.length > 0 && (
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/60 p-1">
+              <TabsTrigger value="all" className="text-xs">全部</TabsTrigger>
+              {groups.map((g, gi) => (
+                <TabsTrigger key={gi} value={String(gi)} className="text-xs">
+                  {gi + 1}. {g.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        )}
+
         {/* 三大分组卡片 */}
         {groups.map((g, gi) => {
+          if (activeTab !== "all" && activeTab !== String(gi)) return null;
           const reviewSum = groupReviewSum(g);
           const selfSum = groupSelfSum(g);
           return (
