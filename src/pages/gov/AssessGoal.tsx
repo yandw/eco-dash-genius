@@ -71,14 +71,35 @@ export default function AssessGoal() {
     );
   };
 
-  const handleUpload = (file: File) => {
-    setStampedDoc((m) => ({ ...m, [year]: { name: file.name, size: file.size } }));
-    toast.success(`已上传盖章证明：${file.name}`);
+  const handleUploadConfirm = (file: StampedDocFile) => {
+    setStampedDoc((m) => {
+      const prev = m[year];
+      if (prev) URL.revokeObjectURL(prev.url);
+      return { ...m, [year]: file };
+    });
+  };
+
+  const handleRemoveDoc = () => {
+    const prev = stampedDoc[year];
+    if (prev) URL.revokeObjectURL(prev.url);
+    setStampedDoc((m) => ({ ...m, [year]: undefined }));
+    toast.success("已删除盖章证明");
   };
 
   const handleDownload = () => {
     if (!currentDoc) return;
+    const a = document.createElement("a");
+    a.href = currentDoc.url;
+    a.download = currentDoc.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     toast.success(`正在下载 ${currentDoc.name}`);
+  };
+
+  const handlePreview = () => {
+    if (!currentDoc) return;
+    window.open(currentDoc.url, "_blank", "noopener");
   };
 
   return (
