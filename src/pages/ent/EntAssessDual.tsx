@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CheckCircle2, AlertCircle, Lock, Info } from "lucide-react";
+import { CheckCircle2, AlertCircle, Lock } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -229,24 +229,15 @@ export default function EntAssessDual() {
                 </div>
               </Field>
               <Field label="备注" className="md:col-span-2">
-                <div className="space-y-2">
-                  <div className="flex items-start gap-1.5 text-[11px] text-muted-foreground leading-relaxed">
-                    <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                    <span>
-                      <span className="text-foreground font-medium">考核说明：</span>
-                      考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有 1 项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
-                    </span>
-                  </div>
-                  <div
-                    className={cn(
-                      ro,
-                      "min-h-[60px] items-start py-2",
-                      currentRow.dualPass === "未完成" && currentRow.assessResult === "完成" &&
-                        "border-warning/40 bg-warning/5",
-                    )}
-                  >
-                    {currentRow.remark || <span className="text-muted-foreground">—</span>}
-                  </div>
+                <div
+                  className={cn(
+                    ro,
+                    "min-h-[60px] items-start py-2",
+                    currentRow.dualPass === "未完成" && currentRow.assessResult === "完成" &&
+                      "border-warning/40 bg-warning/5",
+                  )}
+                >
+                  {currentRow.remark || <span className="text-muted-foreground">—</span>}
                 </div>
               </Field>
             </div>
@@ -254,6 +245,9 @@ export default function EntAssessDual() {
 
           <p className="text-[11px] text-muted-foreground">
             ※ 实际值与扣除绿电绿证可再生能源后的能耗值由系统自动从年度能源利用状况报告中提取。是否达标由系统按"扣除绿电绿证后值 ≤ 目标值"规则自动判定。
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            ※ 考核说明：考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有 1 项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
           </p>
         </div>
       )}

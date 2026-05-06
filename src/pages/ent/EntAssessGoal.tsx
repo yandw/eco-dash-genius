@@ -151,6 +151,10 @@ export default function EntAssessGoal() {
       subtitle={`${year} 年度`}
       headerExtra={headerScope}
     >
+      <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
+        重点单位碳排放双控目标分解
+      </h1>
+
       {/* 报告年度 */}
       <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
         <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
