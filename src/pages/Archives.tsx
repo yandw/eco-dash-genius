@@ -42,9 +42,10 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const CURRENT_YEAR = 2024;
-const YEARS = [2024, 2025];
+const YEARS = [2025, 2024, 2023, 2022, 2021, 2020];
 
 export default function Archives() {
+  const [selectedYear, setSelectedYear] = useState<number>(CURRENT_YEAR);
   const [keyword, setKeyword] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | ArchiveStatus>("all");
   const [exportOpen, setExportOpen] = useState(false);
