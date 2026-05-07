@@ -100,14 +100,7 @@ export default function AssessTasks() {
   return (
     <AppLayout title="任务管理" subtitle="考核管理 / 任务管理" side="gov">
       <div className="p-6 space-y-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="text-xs text-muted-foreground mb-1">考核管理 / 任务管理</div>
-            <h1 className="text-xl font-semibold flex items-center gap-2">
-              <ClipboardList className="h-5 w-5 text-primary" />
-              任务管理
-            </h1>
-          </div>
+        <div className="flex justify-end">
           <Button onClick={() => { setEditing(null); setFormOpen(true); }} className="gap-1.5">
             <Plus className="h-4 w-4" />新建任务
           </Button>
