@@ -71,11 +71,33 @@ export default function AssessDual() {
   const role = getCurrentRole();
   const navigate = useNavigate();
   const isCity = role === "city_admin";
-  const [year, setYear] = useState(CURRENT_YEAR);
+  useAssessTasksStore();
+
+  const districtType = "区下属单位能耗考核" as const;
+  const bqType = "\"百家\"、\"千家\"、通信业企业能耗考核" as const;
+  const relevantTypes = isCity ? DUAL_TASK_TYPES : [districtType];
+  const activeYears = listActiveYears(relevantTypes);
+  const YEARS = activeYears.length > 0 ? activeYears : [CURRENT_YEAR];
+  const initialYear = activeYears.includes(CURRENT_YEAR)
+    ? CURRENT_YEAR
+    : (activeYears[0] ?? CURRENT_YEAR);
+
+  const [year, setYear] = useState(initialYear);
   const [rows, setRows] = useState<EnergyAssessRow[]>(energyAssess);
   const [uploadOpen, setUploadOpen] = useState(false);
   const bqRows = useBqAssessStore();
   const statusStore = useAssessStatusStore();
+
+  useEffect(() => {
+    if (activeYears.length && !activeYears.includes(year)) {
+      setYear(activeYears[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeYears.join(",")]);
+
+  const hasDistrictTask = hasActiveTask(year, [districtType]);
+  const hasBqTask = hasActiveTask(year, [bqType]);
+  const hasAnyDualTask = activeYears.length > 0;
 
   const bqStats = useMemo(() => ({
     total: bqRows.length,
