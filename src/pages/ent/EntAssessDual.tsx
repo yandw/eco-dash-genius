@@ -120,6 +120,9 @@ export default function EntAssessDual() {
     const cityTask = getDisplayTask(year, [taskType]);
     return (
       <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
+        <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
+          重点单位能耗双控考核结果
+        </h1>
         {!hasAnyTask ? (
           <AssessEmptyState
             title="今年考核未开始"
