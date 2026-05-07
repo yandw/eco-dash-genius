@@ -41,7 +41,7 @@ const TYPES: AssessTaskType[] = [
   "区下属单位能耗考核",
   "\"百家\"、\"千家\"、通信业企业能耗考核",
 ];
-const STATUSES: AssessTaskStatus[] = ["未开始", "进行中", "已结束", "已归档"];
+const STATUSES: AssessTaskStatus[] = ["未开始", "进行中", "已结束"];
 const currentYear = new Date().getFullYear();
 const YEARS = [currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
 
