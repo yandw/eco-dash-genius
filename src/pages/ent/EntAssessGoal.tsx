@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Save, Send, CheckCircle2, Lock } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,11 +13,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { EntCarbonGoalForm } from "@/components/assess/EntCarbonGoalForm";
+import { EntBqGoalForm } from "@/components/assess/EntBqGoalForm";
 import { ChangeAlert } from "@/components/assess/ChangeAlert";
 import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
-import { carbonGoals, type CarbonGoalRow } from "@/mocks/assess";
+import { carbonGoals, bqGoals, type CarbonGoalRow, type BqGoalRow } from "@/mocks/assess";
 import {
   GOAL_TASK_TYPES,
+  getActiveTask,
   getDisplayTask,
   hasActiveTask,
   listActiveYears,
@@ -62,21 +65,25 @@ const YEAR_CHANGES_2024 = [
 export default function EntAssessGoal() {
   useAssessTasksStore();
   const districtType = "区下属单位碳排放目标分解" as const;
+  const cityType = "\"百家\"、\"千家\"、通信业企业碳排放目标分解" as const;
   const activeYears = listActiveYears(GOAL_TASK_TYPES);
   const YEARS = activeYears.length > 0 ? activeYears : [CURRENT_YEAR];
   const initialYear = activeYears.includes(CURRENT_YEAR)
     ? CURRENT_YEAR
     : (activeYears[0] ?? CURRENT_YEAR);
   const [year, setYear] = useState(initialYear);
-  const [yearStatus, setYearStatus] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
+  const [scope, setScope] = useState<"district" | "city">("district");
+  const [yearStatusDistrict, setYearStatusDistrict] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
+  const [yearStatusCity, setYearStatusCity] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
 
-  const currentYearStatus = yearStatus[year];
+  const currentYearStatus = scope === "district" ? yearStatusDistrict[year] : yearStatusCity[year];
 
   const [myRow, setMyRow] = useState<CarbonGoalRow>({
     ...carbonGoals[0],
     status: "draft",
     changes: [],
   });
+  const [bqRow, setBqRow] = useState<BqGoalRow>({ ...bqGoals[1], status: currentYearStatus });
   const [submitOpen, setSubmitOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
 
@@ -87,21 +94,48 @@ export default function EntAssessGoal() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeYears.join(",")]);
 
-  const hasTask = hasActiveTask(year, [districtType]);
+  const hasDistrictTask = hasActiveTask(year, [districtType]);
+  const hasCityTask = hasActiveTask(year, [cityType]);
   const hasAnyGoal = activeYears.length > 0;
 
+  // 当前 scope 在该年没任务时切到有任务的 scope
+  useEffect(() => {
+    if (scope === "district" && !hasDistrictTask && hasCityTask) setScope("city");
+    if (scope === "city" && !hasCityTask && hasDistrictTask) setScope("district");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [year, hasDistrictTask, hasCityTask]);
+
   const updateMy = (_id: string, patch: Partial<CarbonGoalRow>) => setMyRow((r) => ({ ...r, ...patch }));
+  const updateBq = (_id: string, patch: Partial<BqGoalRow>) => setBqRow((r) => ({ ...r, ...patch }));
 
   const status: EntStatus = currentYearStatus ?? "draft";
   const submitted = status === "submitted" || status === "modified";
   // 仅未提交（草稿）可编辑；已提交或中心已调整后均锁定
   const editable = status === "draft";
   // 演示：2024 年含中心负责人调整记录
-  const yearChanges = year === 2024 ? YEAR_CHANGES_2024 : myRow.changes;
+  const yearChanges = scope === "district" && year === 2024 ? YEAR_CHANGES_2024 : myRow.changes;
+
+  const headerScope = hasAnyGoal && (hasDistrictTask || hasCityTask) ? (
+    <Tabs value={scope} onValueChange={(v) => setScope(v as "district" | "city")}>
+      <TabsList className="h-9">
+        {hasDistrictTask && <TabsTrigger value="district" className="h-7 text-xs px-4">区管企业</TabsTrigger>}
+        {hasCityTask && <TabsTrigger value="city" className="h-7 text-xs px-4">市管企业</TabsTrigger>}
+      </TabsList>
+    </Tabs>
+  ) : null;
+
+  const setYearStatus = (s: EntStatus) => {
+    if (scope === "district") {
+      setYearStatusDistrict((m) => ({ ...m, [year]: s }));
+      setMyRow((r) => ({ ...r, status: s }));
+    } else {
+      setYearStatusCity((m) => ({ ...m, [year]: s }));
+      setBqRow((r) => ({ ...r, status: s }));
+    }
+  };
 
   const handleSaveDraft = () => {
-    setYearStatus((m) => ({ ...m, [year]: "draft" }));
-    setMyRow((r) => ({ ...r, status: "draft" }));
+    setYearStatus("draft");
     toast.success("已保存草稿", {
       description: `${year} 年度目标分解填报内容已暂存，可稍后继续编辑。`,
     });
@@ -109,11 +143,11 @@ export default function EntAssessGoal() {
 
   const handleConfirmSubmit = () => {
     setSubmitOpen(false);
-    setYearStatus((m) => ({ ...m, [year]: "submitted" }));
-    setMyRow((r) => ({ ...r, status: "submitted" }));
+    setYearStatus("submitted");
     setSuccessOpen(true);
   };
 
+  const yearStatusMap = scope === "district" ? yearStatusDistrict : yearStatusCity;
   const yearDotClass = (s: EntStatus | undefined) => {
     if (s === "submitted") return "bg-emerald-500";
     if (s === "modified") return "bg-amber-500";
@@ -150,6 +184,7 @@ export default function EntAssessGoal() {
       side="ent"
       title="重点单位碳排放双控目标分解"
       subtitle={`${year} 年度`}
+      headerExtra={headerScope}
     >
       <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
         重点单位碳排放双控目标分解
@@ -160,7 +195,7 @@ export default function EntAssessGoal() {
           title="今年目标分解未开始"
           description="市级管理员尚未在任务管理中创建目标分解任务，请等待任务下发。"
         />
-      ) : !hasTask ? (
+      ) : !hasDistrictTask && !hasCityTask ? (
         <AssessEmptyState
           title={`${year} 年目标分解未开始`}
           description="该年度尚未下发目标分解任务，请切换年份或等待任务下发。"
@@ -176,7 +211,7 @@ export default function EntAssessGoal() {
         </span>
         <div className="flex flex-wrap gap-2">
           {YEARS.map((y) => {
-            const s = yearStatus[y];
+            const s = yearStatusMap[y];
             const active = year === y;
             return (
               <div key={y} className="relative">
@@ -208,7 +243,7 @@ export default function EntAssessGoal() {
       </div>
 
       {(() => {
-        const t = getDisplayTask(year, [districtType]);
+        const t = getDisplayTask(year, [scope === "district" ? districtType : cityType]);
         return t ? (
           <div className="mb-3">
             <TaskCountdownBadge endDate={t.endDate} status={t.status} />
@@ -244,7 +279,7 @@ export default function EntAssessGoal() {
         </div>
       </div>
 
-      {yearChanges.length > 0 && <ChangeAlert changes={yearChanges} year={year} />}
+      {scope === "district" && yearChanges.length > 0 && <ChangeAlert changes={yearChanges} year={year} />}
 
       {submitted && (
         <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
@@ -252,14 +287,18 @@ export default function EntAssessGoal() {
           <div className="text-sm">
             <div className="font-medium text-foreground">{year} 年度目标分解已提交</div>
             <div className="text-xs text-muted-foreground mt-0.5">
-              已上报至区级主管部门审核。提交后不可修改，仅指定政府侧负责人有权调整目标值。
+              已上报至{scope === "district" ? "区级" : "市级"}主管部门审核。提交后不可修改，仅指定政府侧负责人有权调整目标值。
             </div>
           </div>
         </div>
       )}
 
       <fieldset disabled={!editable} className={cn(!editable && "[&_input]:cursor-not-allowed [&_textarea]:cursor-not-allowed")}>
-        <EntCarbonGoalForm row={{ ...myRow, changes: yearChanges }} onChange={updateMy} />
+        {scope === "district" ? (
+          <EntCarbonGoalForm row={{ ...myRow, changes: yearChanges }} onChange={updateMy} />
+        ) : (
+          <EntBqGoalForm row={bqRow} onChange={updateBq} />
+        )}
       </fieldset>
       </>
       )}
@@ -270,15 +309,15 @@ export default function EntAssessGoal() {
           <DialogHeader>
             <DialogTitle>确认提交目标分解？</DialogTitle>
             <DialogDescription>
-              提交后将上报至所属区级主管部门审核，
+              提交后将上报至{scope === "district" ? "所属区级主管部门" : "市级主管部门"}审核，
               <span className="text-foreground font-medium">提交后将不可再修改</span>，
               仅指定政府侧负责人可调整目标值。请确认 {year} 年度填报内容无误。
             </DialogDescription>
           </DialogHeader>
           <div className="rounded-md bg-muted/50 border border-border p-3 text-xs space-y-1.5">
             <div className="flex justify-between"><span className="text-muted-foreground">报告年度</span><span className="font-medium">{year} 年</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">归属类型</span><span className="font-medium">区管企业</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">企业名称</span><span className="font-medium">{myRow.entName}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">归属类型</span><span className="font-medium">{scope === "district" ? "区管企业" : "市管企业"}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">企业名称</span><span className="font-medium">{scope === "district" ? myRow.entName : bqRow.entName}</span></div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setSubmitOpen(false)}>取消</Button>
@@ -298,7 +337,7 @@ export default function EntAssessGoal() {
             </div>
             <h3 className="text-base font-semibold mb-1">提交成功</h3>
             <p className="text-sm text-muted-foreground">
-              {year} 年度目标分解已提交，提交后不可修改，请等待区级主管部门审核。
+              {year} 年度目标分解已提交，提交后不可修改，请等待{scope === "district" ? "区级" : "市级"}主管部门审核。
             </p>
           </div>
           <DialogFooter className="sm:justify-center">
