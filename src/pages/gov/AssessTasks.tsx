@@ -85,7 +85,7 @@ export default function AssessTasks() {
 
   if (!cityAdmin) {
     return (
-      <AppLayout side="gov">
+      <AppLayout title="任务管理" subtitle="考核管理 / 任务管理" side="gov">
         <div className="p-6">
           <Card className="p-10 text-center">
             <ClipboardList className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
@@ -98,7 +98,7 @@ export default function AssessTasks() {
   }
 
   return (
-    <AppLayout side="gov">
+    <AppLayout title="任务管理" subtitle="考核管理 / 任务管理" side="gov">
       <div className="p-6 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div>
