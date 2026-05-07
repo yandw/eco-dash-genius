@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, AlertCircle, Lock } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
@@ -8,12 +8,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { PassBadge } from "@/components/assess/PassBadge";
+import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
 import { getEntAssess, energyAssess, type EntAssessYearRow } from "@/mocks/assess";
 import { useEntType } from "@/mocks/entTypeStore";
 import { EntAssessDualBqBody } from "@/components/assess/EntAssessDualBqBody";
+import {
+  hasActiveTask,
+  listActiveYears,
+  useAssessTasksStore,
+} from "@/mocks/assessTasks";
 import { cn } from "@/lib/utils";
 
-const YEARS = [2026, 2025, 2024, 2023, 2022];
 const CURRENT_YEAR = 2026;
 
 type AssessStatus = "passed" | "failed";
