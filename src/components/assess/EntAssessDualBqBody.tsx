@@ -92,23 +92,25 @@ export function EntAssessDualBqBody({ editable = false, leftSlot }: Props) {
       <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
         <div className="min-w-0">{leftSlot}</div>
         <div className="flex items-center gap-2 flex-wrap">
-          <Button size="sm" variant="ghost" className="h-9" onClick={() => toast.success("正在下载证明材料.zip")}>
+          <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("正在下载证明材料.zip")}>
             <Download className="h-3.5 w-3.5 mr-1" />下载证明材料
           </Button>
           {row.reportFile && (
             <Button
               size="sm"
-              variant="ghost"
-              className="h-9 text-success hover:text-success"
+              variant="outline"
+              className="h-9 text-success hover:text-success border-success/40"
               onClick={() => toast.success(`正在下载 ${row.reportFile!.name}`)}
             >
               <Download className="h-3.5 w-3.5 mr-1" />下载考评报告
             </Button>
           )}
-          <Button size="sm" variant="ghost" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
+          <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>
+            <FileText className="h-3.5 w-3.5 mr-1" />导出
+          </Button>
           {editable && canEdit && (
             <>
-              <Button size="sm" variant="ghost" className="h-9" onClick={() => toast.success("已保存企业自评")}>
+              <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已保存企业自评")}>
                 <Save className="h-3.5 w-3.5 mr-1" />保存
               </Button>
               <Button
@@ -126,8 +128,8 @@ export function EntAssessDualBqBody({ editable = false, leftSlot }: Props) {
           {editable && row.status === "已提交" && (
             <Button
               size="sm"
-              variant="ghost"
-              className="h-9 text-warning hover:text-warning"
+              variant="outline"
+              className="h-9 text-warning hover:text-warning border-warning/40"
               onClick={() => {
                 updateBqEnt(row.id, { status: "待提交" });
                 toast.success("已退回，可重新编辑");

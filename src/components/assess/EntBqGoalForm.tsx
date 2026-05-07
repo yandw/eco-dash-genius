@@ -28,7 +28,7 @@ function Field({ label, children, className }: { label: React.ReactNode; childre
   );
 }
 
-const ro = "px-3 py-2 rounded-md bg-muted/50 border border-border text-sm min-h-[36px] flex items-center";
+const ro = "text-base font-semibold text-foreground min-h-[28px] flex items-center";
 
 export function EntBqGoalForm({ row, onChange }: Props) {
   return (
@@ -50,13 +50,16 @@ export function EntBqGoalForm({ row, onChange }: Props) {
         </div>
       </Card>
 
-      <Card className="p-5 border-primary/30">
+      <Card className="p-5">
         <SectionTitle>推荐值（系统预留）</SectionTitle>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
           <Field label="总量推荐值（万吨CO₂）">
-            <div className={cn(ro, "text-primary font-medium")}>{row.recommendTotal ?? "—"}</div>
+            <div className={cn(ro, "text-primary")}>{row.recommendTotal ?? "—"}</div>
           </Field>
         </div>
+        <p className="text-[11px] text-muted-foreground mt-3">
+          ※ 推荐值由系统根据上一年实际碳排放与减排任务自动测算，仅供参考。
+        </p>
       </Card>
 
       <Card className="p-5">
