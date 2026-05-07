@@ -25,11 +25,13 @@ import {
 import { getCurrentRole } from "@/mocks/currentUser";
 import {
   GOAL_TASK_TYPES,
+  getActiveTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
 } from "@/mocks/assessTasks";
 import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
+import { TaskCountdownBadge } from "@/components/assess/TaskCountdownBadge";
 import { toast } from "sonner";
 
 const CURRENT_YEAR = 2026;
@@ -181,7 +183,14 @@ export default function AssessGoal() {
               </div>
             );
           })}
+        <div className="ml-auto flex items-center gap-2">
+          {(() => {
+            const types = isCity ? GOAL_TASK_TYPES : [districtType];
+            const t = getActiveTask(year, types);
+            return t ? <TaskCountdownBadge endDate={t.endDate} /> : null;
+          })()}
         </div>
+      </div>
       </div>
 
       <StampedDocDialog

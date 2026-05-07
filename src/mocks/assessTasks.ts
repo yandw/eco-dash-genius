@@ -129,6 +129,34 @@ const seed: AssessTask[] = [
       { name: "上海华谊新材料有限公司", creditCode: "91310120MA1H7K8L0B", district: "金山区" },
     ],
   },
+  {
+    id: "task-007",
+    year: 2025,
+    type: "区下属单位能耗考核",
+    startDate: "2025-06-01",
+    endDate: "2025-09-30",
+    status: "进行中",
+    createdAt: "2025-05-20",
+    enterpriseFileName: "2025年区下属单位能耗考核.xlsx",
+    enterprises: [
+      { name: "宝山钢铁股份有限公司", creditCode: "9131000063139428XL", district: "宝山区" },
+      { name: "上海赛科石油化工有限责任公司", creditCode: "913101177322854110", district: "奉贤区" },
+    ],
+  },
+  {
+    id: "task-008",
+    year: 2026,
+    type: "\"百家\"、\"千家\"、通信业企业碳排放目标分解",
+    startDate: "2026-02-01",
+    endDate: "2026-04-30",
+    status: "未开始",
+    createdAt: "2026-01-15",
+    enterpriseFileName: "2026年百千通碳排放目标.xlsx",
+    enterprises: [
+      { name: "宝山钢铁股份有限公司", creditCode: "9131000063139428XL", district: "宝山区" },
+      { name: "上海赛科石油化工有限责任公司", creditCode: "913101177322854110", district: "奉贤区" },
+    ],
+  },
 ];
 
 let data: AssessTask[] = [...seed];
@@ -180,6 +208,20 @@ export function hasActiveTask(year: number, types: AssessTaskType[]): boolean {
 /** 跨年度是否存在指定类型任务 */
 export function hasAnyActiveTask(types: AssessTaskType[]): boolean {
   return listActiveTasks().some((t) => types.includes(t.type));
+}
+
+/** 取该年第一条匹配的非归档任务（用于读取 endDate 等） */
+export function getActiveTask(year: number, types: AssessTaskType[]): AssessTask | undefined {
+  return listActiveTasks().find((t) => t.year === year && types.includes(t.type));
+}
+
+/** 距离 endDate (YYYY-MM-DD) 的剩余天数；同日=0，已过期为负 */
+export function daysUntil(endDate: string): number {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const end = new Date(endDate);
+  end.setHours(0, 0, 0, 0);
+  return Math.round((end.getTime() - today.getTime()) / 86400000);
 }
 
 /** 存在指定类型任务的年份并集（降序） */

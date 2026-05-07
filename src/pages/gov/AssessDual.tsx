@@ -26,10 +26,12 @@ import {
 import { getCurrentRole, currentUser } from "@/mocks/currentUser";
 import {
   DUAL_TASK_TYPES,
+  getActiveTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
 } from "@/mocks/assessTasks";
+import { TaskCountdownBadge } from "@/components/assess/TaskCountdownBadge";
 import { toast } from "sonner";
 
 const CURRENT_YEAR = 2026;
@@ -154,6 +156,15 @@ export default function AssessDual() {
 
         <YearTabs year={year} onChange={setYear} years={YEARS} />
 
+        {(() => {
+          const t = getActiveTask(year, DUAL_TASK_TYPES);
+          return t ? (
+            <div className="flex justify-end -mt-2 mb-3">
+              <TaskCountdownBadge endDate={t.endDate} />
+            </div>
+          ) : null;
+        })()}
+
         {!hasAnyDualTask ? (
           <AssessEmptyState
             title="请在任务管理中创建考核任务"
@@ -216,6 +227,15 @@ export default function AssessDual() {
       </h1>
 
       <YearTabs year={year} onChange={setYear} years={YEARS} />
+
+      {(() => {
+        const t = getActiveTask(year, [districtType]);
+        return t ? (
+          <div className="flex justify-end -mt-2 mb-3">
+            <TaskCountdownBadge endDate={t.endDate} />
+          </div>
+        ) : null;
+      })()}
 
       {!hasDistrictTask ? (
         <AssessEmptyState

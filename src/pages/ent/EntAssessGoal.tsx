@@ -19,10 +19,12 @@ import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
 import { carbonGoals, bqGoals, type CarbonGoalRow, type BqGoalRow } from "@/mocks/assess";
 import {
   GOAL_TASK_TYPES,
+  getActiveTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
 } from "@/mocks/assessTasks";
+import { TaskCountdownBadge } from "@/components/assess/TaskCountdownBadge";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -244,6 +246,10 @@ export default function EntAssessGoal() {
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">填报状态</span>
           {statusBadge()}
+          {(() => {
+            const t = getActiveTask(year, [scope === "district" ? districtType : cityType]);
+            return t ? <TaskCountdownBadge endDate={t.endDate} className="ml-2" /> : null;
+          })()}
         </div>
         <div className="flex items-center gap-2">
           {submitted ? (

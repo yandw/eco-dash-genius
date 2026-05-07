@@ -13,10 +13,12 @@ import { getEntAssess, energyAssess, type EntAssessYearRow } from "@/mocks/asses
 import { useEntType } from "@/mocks/entTypeStore";
 import { EntAssessDualBqBody } from "@/components/assess/EntAssessDualBqBody";
 import {
+  getActiveTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
 } from "@/mocks/assessTasks";
+import { TaskCountdownBadge } from "@/components/assess/TaskCountdownBadge";
 import { cn } from "@/lib/utils";
 
 const CURRENT_YEAR = 2026;
@@ -114,6 +116,7 @@ export default function EntAssessDual() {
   };
 
   if (entType === "city") {
+    const cityTask = getActiveTask(year, [taskType]);
     return (
       <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
         {!hasAnyTask ? (
@@ -127,7 +130,14 @@ export default function EntAssessDual() {
             description="该年度尚未下发考核任务，请切换年份或等待任务下发。"
           />
         ) : (
-          <EntAssessDualBqBody editable />
+          <>
+            {cityTask && (
+              <div className="flex justify-end mb-3">
+                <TaskCountdownBadge endDate={cityTask.endDate} />
+              </div>
+            )}
+            <EntAssessDualBqBody editable />
+          </>
         )}
       </AppLayout>
     );
@@ -186,7 +196,11 @@ export default function EntAssessDual() {
       </div>
 
       {/* 系统判定提示 */}
-      <div className="flex items-center justify-end mb-3">
+      <div className="flex items-center justify-end mb-3 gap-2">
+        {(() => {
+          const t = getActiveTask(year, [taskType]);
+          return t ? <TaskCountdownBadge endDate={t.endDate} /> : null;
+        })()}
         <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
           <Lock className="h-3.5 w-3.5" />考核结果由系统自动判定，如有异议请联系主管部门
         </span>
