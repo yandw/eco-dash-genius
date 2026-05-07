@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Download, Upload } from "lucide-react";
-import { AssessYearPicker } from "@/components/assess/AssessYearPicker";
+import { YearPickerInput } from "@/components/assess/YearPickerInput";
 import { toast } from "sonner";
 import {
   AssessTask,
@@ -157,7 +157,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label>年份 <span className="text-destructive">*</span></Label>
-            <AssessYearPicker year={year} onChange={setYear} years={YEARS} />
+            <YearPickerInput value={year} onChange={(y) => setYear(y ?? currentYear)} placeholder="请选择年份" />
           </div>
 
           <div className="space-y-1.5">
