@@ -115,7 +115,7 @@ export function AppLayout({ title, subtitle, children, side = "gov", fullscreen,
 
             <div className="ml-auto flex items-center gap-3">
               {showRoleSwitcher && <RoleSwitcher side={side} />}
-              {side === "ent" && <EntTypeSwitcher />}
+              
 
               {headerExtra}
 
