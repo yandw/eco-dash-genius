@@ -25,11 +25,13 @@ import {
 import { getCurrentRole } from "@/mocks/currentUser";
 import {
   GOAL_TASK_TYPES,
+  getActiveTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
 } from "@/mocks/assessTasks";
 import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
+import { TaskCountdownBadge } from "@/components/assess/TaskCountdownBadge";
 import { toast } from "sonner";
 
 const CURRENT_YEAR = 2026;
