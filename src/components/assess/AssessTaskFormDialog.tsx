@@ -24,6 +24,7 @@ import {
   AssessTaskStatus,
   AssessTaskType,
   TASK_TEMPLATES,
+  buildMockEnterprises,
   createTask,
   updateTask,
 } from "@/mocks/assessTasks";
@@ -34,13 +35,17 @@ interface Props {
   task?: AssessTask | null;
 }
 
-const TYPES: AssessTaskType[] = ["目标分解", "双控考核", "碳排放考核"];
+const TYPES: AssessTaskType[] = [
+  "区下属单位碳排放目标分解",
+  "\"百家\"、\"千家\"、通信业企业碳排放目标分解",
+  "区下属单位能耗考核",
+  "\"百家\"、\"千家\"、通信业企业能耗考核",
+];
 const STATUSES: AssessTaskStatus[] = ["未开始", "进行中", "已结束", "已归档"];
 const currentYear = new Date().getFullYear();
 const YEARS = [currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
 
 function downloadCsv(fileName: string, headers: string[]) {
-  // 加 BOM 保证 Excel 中文不乱码
   const csv = "\uFEFF" + headers.join(",") + "\n";
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -56,7 +61,7 @@ function downloadCsv(fileName: string, headers: string[]) {
 export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
   const isEdit = !!task;
   const [year, setYear] = useState<number>(currentYear);
-  const [type, setType] = useState<AssessTaskType>("目标分解");
+  const [type, setType] = useState<AssessTaskType>(TYPES[0]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [status, setStatus] = useState<AssessTaskStatus>("未开始");
@@ -75,7 +80,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
         setEntCount(task.enterprises.length);
       } else {
         setYear(currentYear);
-        setType("目标分解");
+        setType(TYPES[0]);
         setStartDate("");
         setEndDate("");
         setStatus("未开始");
@@ -91,7 +96,6 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
     const f = e.target.files?.[0];
     if (!f) return;
     setFileName(f.name);
-    // mock 解析为随机 3-15 家企业
     setEntCount(Math.floor(Math.random() * 13) + 3);
     toast.success(`已上传：${f.name}`);
   };
@@ -118,12 +122,10 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
         endDate,
         status,
         enterpriseFileName: fileName,
-        enterprises: task.enterprises.length === entCount
-          ? task.enterprises
-          : Array.from({ length: entCount }).map((_, i) => ({
-              name: `示例企业 ${i + 1}`,
-              creditCode: `91310000${String(100000000 + i).slice(0, 9)}X`,
-            })),
+        enterprises:
+          task.enterprises.length === entCount && task.type === type
+            ? task.enterprises
+            : buildMockEnterprises(type, entCount),
       });
       toast.success("任务已更新");
     } else {
@@ -134,10 +136,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
         endDate,
         status,
         enterpriseFileName: fileName,
-        enterprises: Array.from({ length: entCount }).map((_, i) => ({
-          name: `示例企业 ${i + 1}`,
-          creditCode: `91310000${String(100000000 + i).slice(0, 9)}X`,
-        })),
+        enterprises: buildMockEnterprises(type, entCount),
       });
       toast.success("任务已创建");
     }
@@ -154,7 +153,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-4">
           <div className="space-y-1.5">
             <Label>年份 <span className="text-destructive">*</span></Label>
             <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
@@ -189,7 +188,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
             <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
           </div>
 
-          <div className="space-y-1.5 col-span-2">
+          <div className="space-y-1.5">
             <Label>状态</Label>
             <Select value={status} onValueChange={(v) => setStatus(v as AssessTaskStatus)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
@@ -201,7 +200,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
             </Select>
           </div>
 
-          <div className="space-y-1.5 col-span-2">
+          <div className="space-y-1.5">
             <Label>企业名单 <span className="text-destructive">*</span></Label>
             <div className="flex items-center gap-2">
               <label className="flex-1">
@@ -233,7 +232,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              当前类型「{type}」对应模板：{template.fileName}
+              当前类型对应模板：{template.fileName}
             </p>
           </div>
         </div>
