@@ -85,22 +85,12 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
   return (
     <>
       <input ref={proofInput} type="file" className="hidden" accept=".pdf,.zip,.doc,.docx,.png,.jpg,.jpeg" onChange={handleProofFile} />
-      <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
-        重点单位能耗双控考核结果
-      </h1>
 
       {/* 顶部工具栏 */}
       <div className="panel p-3 mb-4 flex items-center gap-3 flex-wrap">
-        <h2 className="text-base font-semibold text-foreground mr-2">企业节能"双控"责任评价考核</h2>
-        <div className="flex-1 min-w-[200px] flex items-center gap-2">
-          <div className="flex-1 max-w-md flex items-center gap-2 px-3 h-9 rounded-md border border-border bg-background text-xs">
-            <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="truncate text-foreground/80">企业自评相关附件（更新版）.zip</span>
-          </div>
-          <Button size="sm" className="h-9" onClick={() => toast.success("正在下载企业自评相关附件.zip")}>
-            <Download className="h-3.5 w-3.5 mr-1" />下载附件
-          </Button>
-        </div>
+        <Button size="sm" className="h-9" onClick={() => toast.success("正在下载证明材料.zip")}>
+          <Download className="h-3.5 w-3.5 mr-1" />下载证明材料
+        </Button>
         {row.reportFile && (
           <Button
             size="sm"
