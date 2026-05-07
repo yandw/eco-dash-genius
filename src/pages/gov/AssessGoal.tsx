@@ -354,6 +354,8 @@ export default function AssessGoal() {
           <CarbonGoalTable rows={filteredRows} mode="district-view" onInlineSave={handleSaveEdit} />
         </div>
       )}
+      </>
+      )}
     </AppLayout>
   );
 }
