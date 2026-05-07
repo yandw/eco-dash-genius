@@ -147,7 +147,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "编辑任务" : "新建考核任务"}</DialogTitle>
+          <DialogTitle>{isEdit ? "编辑任务" : "新建任务"}</DialogTitle>
           <DialogDescription>
             填写任务基本信息并上传参与考核的企业名单。
           </DialogDescription>
@@ -156,14 +156,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label>年份 <span className="text-destructive">*</span></Label>
-            <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {YEARS.map((y) => (
-                  <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <AssessYearPicker year={year} onChange={setYear} years={YEARS} />
           </div>
 
           <div className="space-y-1.5">
