@@ -95,26 +95,24 @@ export default function AssessTasks() {
 
   return (
     <AppLayout title="任务管理" subtitle="考核管理 / 任务管理" side="gov">
-      <div className="p-6 space-y-4">
-        <Card className="p-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">年份</span>
-              <Select value={year} onValueChange={(v) => { setYear(v); setPage(1); }}>
-                <SelectTrigger className="h-9 w-[120px]"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">全部</SelectItem>
-                  {yearOptions.map((y) => (
-                    <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button onClick={() => { setEditing(null); setFormOpen(true); }} className="gap-1.5">
-              <Plus className="h-4 w-4" />新建任务
-            </Button>
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">年份</span>
+            <Select value={year} onValueChange={(v) => { setYear(v); setPage(1); }}>
+              <SelectTrigger className="h-9 w-[120px]"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">全部</SelectItem>
+                {yearOptions.map((y) => (
+                  <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        </Card>
+          <Button onClick={() => { setEditing(null); setFormOpen(true); }} className="gap-1.5">
+            <Plus className="h-4 w-4" />新建任务
+          </Button>
+        </div>
 
         <Card className="overflow-hidden">
           <Table>

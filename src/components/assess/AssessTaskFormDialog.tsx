@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Download, Upload } from "lucide-react";
+import { AssessYearPicker } from "@/components/assess/AssessYearPicker";
 import { toast } from "sonner";
 import {
   AssessTask,
@@ -41,7 +42,7 @@ const TYPES: AssessTaskType[] = [
   "区下属单位能耗考核",
   "\"百家\"、\"千家\"、通信业企业能耗考核",
 ];
-const STATUSES: AssessTaskStatus[] = ["未开始", "进行中", "已结束", "已归档"];
+const STATUSES: AssessTaskStatus[] = ["未开始", "进行中", "已结束"];
 const currentYear = new Date().getFullYear();
 const YEARS = [currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
 
@@ -147,7 +148,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "编辑任务" : "新建考核任务"}</DialogTitle>
+          <DialogTitle>{isEdit ? "编辑任务" : "新建任务"}</DialogTitle>
           <DialogDescription>
             填写任务基本信息并上传参与考核的企业名单。
           </DialogDescription>
@@ -156,14 +157,7 @@ export function AssessTaskFormDialog({ open, onOpenChange, task }: Props) {
         <div className="space-y-4">
           <div className="space-y-1.5">
             <Label>年份 <span className="text-destructive">*</span></Label>
-            <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {YEARS.map((y) => (
-                  <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <AssessYearPicker year={year} onChange={setYear} years={YEARS} />
           </div>
 
           <div className="space-y-1.5">
