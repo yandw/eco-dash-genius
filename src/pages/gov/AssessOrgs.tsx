@@ -56,7 +56,7 @@ export default function AssessOrgs() {
   const list = tab === "district" ? districts : groups;
   const pageItems = paginate(list, page, pageSize);
   const startIdx = (Math.min(Math.max(1, page), Math.max(1, Math.ceil(list.length / pageSize))) - 1) * pageSize;
-  const groupColLabel = "集团";
+  const groupColLabel = tab === "district" ? "区名称" : "集团";
 
   const openAdd = () => {
     setEditing(null);
