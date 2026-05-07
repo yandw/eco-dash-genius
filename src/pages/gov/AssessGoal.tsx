@@ -74,7 +74,6 @@ export default function AssessGoal() {
     return { total, avgIntensity, completed, modified, count: rows.length };
   }, [rows]);
 
-  const isCity = role === "city_admin";
   const currentDoc = stampedDoc[year];
 
   const filteredRows = useMemo(() => {
