@@ -290,6 +290,8 @@ export default function EntAssessDual() {
           </p>
         </div>
       )}
+      </>
+      )}
     </AppLayout>
   );
 }
