@@ -119,9 +119,9 @@ export default function EntAssessDual() {
   if (entType === "city") {
     const cityTask = getDisplayTask(year, [taskType]);
     return (
-      <AppLayout side="ent" title='"百家""千家"和通信业企业能耗考核结果' subtitle="市管企业">
+      <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
         <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
-          "百家""千家"和通信业企业能耗考核结果
+          重点单位能耗双控考核结果
         </h1>
         {!hasAnyTask ? (
           <AssessEmptyState
@@ -185,9 +185,9 @@ export default function EntAssessDual() {
   }
 
   return (
-    <AppLayout side="ent" title="区下属单位能耗考核结果" subtitle={`${year} 年度`}>
+    <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle={`${year} 年度`}>
       <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
-        区下属单位能耗考核结果
+        重点单位能耗双控考核结果
       </h1>
 
       {!hasAnyTask ? (
