@@ -222,6 +222,14 @@ export function getInProgressTask(year: number, types: AssessTaskType[]): Assess
   );
 }
 
+/** 取用于显示提示的任务：优先「进行中」，其次「未开始」 */
+export function getDisplayTask(year: number, types: AssessTaskType[]): AssessTask | undefined {
+  const list = listActiveTasks().filter((t) => t.year === year && types.includes(t.type));
+  return (
+    list.find((t) => t.status === "进行中") ?? list.find((t) => t.status === "未开始")
+  );
+}
+
 /** 将 YYYY-MM-DD 格式化为 YYYY年MM月DD日 */
 export function formatCnDate(date: string): string {
   const [y, m, d] = date.split("-");
