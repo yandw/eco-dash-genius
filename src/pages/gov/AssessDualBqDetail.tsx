@@ -96,7 +96,7 @@ export default function AssessDualBqDetail() {
         <Button variant="outline" size="sm" className="h-9" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回
         </Button>
-        <div className="flex-1 min-w-[200px] flex items-center gap-2">
+        <div className="flex-1 min-w-[200px] flex items-center justify-end gap-2">
           <Button size="sm" className="h-9 bg-primary text-primary-foreground" onClick={() => toast.success("正在下载证明材料")}>
             下载证明材料
           </Button>
