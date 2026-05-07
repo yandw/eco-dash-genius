@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, Save, Send, Undo2, Upload, FileCheck2, Eye, Trash2 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
@@ -10,6 +10,7 @@ import { DistrictListTable } from "@/components/assess/DistrictListTable";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import { StampedDocDialog } from "@/components/assess/StampedDocDialog";
 import { BqEntAssessTable } from "@/components/assess/BqEntAssessTable";
+import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
 import {
   energyAssess,
   districtAssessSummary,
@@ -23,12 +24,17 @@ import {
   setAssessDoc,
 } from "@/mocks/assessStatusStore";
 import { getCurrentRole, currentUser } from "@/mocks/currentUser";
+import {
+  DUAL_TASK_TYPES,
+  hasActiveTask,
+  listActiveYears,
+  useAssessTasksStore,
+} from "@/mocks/assessTasks";
 import { toast } from "sonner";
 
-const YEARS = [2026, 2025, 2024, 2023, 2022];
 const CURRENT_YEAR = 2026;
 
-function YearTabs({ year, onChange }: { year: number; onChange: (y: number) => void }) {
+function YearTabs({ year, onChange, years }: { year: number; onChange: (y: number) => void; years: number[] }) {
   return (
     <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
       <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
@@ -36,7 +42,7 @@ function YearTabs({ year, onChange }: { year: number; onChange: (y: number) => v
         报告年度
       </span>
       <div className="flex flex-wrap gap-2">
-        {YEARS.map((y) => {
+        {years.map((y) => {
           const active = year === y;
           return (
             <div key={y} className="relative">
