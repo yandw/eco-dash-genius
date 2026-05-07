@@ -20,10 +20,12 @@ interface Group {
 interface Props {
   /** 企业用户编辑模式：企业自评可编辑，政府考评只读 */
   editable?: boolean;
+  /** 工具栏左侧自定义内容（如任务倒计时提示） */
+  leftSlot?: React.ReactNode;
 }
 
 /** 市管企业 — 百千家通信业能耗考核结果 */
-export function EntAssessDualBqBody({ editable = false }: Props) {
+export function EntAssessDualBqBody({ editable = false, leftSlot }: Props) {
   const list = useBqAssessStore();
   const row = list[0];
   const proofInput = useRef<HTMLInputElement>(null);
@@ -87,56 +89,59 @@ export function EntAssessDualBqBody({ editable = false }: Props) {
       <input ref={proofInput} type="file" className="hidden" accept=".pdf,.zip,.doc,.docx,.png,.jpg,.jpeg" onChange={handleProofFile} />
 
       {/* 顶部工具栏 */}
-      <div className="panel p-3 mb-4 flex items-center gap-3 flex-wrap">
-        <Button size="sm" className="h-9" onClick={() => toast.success("正在下载证明材料.zip")}>
-          <Download className="h-3.5 w-3.5 mr-1" />下载证明材料
-        </Button>
-        {row.reportFile && (
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-9 text-success border-success/40 hover:text-success"
-            onClick={() => toast.success(`正在下载 ${row.reportFile!.name}`)}
-          >
-            <Download className="h-3.5 w-3.5 mr-1" />下载考评报告
+      <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
+        <div className="min-w-0">{leftSlot}</div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button size="sm" variant="ghost" className="h-9" onClick={() => toast.success("正在下载证明材料.zip")}>
+            <Download className="h-3.5 w-3.5 mr-1" />下载证明材料
           </Button>
-        )}
-        <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
-        {editable && canEdit && (
-          <>
-            <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已保存企业自评")}>
-              <Save className="h-3.5 w-3.5 mr-1" />保存
-            </Button>
+          {row.reportFile && (
             <Button
               size="sm"
-              className="h-9 bg-gradient-primary text-primary-foreground"
+              variant="ghost"
+              className="h-9 text-success hover:text-success"
+              onClick={() => toast.success(`正在下载 ${row.reportFile!.name}`)}
+            >
+              <Download className="h-3.5 w-3.5 mr-1" />下载考评报告
+            </Button>
+          )}
+          <Button size="sm" variant="ghost" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
+          {editable && canEdit && (
+            <>
+              <Button size="sm" variant="ghost" className="h-9" onClick={() => toast.success("已保存企业自评")}>
+                <Save className="h-3.5 w-3.5 mr-1" />保存
+              </Button>
+              <Button
+                size="sm"
+                className="h-9 bg-gradient-primary text-primary-foreground"
+                onClick={() => {
+                  updateBqEnt(row.id, { status: "已提交" });
+                  toast.success("已提交考核，等待政府审核");
+                }}
+              >
+                <Send className="h-3.5 w-3.5 mr-1" />提交
+              </Button>
+            </>
+          )}
+          {editable && row.status === "已提交" && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-9 text-warning hover:text-warning"
               onClick={() => {
-                updateBqEnt(row.id, { status: "已提交" });
-                toast.success("已提交考核，等待政府审核");
+                updateBqEnt(row.id, { status: "待提交" });
+                toast.success("已退回，可重新编辑");
               }}
             >
-              <Send className="h-3.5 w-3.5 mr-1" />提交
+              <Undo2 className="h-3.5 w-3.5 mr-1" />退回
             </Button>
-          </>
-        )}
-        {editable && row.status === "已提交" && (
-          <Button
-            size="sm"
-            variant="outline"
-            className="h-9 text-warning border-warning/40 hover:text-warning"
-            onClick={() => {
-              updateBqEnt(row.id, { status: "待提交" });
-              toast.success("已退回，可重新编辑");
-            }}
-          >
-            <Undo2 className="h-3.5 w-3.5 mr-1" />退回
-          </Button>
-        )}
-        {editable && govDone && (
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-            <Lock className="h-3.5 w-3.5" />政府已完成考评，如需修改请联系主管部门
-          </span>
-        )}
+          )}
+          {editable && govDone && (
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+              <Lock className="h-3.5 w-3.5" />政府已完成考评，如需修改请联系主管部门
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="max-w-[1400px] mx-auto space-y-4">
