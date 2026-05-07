@@ -23,6 +23,13 @@ import {
   AssessTask, AssessTaskStatus, AssessTaskType,
   deleteTask, taskHasDistrictColumn, useAssessTasksStore,
 } from "@/mocks/assessTasks";
+
+const TYPE_OPTIONS: AssessTaskType[] = [
+  "区下属单位碳排放目标分解",
+  "\"百家\"、\"千家\"、通信业企业碳排放目标分解",
+  "区下属单位能耗考核",
+  "\"百家\"、\"千家\"、通信业企业能耗考核",
+];
 import { AssessTaskFormDialog } from "@/components/assess/AssessTaskFormDialog";
 import { toast } from "sonner";
 
@@ -49,6 +56,7 @@ export default function AssessTasks() {
   const cityAdmin = isCityAdmin();
 
   const [year, setYear] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
