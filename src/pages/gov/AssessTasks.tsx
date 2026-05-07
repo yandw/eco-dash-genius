@@ -48,7 +48,7 @@ function TypeBadge({ t }: { t: AssessTaskType }) {
   const cls = isCarbon
     ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400"
     : "border-sky-500/40 text-sky-600 dark:text-sky-400";
-  return <Badge variant="outline" className={cls}>{t}</Badge>;
+  return <Badge variant="outline" className={`${cls} whitespace-nowrap`}>{t}</Badge>;
 }
 
 export default function AssessTasks() {
@@ -165,10 +165,10 @@ export default function AssessTasks() {
                     </TableCell>
                     <TableCell className="tabular-nums">{t.year}</TableCell>
                     <TableCell><TypeBadge t={t.type} /></TableCell>
-                    <TableCell className="tabular-nums">{t.startDate}</TableCell>
-                    <TableCell className="tabular-nums">{t.endDate}</TableCell>
-                    <TableCell><StatusBadge s={t.status} /></TableCell>
-                    <TableCell className="tabular-nums text-muted-foreground">{t.createdAt}</TableCell>
+                    <TableCell className="tabular-nums whitespace-nowrap">{t.startDate}</TableCell>
+                    <TableCell className="tabular-nums whitespace-nowrap">{t.endDate}</TableCell>
+                    <TableCell className="whitespace-nowrap"><StatusBadge s={t.status} /></TableCell>
+                    <TableCell className="tabular-nums text-muted-foreground whitespace-nowrap">{t.createdAt}</TableCell>
                     <TableCell>
                       <Button
                         variant="link"
@@ -180,7 +180,7 @@ export default function AssessTasks() {
                         共 {t.enterprises.length} 家
                       </Button>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right whitespace-nowrap">
                       <Button
                         variant="ghost" size="sm"
                         onClick={() => { setEditing(t); setFormOpen(true); }}
