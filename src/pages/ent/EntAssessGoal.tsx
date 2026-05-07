@@ -288,6 +288,8 @@ export default function EntAssessGoal() {
           <EntBqGoalForm row={bqRow} onChange={updateBq} />
         )}
       </fieldset>
+      </>
+      )}
 
       {/* 提交确认 */}
       <Dialog open={submitOpen} onOpenChange={setSubmitOpen}>
