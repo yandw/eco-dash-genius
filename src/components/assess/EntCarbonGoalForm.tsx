@@ -36,38 +36,45 @@ function Field({
   );
 }
 
-const ro = "px-3 py-2 rounded-md bg-muted/50 border border-border text-sm min-h-[36px] flex items-center";
+const roStatic = "text-base font-semibold text-foreground min-h-[28px] flex items-center";
 
 export function EntCarbonGoalForm({ row, onChange }: Props) {
   return (
     <div className="space-y-4">
-      <Card className="p-5">
-        <SectionTitle>企业基础信息</SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
-          <Field label="所属区"><div className={ro}>{row.districtId === "qingpu" ? "青浦区" : row.districtId}</div></Field>
-          <Field label="统一信用代码"><div className={cn(ro, "font-mono")}>{row.creditCode}</div></Field>
-          <Field label="企业名称"><div className={ro}>{row.entName}</div></Field>
-        </div>
-      </Card>
+      {/* 系统生成的只读信息：参照考核结果页样式，统一在一张卡片内分区展示 */}
+      <Card className="p-5 space-y-6">
+        <section>
+          <SectionTitle>企业基础信息</SectionTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
+            <Field label="所属区"><div className={roStatic}>{row.districtId === "qingpu" ? "青浦区" : row.districtId}</div></Field>
+            <Field label="统一信用代码"><div className={cn(roStatic, "font-mono")}>{row.creditCode}</div></Field>
+            <Field label="企业名称"><div className={roStatic}>{row.entName}</div></Field>
+          </div>
+        </section>
 
-      <Card className="p-5">
-        <SectionTitle>2025 年碳排放数据</SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          <Field label="总量（万吨CO₂）"><div className={ro}>{row.total2025 || "—"}</div></Field>
-          <Field label="单位产值碳排放"><div className={ro}>{row.intensity2025 || "—"}</div></Field>
-        </div>
-      </Card>
+        <div className="border-t border-border" />
 
-      <Card className="p-5 border-primary/30">
-        <SectionTitle>推荐值（系统预留）</SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          <Field label="总量推荐值（万吨CO₂）">
-            <div className={cn(ro, "text-primary font-medium")}>{row.recommendTotal ?? "—"}</div>
-          </Field>
-        </div>
-        <p className="text-[11px] text-muted-foreground mt-3">
-          ※ 推荐值由系统根据上一年实际碳排放与减排任务自动测算，仅供参考。
-        </p>
+        <section>
+          <SectionTitle>2025 年碳排放数据</SectionTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+            <Field label="总量（万吨CO₂）"><div className={roStatic}>{row.total2025 || "—"}</div></Field>
+            <Field label="单位产值碳排放"><div className={roStatic}>{row.intensity2025 || "—"}</div></Field>
+          </div>
+        </section>
+
+        <div className="border-t border-border" />
+
+        <section>
+          <SectionTitle>推荐值（系统预留）</SectionTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+            <Field label="总量推荐值（万吨CO₂）">
+              <div className={cn(roStatic, "text-primary")}>{row.recommendTotal ?? "—"}</div>
+            </Field>
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-3">
+            ※ 推荐值由系统根据上一年实际碳排放与减排任务自动测算，仅供参考。
+          </p>
+        </section>
       </Card>
 
       <Card className="p-5">
