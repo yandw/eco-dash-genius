@@ -117,7 +117,7 @@ export default function EntAssessDual() {
   };
 
   if (entType === "city") {
-    const cityTask = getInProgressTask(year, [taskType]);
+    const cityTask = getDisplayTask(year, [taskType]);
     return (
       <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
         {!hasAnyTask ? (
@@ -125,19 +125,55 @@ export default function EntAssessDual() {
             title="今年考核未开始"
             description="市级管理员尚未在任务管理中创建考核任务，请等待任务下发。"
           />
-        ) : !hasTask ? (
-          <AssessEmptyState
-            title={`${year} 年考核未开始`}
-            description="该年度尚未下发考核任务，请切换年份或等待任务下发。"
-          />
         ) : (
           <>
+            {/* 报告年度 */}
+            <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
+              <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
+                <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
+                报告年度
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {YEARS.map((y) => {
+                  const active = year === y;
+                  return (
+                    <div key={y} className="relative">
+                      <Button
+                        size="sm"
+                        variant={active ? "default" : "outline"}
+                        className={cn(
+                          "h-8 min-w-[72px]",
+                          active && "bg-gradient-primary text-primary-foreground border-0",
+                        )}
+                        onClick={() => setYear(y)}
+                      >
+                        {y}
+                      </Button>
+                      {y === CURRENT_YEAR && (
+                        <span className="absolute -top-1.5 -right-1.5 px-1.5 h-4 leading-4 rounded-full bg-primary text-primary-foreground text-[10px] font-medium shadow-sm pointer-events-none">
+                          本期
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             {cityTask && (
-              <div className="flex justify-end mb-3">
-                <TaskCountdownBadge endDate={cityTask.endDate} />
+              <div className="mb-3">
+                <TaskCountdownBadge endDate={cityTask.endDate} status={cityTask.status} />
               </div>
             )}
-            <EntAssessDualBqBody editable />
+
+            {!hasTask ? (
+              <AssessEmptyState
+                title={`${year} 年考核未开始`}
+                description="该年度尚未下发考核任务，请切换年份或等待任务下发。"
+              />
+            ) : (
+              <EntAssessDualBqBody editable />
+            )}
           </>
         )}
       </AppLayout>
