@@ -152,12 +152,25 @@ export default function AssessDual() {
           重点单位能耗双控考核结果
         </h1>
 
-        <YearTabs year={year} onChange={setYear} />
+        <YearTabs year={year} onChange={setYear} years={YEARS} />
 
-        <Tabs defaultValue="district">
+        {!hasAnyDualTask ? (
+          <AssessEmptyState
+            title="请在任务管理中创建考核任务"
+            description="尚未创建任何能耗考核任务，相关考核内容将在任务创建后展示。"
+            showGoToTasks
+          />
+        ) : !hasDistrictTask && !hasBqTask ? (
+          <AssessEmptyState
+            title={`${year} 年暂无能耗考核任务`}
+            description="请切换年份或在任务管理中创建该年度的考核任务。"
+            showGoToTasks
+          />
+        ) : (
+        <Tabs defaultValue={hasDistrictTask ? "district" : "bq"}>
           <TabsList>
-            <TabsTrigger value="district">区下属单位能耗目标考核</TabsTrigger>
-            <TabsTrigger value="bq">"百家"、"千家"、通信业企业能耗考核</TabsTrigger>
+            {hasDistrictTask && <TabsTrigger value="district">区下属单位能耗目标考核</TabsTrigger>}
+            {hasBqTask && <TabsTrigger value="bq">"百家"、"千家"、通信业企业能耗考核</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="district" className="mt-4 space-y-4">
@@ -187,6 +200,7 @@ export default function AssessDual() {
 
           </TabsContent>
         </Tabs>
+        )}
 
       </AppLayout>
     );
