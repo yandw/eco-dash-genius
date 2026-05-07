@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   FileBarChart,
+  ClipboardList,
   CalendarRange,
   Gauge,
   FolderArchive,
@@ -84,6 +85,7 @@ export const govItems: NavItem[] = [
       { title: "双控考核", url: "/gov/assess/dual", icon: ClipboardCheck },
       ...(isCityAdmin()
         ? [
+            { title: "任务管理", url: "/gov/assess/tasks", icon: ClipboardList },
             { title: "区/集团管理", url: "/gov/assess/orgs", icon: Building2 },
           ]
         : []),
