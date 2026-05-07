@@ -232,12 +232,17 @@ export default function EntAssessDual() {
         </div>
       </div>
 
+      {(() => {
+        const t = getDisplayTask(year, [taskType]);
+        return t ? (
+          <div className="mb-3">
+            <TaskCountdownBadge endDate={t.endDate} status={t.status} />
+          </div>
+        ) : null;
+      })()}
+
       {/* 系统判定提示 */}
       <div className="flex items-center justify-end mb-3 gap-2">
-        {(() => {
-          const t = getInProgressTask(year, [taskType]);
-          return t ? <TaskCountdownBadge endDate={t.endDate} /> : null;
-        })()}
         <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
           <Lock className="h-3.5 w-3.5" />考核结果由系统自动判定，如有异议请联系主管部门
         </span>
