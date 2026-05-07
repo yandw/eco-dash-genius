@@ -212,6 +212,7 @@ export default function AssessGoal() {
           </TabsList>
 
           <TabsContent value="district" className="mt-4 space-y-4">
+            {(() => { const t = getDisplayTask(year, [districtType]); return t ? <div><TaskCountdownBadge endDate={t.endDate} status={t.status} /></div> : null; })()}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">参与区数</div><div className="text-lg font-semibold">{districtGoalSummary.length}</div></Card>
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{districtGoalSummary.filter((d) => d.status === "已完成").length}</div></Card>
