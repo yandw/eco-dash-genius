@@ -215,8 +215,15 @@ export default function AssessDual() {
         重点单位能耗双控考核结果
       </h1>
 
-      <YearTabs year={year} onChange={setYear} />
+      <YearTabs year={year} onChange={setYear} years={YEARS} />
 
+      {!hasDistrictTask ? (
+        <AssessEmptyState
+          title="今年考核未开始"
+          description="市级管理员尚未在该年度下发本区考核任务。"
+        />
+      ) : (
+      <>
       <StampedDocDialog
         open={uploadOpen}
         onOpenChange={setUploadOpen}
@@ -316,6 +323,8 @@ export default function AssessDual() {
 
         <DistrictAssessTable rows={rows} mode={submitted ? "city-view" : "district-edit"} onChange={update} />
       </div>
+      </>
+      )}
     </AppLayout>
   );
 }
