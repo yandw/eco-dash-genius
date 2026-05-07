@@ -183,7 +183,14 @@ export default function AssessGoal() {
               </div>
             );
           })}
+        <div className="ml-auto flex items-center gap-2">
+          {(() => {
+            const types = isCity ? GOAL_TASK_TYPES : [districtType];
+            const t = getActiveTask(year, types);
+            return t ? <TaskCountdownBadge endDate={t.endDate} /> : null;
+          })()}
         </div>
+      </div>
       </div>
 
       <StampedDocDialog
