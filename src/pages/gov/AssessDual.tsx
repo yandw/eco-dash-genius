@@ -223,10 +223,10 @@ export default function AssessDual() {
       <YearTabs year={year} onChange={setYear} years={YEARS} />
 
       {(() => {
-        const t = getInProgressTask(year, [districtType]);
+        const t = getDisplayTask(year, [districtType]);
         return t ? (
-          <div className="flex justify-end -mt-2 mb-3">
-            <TaskCountdownBadge endDate={t.endDate} />
+          <div className="mb-3">
+            <TaskCountdownBadge endDate={t.endDate} status={t.status} />
           </div>
         ) : null;
       })()}
