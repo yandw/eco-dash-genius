@@ -116,7 +116,7 @@ const App = () => (
           <Route path="/portal/v2" element={<PortalHomeV2 />} />
           <Route path="/portal/news" element={<PortalNews />} />
           <Route path="/portal/news/:id" element={<PortalNewsDetail />} />
-          <Route path="/portal/green-mfg" element={<PortalGreenMfg />} />
+          <Route path="/portal/green-mfg" element={<PortalGreenFactories />} />
           <Route path="/portal/green-mfg/factories" element={<PortalGreenFactories />} />
           <Route path="/portal/scenarios" element={<PortalScenarios />} />
           <Route path="/portal/login" element={<PortalLogin />} />
