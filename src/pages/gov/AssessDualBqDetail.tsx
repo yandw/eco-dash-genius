@@ -96,14 +96,9 @@ export default function AssessDualBqDetail() {
         <Button variant="outline" size="sm" className="h-9" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回
         </Button>
-        <h2 className="text-base font-semibold text-foreground mr-2">企业节能"双控"责任评价考核</h2>
         <div className="flex-1 min-w-[200px] flex items-center gap-2">
-          <div className="flex-1 max-w-md flex items-center gap-2 px-3 h-9 rounded-md border border-border bg-background text-xs">
-            <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="truncate text-foreground/80">企业自评相关附件（更新版）.zip</span>
-          </div>
-          <Button size="sm" className="h-9 bg-primary text-primary-foreground" onClick={() => toast.success("正在下载企业自评相关附件.zip")}>
-            下载附件
+          <Button size="sm" className="h-9 bg-primary text-primary-foreground" onClick={() => toast.success("正在下载证明材料")}>
+            下载证明材料
           </Button>
         </div>
         <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
@@ -150,7 +145,7 @@ export default function AssessDualBqDetail() {
         <Card className="p-4">
           <div className="text-sm font-semibold mb-3 inline-flex items-center gap-2">
             <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
-            上海市工业"百家""千家"和通信业企业{row.year}年节能目标考核
+            企业基础信息
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <div className="space-y-1">
