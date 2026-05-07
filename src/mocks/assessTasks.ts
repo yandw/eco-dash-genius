@@ -184,22 +184,22 @@ export function buildMockEnterprises(type: AssessTaskType, count: number): Asses
   }));
 }
 
-// 模板定义：不同类型对应不同表头
+// 模板定义：表头与企业名单列保持一致
 export const TASK_TEMPLATES: Record<AssessTaskType, { fileName: string; headers: string[] }> = {
   "区下属单位碳排放目标分解": {
     fileName: "区下属单位碳排放目标分解-企业名单模板.csv",
-    headers: ["区名称", "统一社会信用代码", "企业名称", "上年碳排放(tCO2)", "目标降幅(%)"],
+    headers: ["区名称", "统一社会信用代码", "企业名称"],
   },
   "\"百家\"、\"千家\"、通信业企业碳排放目标分解": {
     fileName: "百家千家通信业-碳排放目标分解-企业名单模板.csv",
-    headers: ["区名称", "统一社会信用代码", "企业名称", "上年碳排放(tCO2)", "目标降幅(%)"],
+    headers: ["区名称", "统一社会信用代码", "企业名称"],
   },
   "区下属单位能耗考核": {
     fileName: "区下属单位能耗考核-企业名单模板.csv",
-    headers: ["区名称", "统一社会信用代码", "企业名称", "综合能耗(tce)", "节能目标完成率(%)"],
+    headers: ["区名称", "统一社会信用代码", "企业名称"],
   },
   "\"百家\"、\"千家\"、通信业企业能耗考核": {
     fileName: "百家千家通信业-能耗考核-企业名单模板.csv",
-    headers: ["统一社会信用代码", "企业名称", "综合能耗(tce)", "节能目标完成率(%)"],
+    headers: ["统一社会信用代码", "企业名称"],
   },
 };
