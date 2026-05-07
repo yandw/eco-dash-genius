@@ -50,7 +50,25 @@ function rowStatus(r: EntAssessYearRow | undefined): AssessStatus {
 
 export default function EntAssessDual() {
   const entType = useEntType();
-  const [year, setYear] = useState(CURRENT_YEAR);
+  useAssessTasksStore();
+  const taskType = entType === "city"
+    ? "\"百家\"、\"千家\"、通信业企业能耗考核"
+    : "区下属单位能耗考核";
+  const activeYears = listActiveYears([taskType]);
+  const YEARS = activeYears.length > 0 ? activeYears : [CURRENT_YEAR];
+  const initialYear = activeYears.includes(CURRENT_YEAR)
+    ? CURRENT_YEAR
+    : (activeYears[0] ?? CURRENT_YEAR);
+  const [year, setYear] = useState(initialYear);
+  const hasTask = hasActiveTask(year, [taskType]);
+  const hasAnyTask = activeYears.length > 0;
+
+  useEffect(() => {
+    if (activeYears.length && !activeYears.includes(year)) {
+      setYear(activeYears[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeYears.join(",")]);
   const ent = energyAssess[0];
   const allRows = useMemo(() => getEntAssess(ent.id), [ent.id]);
 
