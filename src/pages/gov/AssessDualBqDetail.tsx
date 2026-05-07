@@ -97,8 +97,8 @@ export default function AssessDualBqDetail() {
           <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回
         </Button>
         <div className="flex-1 min-w-[200px] flex items-center justify-end gap-2">
-          <Button size="sm" className="h-9 bg-primary text-primary-foreground" onClick={() => toast.success("正在下载证明材料")}>
-            下载证明材料
+          <Button size="sm" variant="outline" className="h-9 text-primary border-primary/40 hover:text-primary hover:bg-primary/5" onClick={() => toast.success("正在下载证明材料")}>
+            <Download className="h-3.5 w-3.5 mr-1" />下载证明材料
           </Button>
         </div>
         <Button size="sm" variant="outline" className="h-9" onClick={() => toast.success("已导出")}>导出</Button>
@@ -106,7 +106,7 @@ export default function AssessDualBqDetail() {
           <Button
             size="sm"
             variant="outline"
-            className="h-9 text-success border-success/40 hover:text-success"
+            className="h-9 text-success border-success/40 hover:text-success hover:bg-success/5"
             onClick={() => {
               const a = document.createElement("a");
               a.href = row.reportFile!.url;
@@ -118,13 +118,13 @@ export default function AssessDualBqDetail() {
             <Download className="h-3.5 w-3.5 mr-1" />下载考评报告
           </Button>
         ) : null}
-        <Button size="sm" className="h-9 bg-success text-success-foreground hover:bg-success/90" onClick={() => reportInput.current?.click()}>
+        <Button size="sm" variant="outline" className="h-9 text-success border-success/40 hover:text-success hover:bg-success/5" onClick={() => reportInput.current?.click()}>
           <Upload className="h-3.5 w-3.5 mr-1" />{row.reportFile ? "重新上传" : "上传考评报告"}
         </Button>
         <Button
           size="sm"
           variant="outline"
-          className="h-9 text-destructive border-destructive/40 hover:text-destructive"
+          className="h-9 text-destructive border-destructive/40 hover:text-destructive hover:bg-destructive/5"
           onClick={() => {
             if (entId) {
               rollbackBqEnt(entId);
@@ -135,7 +135,7 @@ export default function AssessDualBqDetail() {
         >
           <Undo2 className="h-3.5 w-3.5 mr-1" />退回重填
         </Button>
-        <Button size="sm" className="h-9 bg-gradient-primary text-primary-foreground" onClick={() => toast.success("已保存考评分")}>
+        <Button size="sm" className="h-9 bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => toast.success("已保存考评分")}>
           <Save className="h-3.5 w-3.5 mr-1" />保存
         </Button>
       </div>
