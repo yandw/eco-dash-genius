@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   FileBarChart,
+  ClipboardList,
   CalendarRange,
   Gauge,
   FolderArchive,
