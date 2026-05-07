@@ -163,19 +163,20 @@ export default function EntAssessDual() {
               </div>
             </div>
 
-            {cityTask && (
-              <div className="mb-3">
-                <TaskCountdownBadge endDate={cityTask.endDate} status={cityTask.status} />
-              </div>
-            )}
-
             {!hasTask ? (
               <AssessEmptyState
                 title={`${year} 年考核未开始`}
                 description="该年度尚未下发考核任务，请切换年份或等待任务下发。"
               />
             ) : (
-              <EntAssessDualBqBody editable />
+              <EntAssessDualBqBody
+                editable
+                leftSlot={
+                  cityTask ? (
+                    <TaskCountdownBadge endDate={cityTask.endDate} status={cityTask.status} />
+                  ) : null
+                }
+              />
             )}
           </>
         )}
