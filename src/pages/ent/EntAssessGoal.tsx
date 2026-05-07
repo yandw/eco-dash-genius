@@ -60,7 +60,15 @@ const YEAR_CHANGES_2024 = [
 ];
 
 export default function EntAssessGoal() {
-  const [year, setYear] = useState(CURRENT_YEAR);
+  useAssessTasksStore();
+  const districtType = "区下属单位碳排放目标分解" as const;
+  const cityType = "\"百家\"、\"千家\"、通信业企业碳排放目标分解" as const;
+  const activeYears = listActiveYears(GOAL_TASK_TYPES);
+  const YEARS = activeYears.length > 0 ? activeYears : [CURRENT_YEAR];
+  const initialYear = activeYears.includes(CURRENT_YEAR)
+    ? CURRENT_YEAR
+    : (activeYears[0] ?? CURRENT_YEAR);
+  const [year, setYear] = useState(initialYear);
   const [scope, setScope] = useState<"district" | "city">("district");
   const [yearStatusDistrict, setYearStatusDistrict] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
   const [yearStatusCity, setYearStatusCity] = useState<Record<number, EntStatus>>({ ...INITIAL_YEAR_STATUS });
