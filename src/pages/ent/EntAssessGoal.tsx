@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Save, Send, CheckCircle2, Lock } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,11 +15,17 @@ import {
 import { EntCarbonGoalForm } from "@/components/assess/EntCarbonGoalForm";
 import { EntBqGoalForm } from "@/components/assess/EntBqGoalForm";
 import { ChangeAlert } from "@/components/assess/ChangeAlert";
+import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
 import { carbonGoals, bqGoals, type CarbonGoalRow, type BqGoalRow } from "@/mocks/assess";
+import {
+  GOAL_TASK_TYPES,
+  hasActiveTask,
+  listActiveYears,
+  useAssessTasksStore,
+} from "@/mocks/assessTasks";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const YEARS = [2026, 2025, 2024, 2023, 2022];
 const CURRENT_YEAR = 2026;
 
 type EntStatus = "draft" | "submitted" | "modified";
