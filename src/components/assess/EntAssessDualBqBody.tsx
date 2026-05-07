@@ -151,7 +151,7 @@ export function EntAssessDualBqBody({ editable = false, leftSlot }: Props) {
         <Card className="p-4">
           <div className="text-sm font-semibold mb-3 inline-flex items-center gap-2">
             <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
-            上海市工业"百家""千家"和通信业企业{row.year}年节能目标考核
+            企业基础信息
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <div className="space-y-1">
