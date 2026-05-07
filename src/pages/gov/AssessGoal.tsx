@@ -61,6 +61,13 @@ export default function AssessGoal() {
   const [bqKeyword, setBqKeyword] = useState("");
   const [bqModifiedFilter, setBqModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
 
+  useEffect(() => {
+    if (activeYears.length && !activeYears.includes(year)) {
+      setYear(activeYears[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeYears.join(",")]);
+
   const hasDistrictTask = hasActiveTask(year, [districtType]);
   const hasBqTask = hasActiveTask(year, [bqType]);
   const hasAnyGoalTask = activeYears.length > 0;
