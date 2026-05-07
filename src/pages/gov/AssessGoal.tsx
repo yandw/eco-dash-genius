@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, Upload, FileCheck2, Trash2, Eye } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
@@ -23,15 +23,35 @@ import {
   type ChangeRecord,
 } from "@/mocks/assess";
 import { getCurrentRole } from "@/mocks/currentUser";
+import {
+  GOAL_TASK_TYPES,
+  hasActiveTask,
+  listActiveYears,
+  useAssessTasksStore,
+} from "@/mocks/assessTasks";
+import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
 import { toast } from "sonner";
 
-const YEARS = [2026, 2025, 2024, 2023, 2022];
 const CURRENT_YEAR = 2026;
 
 export default function AssessGoal() {
   const role = getCurrentRole();
   const navigate = useNavigate();
-  const [year, setYear] = useState(CURRENT_YEAR);
+  useAssessTasksStore(); // 订阅任务变化
+
+  const isCity = role === "city_admin";
+  // 区级：仅"区下属单位碳排放目标分解"；市级：两类都看
+  const districtType = "区下属单位碳排放目标分解" as const;
+  const bqType = "\"百家\"、\"千家\"、通信业企业碳排放目标分解" as const;
+  const relevantTypes = isCity ? GOAL_TASK_TYPES : [districtType];
+
+  const activeYears = listActiveYears(relevantTypes);
+  const YEARS = activeYears.length > 0 ? activeYears : [CURRENT_YEAR];
+  const initialYear = activeYears.includes(CURRENT_YEAR)
+    ? CURRENT_YEAR
+    : (activeYears[0] ?? CURRENT_YEAR);
+
+  const [year, setYear] = useState(initialYear);
   const [rows, setRows] = useState<CarbonGoalRow[]>(carbonGoals);
   const [bqRows, setBqRows] = useState<BqGoalRow[]>(bqGoals);
   const [stampedDoc, setStampedDoc] = useState<Record<number, StampedDocFile | undefined>>({});
@@ -40,6 +60,17 @@ export default function AssessGoal() {
   const [modifiedFilter, setModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
   const [bqKeyword, setBqKeyword] = useState("");
   const [bqModifiedFilter, setBqModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
+
+  useEffect(() => {
+    if (activeYears.length && !activeYears.includes(year)) {
+      setYear(activeYears[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeYears.join(",")]);
+
+  const hasDistrictTask = hasActiveTask(year, [districtType]);
+  const hasBqTask = hasActiveTask(year, [bqType]);
+  const hasAnyGoalTask = activeYears.length > 0;
 
 
   const summary = useMemo(() => {
@@ -50,7 +81,6 @@ export default function AssessGoal() {
     return { total, avgIntensity, completed, modified, count: rows.length };
   }, [rows]);
 
-  const isCity = role === "city_admin";
   const currentDoc = stampedDoc[year];
 
   const filteredRows = useMemo(() => {
@@ -112,6 +142,15 @@ export default function AssessGoal() {
         {isCity ? "全市重点单位碳排放目标分解" : "区下属单位碳排放目标分解"}
       </h1>
 
+      {!hasAnyGoalTask ? (
+        <AssessEmptyState
+          title="请在任务管理中创建目标分解任务"
+          description={isCity ? "尚未创建任何目标分解任务，相关考核内容将在任务创建后展示。" : "市级管理员尚未下发目标分解任务，请稍后再来查看。"}
+          showGoToTasks
+        />
+      ) : (
+      <>
+
       {/* 报告年度 */}
       <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
         <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
@@ -156,10 +195,17 @@ export default function AssessGoal() {
 
 
       {isCity ? (
-        <Tabs defaultValue="district">
+        !hasDistrictTask && !hasBqTask ? (
+          <AssessEmptyState
+            title={`${year} 年暂无目标分解任务`}
+            description="请切换年份或在任务管理中创建该年度的目标分解任务。"
+            showGoToTasks
+          />
+        ) : (
+        <Tabs defaultValue={hasDistrictTask ? "district" : "bq"}>
           <TabsList>
-            <TabsTrigger value="district">区下属单位碳排放目标分解</TabsTrigger>
-            <TabsTrigger value="bq">"百家"、"千家"、通信业企业碳排放目标分解</TabsTrigger>
+            {hasDistrictTask && <TabsTrigger value="district">区下属单位碳排放目标分解</TabsTrigger>}
+            {hasBqTask && <TabsTrigger value="bq">"百家"、"千家"、通信业企业碳排放目标分解</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="district" className="mt-4 space-y-4">
@@ -235,6 +281,12 @@ export default function AssessGoal() {
             })()}
           </TabsContent>
         </Tabs>
+        )
+      ) : !hasDistrictTask ? (
+        <AssessEmptyState
+          title={`${year} 年暂无目标分解任务`}
+          description="市级管理员尚未在该年度下发本区任务。"
+        />
       ) : (
         <div className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -308,6 +360,8 @@ export default function AssessGoal() {
           </div>
           <CarbonGoalTable rows={filteredRows} mode="district-view" onInlineSave={handleSaveEdit} />
         </div>
+      )}
+      </>
       )}
     </AppLayout>
   );

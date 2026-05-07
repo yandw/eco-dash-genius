@@ -155,6 +155,42 @@ export function listTasks(): AssessTask[] {
   return snapshot;
 }
 
+/** 目标分解类任务类型 */
+export const GOAL_TASK_TYPES: AssessTaskType[] = [
+  "区下属单位碳排放目标分解",
+  "\"百家\"、\"千家\"、通信业企业碳排放目标分解",
+];
+
+/** 双控考核类任务类型 */
+export const DUAL_TASK_TYPES: AssessTaskType[] = [
+  "区下属单位能耗考核",
+  "\"百家\"、\"千家\"、通信业企业能耗考核",
+];
+
+/** 非已归档的有效任务 */
+export function listActiveTasks(): AssessTask[] {
+  return snapshot.filter((t) => t.status !== "已归档");
+}
+
+/** 该年内是否存在指定类型任务（任一） */
+export function hasActiveTask(year: number, types: AssessTaskType[]): boolean {
+  return listActiveTasks().some((t) => t.year === year && types.includes(t.type));
+}
+
+/** 跨年度是否存在指定类型任务 */
+export function hasAnyActiveTask(types: AssessTaskType[]): boolean {
+  return listActiveTasks().some((t) => types.includes(t.type));
+}
+
+/** 存在指定类型任务的年份并集（降序） */
+export function listActiveYears(types: AssessTaskType[]): number[] {
+  const years = new Set<number>();
+  listActiveTasks().forEach((t) => {
+    if (types.includes(t.type)) years.add(t.year);
+  });
+  return Array.from(years).sort((a, b) => b - a);
+}
+
 export function createTask(t: Omit<AssessTask, "id" | "createdAt">) {
   const id = `task-${String(Date.now()).slice(-6)}`;
   data = [

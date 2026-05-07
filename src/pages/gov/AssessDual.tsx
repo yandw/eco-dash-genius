@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, Save, Send, Undo2, Upload, FileCheck2, Eye, Trash2 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
@@ -10,6 +10,7 @@ import { DistrictListTable } from "@/components/assess/DistrictListTable";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import { StampedDocDialog } from "@/components/assess/StampedDocDialog";
 import { BqEntAssessTable } from "@/components/assess/BqEntAssessTable";
+import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
 import {
   energyAssess,
   districtAssessSummary,
@@ -23,12 +24,17 @@ import {
   setAssessDoc,
 } from "@/mocks/assessStatusStore";
 import { getCurrentRole, currentUser } from "@/mocks/currentUser";
+import {
+  DUAL_TASK_TYPES,
+  hasActiveTask,
+  listActiveYears,
+  useAssessTasksStore,
+} from "@/mocks/assessTasks";
 import { toast } from "sonner";
 
-const YEARS = [2026, 2025, 2024, 2023, 2022];
 const CURRENT_YEAR = 2026;
 
-function YearTabs({ year, onChange }: { year: number; onChange: (y: number) => void }) {
+function YearTabs({ year, onChange, years }: { year: number; onChange: (y: number) => void; years: number[] }) {
   return (
     <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
       <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
@@ -36,7 +42,7 @@ function YearTabs({ year, onChange }: { year: number; onChange: (y: number) => v
         报告年度
       </span>
       <div className="flex flex-wrap gap-2">
-        {YEARS.map((y) => {
+        {years.map((y) => {
           const active = year === y;
           return (
             <div key={y} className="relative">
@@ -65,11 +71,33 @@ export default function AssessDual() {
   const role = getCurrentRole();
   const navigate = useNavigate();
   const isCity = role === "city_admin";
-  const [year, setYear] = useState(CURRENT_YEAR);
+  useAssessTasksStore();
+
+  const districtType = "区下属单位能耗考核" as const;
+  const bqType = "\"百家\"、\"千家\"、通信业企业能耗考核" as const;
+  const relevantTypes = isCity ? DUAL_TASK_TYPES : [districtType];
+  const activeYears = listActiveYears(relevantTypes);
+  const YEARS = activeYears.length > 0 ? activeYears : [CURRENT_YEAR];
+  const initialYear = activeYears.includes(CURRENT_YEAR)
+    ? CURRENT_YEAR
+    : (activeYears[0] ?? CURRENT_YEAR);
+
+  const [year, setYear] = useState(initialYear);
   const [rows, setRows] = useState<EnergyAssessRow[]>(energyAssess);
   const [uploadOpen, setUploadOpen] = useState(false);
   const bqRows = useBqAssessStore();
   const statusStore = useAssessStatusStore();
+
+  useEffect(() => {
+    if (activeYears.length && !activeYears.includes(year)) {
+      setYear(activeYears[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeYears.join(",")]);
+
+  const hasDistrictTask = hasActiveTask(year, [districtType]);
+  const hasBqTask = hasActiveTask(year, [bqType]);
+  const hasAnyDualTask = activeYears.length > 0;
 
   const bqStats = useMemo(() => ({
     total: bqRows.length,
@@ -124,12 +152,25 @@ export default function AssessDual() {
           重点单位能耗双控考核结果
         </h1>
 
-        <YearTabs year={year} onChange={setYear} />
+        <YearTabs year={year} onChange={setYear} years={YEARS} />
 
-        <Tabs defaultValue="district">
+        {!hasAnyDualTask ? (
+          <AssessEmptyState
+            title="请在任务管理中创建考核任务"
+            description="尚未创建任何能耗考核任务，相关考核内容将在任务创建后展示。"
+            showGoToTasks
+          />
+        ) : !hasDistrictTask && !hasBqTask ? (
+          <AssessEmptyState
+            title={`${year} 年暂无能耗考核任务`}
+            description="请切换年份或在任务管理中创建该年度的考核任务。"
+            showGoToTasks
+          />
+        ) : (
+        <Tabs defaultValue={hasDistrictTask ? "district" : "bq"}>
           <TabsList>
-            <TabsTrigger value="district">区下属单位能耗目标考核</TabsTrigger>
-            <TabsTrigger value="bq">"百家"、"千家"、通信业企业能耗考核</TabsTrigger>
+            {hasDistrictTask && <TabsTrigger value="district">区下属单位能耗目标考核</TabsTrigger>}
+            {hasBqTask && <TabsTrigger value="bq">"百家"、"千家"、通信业企业能耗考核</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="district" className="mt-4 space-y-4">
@@ -159,6 +200,7 @@ export default function AssessDual() {
 
           </TabsContent>
         </Tabs>
+        )}
 
       </AppLayout>
     );
@@ -173,8 +215,15 @@ export default function AssessDual() {
         重点单位能耗双控考核结果
       </h1>
 
-      <YearTabs year={year} onChange={setYear} />
+      <YearTabs year={year} onChange={setYear} years={YEARS} />
 
+      {!hasDistrictTask ? (
+        <AssessEmptyState
+          title="今年考核未开始"
+          description="市级管理员尚未在该年度下发本区考核任务。"
+        />
+      ) : (
+      <>
       <StampedDocDialog
         open={uploadOpen}
         onOpenChange={setUploadOpen}
@@ -274,6 +323,8 @@ export default function AssessDual() {
 
         <DistrictAssessTable rows={rows} mode={submitted ? "city-view" : "district-edit"} onChange={update} />
       </div>
+      </>
+      )}
     </AppLayout>
   );
 }

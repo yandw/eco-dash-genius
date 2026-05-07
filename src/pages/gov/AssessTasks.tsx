@@ -63,17 +63,19 @@ export default function AssessTasks() {
     setEntPage(1);
   }, [entView?.id]);
 
+  const activeTasks = useMemo(() => tasks.filter((t) => t.status !== "已归档"), [tasks]);
+
   const yearOptions = useMemo(
-    () => Array.from(new Set(tasks.map((t) => t.year))).sort((a, b) => b - a),
-    [tasks],
+    () => Array.from(new Set(activeTasks.map((t) => t.year))).sort((a, b) => b - a),
+    [activeTasks],
   );
 
   const filtered = useMemo(() => {
-    return tasks.filter((t) => {
+    return activeTasks.filter((t) => {
       if (year !== "all" && String(t.year) !== year) return false;
       return true;
     });
-  }, [tasks, year]);
+  }, [activeTasks, year]);
 
   const pageItems = paginate(filtered, page, pageSize);
   const showDistrict = entView ? taskHasDistrictColumn(entView.type) : false;

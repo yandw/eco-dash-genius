@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, AlertCircle, Lock } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
@@ -8,12 +8,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { PassBadge } from "@/components/assess/PassBadge";
+import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
 import { getEntAssess, energyAssess, type EntAssessYearRow } from "@/mocks/assess";
 import { useEntType } from "@/mocks/entTypeStore";
 import { EntAssessDualBqBody } from "@/components/assess/EntAssessDualBqBody";
+import {
+  hasActiveTask,
+  listActiveYears,
+  useAssessTasksStore,
+} from "@/mocks/assessTasks";
 import { cn } from "@/lib/utils";
 
-const YEARS = [2026, 2025, 2024, 2023, 2022];
 const CURRENT_YEAR = 2026;
 
 type AssessStatus = "passed" | "failed";
@@ -45,7 +50,25 @@ function rowStatus(r: EntAssessYearRow | undefined): AssessStatus {
 
 export default function EntAssessDual() {
   const entType = useEntType();
-  const [year, setYear] = useState(CURRENT_YEAR);
+  useAssessTasksStore();
+  const taskType = entType === "city"
+    ? "\"百家\"、\"千家\"、通信业企业能耗考核"
+    : "区下属单位能耗考核";
+  const activeYears = listActiveYears([taskType]);
+  const YEARS = activeYears.length > 0 ? activeYears : [CURRENT_YEAR];
+  const initialYear = activeYears.includes(CURRENT_YEAR)
+    ? CURRENT_YEAR
+    : (activeYears[0] ?? CURRENT_YEAR);
+  const [year, setYear] = useState(initialYear);
+  const hasTask = hasActiveTask(year, [taskType]);
+  const hasAnyTask = activeYears.length > 0;
+
+  useEffect(() => {
+    if (activeYears.length && !activeYears.includes(year)) {
+      setYear(activeYears[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeYears.join(",")]);
   const ent = energyAssess[0];
   const allRows = useMemo(() => getEntAssess(ent.id), [ent.id]);
 
@@ -93,7 +116,19 @@ export default function EntAssessDual() {
   if (entType === "city") {
     return (
       <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
-        <EntAssessDualBqBody editable />
+        {!hasAnyTask ? (
+          <AssessEmptyState
+            title="今年考核未开始"
+            description="市级管理员尚未在任务管理中创建考核任务，请等待任务下发。"
+          />
+        ) : !hasTask ? (
+          <AssessEmptyState
+            title={`${year} 年考核未开始`}
+            description="该年度尚未下发考核任务，请切换年份或等待任务下发。"
+          />
+        ) : (
+          <EntAssessDualBqBody editable />
+        )}
       </AppLayout>
     );
   }
@@ -103,6 +138,19 @@ export default function EntAssessDual() {
       <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground mb-4">
         重点单位能耗双控考核结果
       </h1>
+
+      {!hasAnyTask ? (
+        <AssessEmptyState
+          title="今年考核未开始"
+          description="市级管理员尚未在任务管理中创建考核任务，请等待任务下发。"
+        />
+      ) : !hasTask ? (
+        <AssessEmptyState
+          title={`${year} 年考核未开始`}
+          description="该年度尚未下发考核任务，请切换年份或等待任务下发。"
+        />
+      ) : (
+      <>
 
       {/* 报告年度 */}
       <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
@@ -241,6 +289,8 @@ export default function EntAssessDual() {
             ※ 考核说明：考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有 1 项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
           </p>
         </div>
+      )}
+      </>
       )}
     </AppLayout>
   );
