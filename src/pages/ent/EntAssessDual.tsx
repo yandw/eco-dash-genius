@@ -139,6 +139,19 @@ export default function EntAssessDual() {
         重点单位能耗双控考核结果
       </h1>
 
+      {!hasAnyTask ? (
+        <AssessEmptyState
+          title="今年考核未开始"
+          description="市级管理员尚未在任务管理中创建考核任务，请等待任务下发。"
+        />
+      ) : !hasTask ? (
+        <AssessEmptyState
+          title={`${year} 年考核未开始`}
+          description="该年度尚未下发考核任务，请切换年份或等待任务下发。"
+        />
+      ) : (
+      <>
+
       {/* 报告年度 */}
       <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
         <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
