@@ -14,7 +14,7 @@ import { useEntType } from "@/mocks/entTypeStore";
 import { EntAssessDualBqBody } from "@/components/assess/EntAssessDualBqBody";
 import {
   getActiveTask,
-  getInProgressTask,
+  getDisplayTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
