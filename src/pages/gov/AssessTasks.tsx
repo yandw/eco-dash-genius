@@ -81,9 +81,10 @@ export default function AssessTasks() {
   const filtered = useMemo(() => {
     return activeTasks.filter((t) => {
       if (year !== "all" && String(t.year) !== year) return false;
+      if (typeFilter !== "all" && t.type !== typeFilter) return false;
       return true;
     });
-  }, [activeTasks, year]);
+  }, [activeTasks, year, typeFilter]);
 
   const pageItems = paginate(filtered, page, pageSize);
   const showDistrict = entView ? taskHasDistrictColumn(entView.type) : false;
@@ -107,7 +108,7 @@ export default function AssessTasks() {
     <AppLayout title="任务管理" subtitle="考核管理 / 任务管理" side="gov">
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs text-muted-foreground">年份</span>
             <Select value={year} onValueChange={(v) => { setYear(v); setPage(1); }}>
               <SelectTrigger className="h-9 w-[120px]"><SelectValue /></SelectTrigger>
@@ -115,6 +116,16 @@ export default function AssessTasks() {
                 <SelectItem value="all">全部</SelectItem>
                 {yearOptions.map((y) => (
                   <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span className="text-xs text-muted-foreground ml-2">类型</span>
+            <Select value={typeFilter} onValueChange={(v) => { setTypeFilter(v); setPage(1); }}>
+              <SelectTrigger className="h-9 w-[280px]"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">全部</SelectItem>
+                {TYPE_OPTIONS.map((t) => (
+                  <SelectItem key={t} value={t}>{t}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
