@@ -274,6 +274,12 @@ export default function AssessGoal() {
             })()}
           </TabsContent>
         </Tabs>
+        )
+      ) : !hasDistrictTask ? (
+        <AssessEmptyState
+          title={`${year} 年暂无目标分解任务`}
+          description="市级管理员尚未在该年度下发本区任务。"
+        />
       ) : (
         <div className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
