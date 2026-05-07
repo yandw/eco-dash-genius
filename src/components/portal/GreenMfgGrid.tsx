@@ -14,10 +14,11 @@ interface Tile {
 
 const tiles: Tile[] = [
   {
-    title: "绿色工厂",
-    desc: "全面构建数智化、清洁化、低碳化生产体系，打造行业绿色标杆",
-    image: factory,
+    title: "示范单位",
+    desc: "树立行业能效标杆，展示绿色工厂典型案例",
+    image: demo,
     className: "lg:col-span-6 lg:row-span-2 h-[440px]",
+    to: "/portal/green-mfg/factories",
   },
   {
     title: "企业预评估",
@@ -32,11 +33,10 @@ const tiles: Tile[] = [
     className: "lg:col-span-3 h-[210px]",
   },
   {
-    title: "示范单位",
-    desc: "树立行业能效标杆，展示绿色工厂典型案例",
-    image: demo,
+    title: "绿色工厂",
+    desc: "全面构建数智化、清洁化、低碳化生产体系，打造行业绿色标杆",
+    image: factory,
     className: "lg:col-span-3 h-[210px]",
-    to: "/portal/green-mfg/factories",
   },
 ];
 
