@@ -37,7 +37,21 @@ const CURRENT_YEAR = 2026;
 export default function AssessGoal() {
   const role = getCurrentRole();
   const navigate = useNavigate();
-  const [year, setYear] = useState(CURRENT_YEAR);
+  useAssessTasksStore(); // 订阅任务变化
+
+  const isCity = role === "city_admin";
+  // 区级：仅"区下属单位碳排放目标分解"；市级：两类都看
+  const districtType = "区下属单位碳排放目标分解" as const;
+  const bqType = "\"百家\"、\"千家\"、通信业企业碳排放目标分解" as const;
+  const relevantTypes = isCity ? GOAL_TASK_TYPES : [districtType];
+
+  const activeYears = listActiveYears(relevantTypes);
+  const YEARS = activeYears.length > 0 ? activeYears : [CURRENT_YEAR];
+  const initialYear = activeYears.includes(CURRENT_YEAR)
+    ? CURRENT_YEAR
+    : (activeYears[0] ?? CURRENT_YEAR);
+
+  const [year, setYear] = useState(initialYear);
   const [rows, setRows] = useState<CarbonGoalRow[]>(carbonGoals);
   const [bqRows, setBqRows] = useState<BqGoalRow[]>(bqGoals);
   const [stampedDoc, setStampedDoc] = useState<Record<number, StampedDocFile | undefined>>({});
@@ -46,6 +60,10 @@ export default function AssessGoal() {
   const [modifiedFilter, setModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
   const [bqKeyword, setBqKeyword] = useState("");
   const [bqModifiedFilter, setBqModifiedFilter] = useState<"all" | "modified" | "unmodified">("all");
+
+  const hasDistrictTask = hasActiveTask(year, [districtType]);
+  const hasBqTask = hasActiveTask(year, [bqType]);
+  const hasAnyGoalTask = activeYears.length > 0;
 
 
   const summary = useMemo(() => {
