@@ -237,19 +237,17 @@ export default function EntAssessDual() {
 
       {(() => {
         const t = getDisplayTask(year, [taskType]);
-        return t ? (
-          <div className="mb-3">
-            <TaskCountdownBadge endDate={t.endDate} status={t.status} />
+        return (
+          <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+            <div>
+              {t && <TaskCountdownBadge endDate={t.endDate} status={t.status} />}
+            </div>
+            <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
+              <Lock className="h-3.5 w-3.5" />考核结果由系统自动判定，如有异议请联系区级负责人
+            </span>
           </div>
-        ) : null;
+        );
       })()}
-
-      {/* 系统判定提示 */}
-      <div className="flex items-center justify-end mb-3 gap-2">
-        <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
-          <Lock className="h-3.5 w-3.5" />考核结果由系统自动判定，如有异议请联系主管部门
-        </span>
-      </div>
 
       {!currentRow && (
         <div className="mb-4 rounded-lg border border-border bg-muted/30 p-4 flex items-start gap-3">
