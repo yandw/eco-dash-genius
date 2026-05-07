@@ -27,6 +27,7 @@ import { getCurrentRole, currentUser } from "@/mocks/currentUser";
 import {
   DUAL_TASK_TYPES,
   getActiveTask,
+  getInProgressTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
@@ -157,7 +158,7 @@ export default function AssessDual() {
         <YearTabs year={year} onChange={setYear} years={YEARS} />
 
         {(() => {
-          const t = getActiveTask(year, DUAL_TASK_TYPES);
+          const t = getInProgressTask(year, DUAL_TASK_TYPES);
           return t ? (
             <div className="flex justify-end -mt-2 mb-3">
               <TaskCountdownBadge endDate={t.endDate} />
@@ -229,7 +230,7 @@ export default function AssessDual() {
       <YearTabs year={year} onChange={setYear} years={YEARS} />
 
       {(() => {
-        const t = getActiveTask(year, [districtType]);
+        const t = getInProgressTask(year, [districtType]);
         return t ? (
           <div className="flex justify-end -mt-2 mb-3">
             <TaskCountdownBadge endDate={t.endDate} />

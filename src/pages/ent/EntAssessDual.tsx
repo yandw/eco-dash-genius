@@ -14,6 +14,7 @@ import { useEntType } from "@/mocks/entTypeStore";
 import { EntAssessDualBqBody } from "@/components/assess/EntAssessDualBqBody";
 import {
   getActiveTask,
+  getInProgressTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
@@ -116,7 +117,7 @@ export default function EntAssessDual() {
   };
 
   if (entType === "city") {
-    const cityTask = getActiveTask(year, [taskType]);
+    const cityTask = getInProgressTask(year, [taskType]);
     return (
       <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
         {!hasAnyTask ? (
@@ -198,7 +199,7 @@ export default function EntAssessDual() {
       {/* 系统判定提示 */}
       <div className="flex items-center justify-end mb-3 gap-2">
         {(() => {
-          const t = getActiveTask(year, [taskType]);
+          const t = getInProgressTask(year, [taskType]);
           return t ? <TaskCountdownBadge endDate={t.endDate} /> : null;
         })()}
         <span className="text-xs text-muted-foreground inline-flex items-center gap-1">

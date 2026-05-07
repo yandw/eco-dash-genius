@@ -20,6 +20,7 @@ import { carbonGoals, bqGoals, type CarbonGoalRow, type BqGoalRow } from "@/mock
 import {
   GOAL_TASK_TYPES,
   getActiveTask,
+  getInProgressTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
@@ -247,7 +248,7 @@ export default function EntAssessGoal() {
           <span className="text-xs text-muted-foreground">填报状态</span>
           {statusBadge()}
           {(() => {
-            const t = getActiveTask(year, [scope === "district" ? districtType : cityType]);
+            const t = getInProgressTask(year, [scope === "district" ? districtType : cityType]);
             return t ? <TaskCountdownBadge endDate={t.endDate} className="ml-2" /> : null;
           })()}
         </div>

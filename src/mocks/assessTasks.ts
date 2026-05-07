@@ -215,6 +215,20 @@ export function getActiveTask(year: number, types: AssessTaskType[]): AssessTask
   return listActiveTasks().find((t) => t.year === year && types.includes(t.type));
 }
 
+/** 取该年第一条匹配的「进行中」任务（用于倒计时显示） */
+export function getInProgressTask(year: number, types: AssessTaskType[]): AssessTask | undefined {
+  return listActiveTasks().find(
+    (t) => t.year === year && types.includes(t.type) && t.status === "进行中",
+  );
+}
+
+/** 将 YYYY-MM-DD 格式化为 YYYY年MM月DD日 */
+export function formatCnDate(date: string): string {
+  const [y, m, d] = date.split("-");
+  if (!y || !m || !d) return date;
+  return `${y}年${m}月${d}日`;
+}
+
 /** 距离 endDate (YYYY-MM-DD) 的剩余天数；同日=0，已过期为负 */
 export function daysUntil(endDate: string): number {
   const today = new Date();
