@@ -27,6 +27,7 @@ import { getCurrentRole, currentUser } from "@/mocks/currentUser";
 import {
   DUAL_TASK_TYPES,
   getActiveTask,
+  getInProgressTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
