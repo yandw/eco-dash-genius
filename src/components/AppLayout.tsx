@@ -64,6 +64,7 @@ export function AppLayout({ title, subtitle, children, side = "gov", fullscreen,
   const location = useLocation();
   const isAssessRoute = location.pathname.includes("/assess/");
   const showRoleSwitcher = isAssessRoute && side === "gov";
+  const hideEntTypeSwitcher = location.pathname === "/ent/assess/goal";
 
   const userLabel = side === "gov" ? "监管员" : "企业用户";
   let crumbs = findBreadcrumb(side, location.pathname);
@@ -115,7 +116,7 @@ export function AppLayout({ title, subtitle, children, side = "gov", fullscreen,
 
             <div className="ml-auto flex items-center gap-3">
               {showRoleSwitcher && <RoleSwitcher side={side} />}
-              {side === "ent" && <EntTypeSwitcher />}
+              {side === "ent" && !hideEntTypeSwitcher && <EntTypeSwitcher />}
 
               {headerExtra}
 
