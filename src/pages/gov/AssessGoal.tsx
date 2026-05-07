@@ -188,10 +188,17 @@ export default function AssessGoal() {
 
 
       {isCity ? (
-        <Tabs defaultValue="district">
+        !hasDistrictTask && !hasBqTask ? (
+          <AssessEmptyState
+            title={`${year} 年暂无目标分解任务`}
+            description="请切换年份或在任务管理中创建该年度的目标分解任务。"
+            showGoToTasks
+          />
+        ) : (
+        <Tabs defaultValue={hasDistrictTask ? "district" : "bq"}>
           <TabsList>
-            <TabsTrigger value="district">区下属单位碳排放目标分解</TabsTrigger>
-            <TabsTrigger value="bq">"百家"、"千家"、通信业企业碳排放目标分解</TabsTrigger>
+            {hasDistrictTask && <TabsTrigger value="district">区下属单位碳排放目标分解</TabsTrigger>}
+            {hasBqTask && <TabsTrigger value="bq">"百家"、"千家"、通信业企业碳排放目标分解</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="district" className="mt-4 space-y-4">
