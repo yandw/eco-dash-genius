@@ -117,7 +117,7 @@ export default function EntAssessDual() {
   };
 
   if (entType === "city") {
-    const cityTask = getActiveTask(year, [taskType]);
+    const cityTask = getInProgressTask(year, [taskType]);
     return (
       <AppLayout side="ent" title="重点单位能耗双控考核结果" subtitle="市管企业">
         {!hasAnyTask ? (
