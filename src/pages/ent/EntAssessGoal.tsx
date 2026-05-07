@@ -20,6 +20,7 @@ import { carbonGoals, bqGoals, type CarbonGoalRow, type BqGoalRow } from "@/mock
 import {
   GOAL_TASK_TYPES,
   getActiveTask,
+  getInProgressTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
