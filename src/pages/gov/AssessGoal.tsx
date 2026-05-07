@@ -23,9 +23,15 @@ import {
   type ChangeRecord,
 } from "@/mocks/assess";
 import { getCurrentRole } from "@/mocks/currentUser";
+import {
+  GOAL_TASK_TYPES,
+  hasActiveTask,
+  listActiveYears,
+  useAssessTasksStore,
+} from "@/mocks/assessTasks";
+import { AssessEmptyState } from "@/components/assess/AssessEmptyState";
 import { toast } from "sonner";
 
-const YEARS = [2026, 2025, 2024, 2023, 2022];
 const CURRENT_YEAR = 2026;
 
 export default function AssessGoal() {
