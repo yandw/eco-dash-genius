@@ -1,29 +1,36 @@
-## 调整任务结束倒计时提示
+## 调整任务提示与市管企业界面
 
-### 1. 文案与样式
-统一为轻量提示行（参考截图"关键提示"样式）：
-- `🕒 距 2026年02月28日 任务结束截止还剩 15 天`
-- 当日截止：`🕒 2026年02月28日 任务今日截止`
-- 已过期：`🕒 2026年02月28日 任务已截止 N 天`
+### 1. 提示位置调整：移到子tab下方
+目标：把"任务结束截止"提示从右上角移到子 tab 切换栏的**正下方**（如截图1红框处），位于统计卡片（参与区数 / 完成考核 / …）之上，整行左对齐。
 
-样式：`Clock` 图标 + `text-warning` 文案（≤7 天 / 当日），>7 天用 `text-primary`，已过期 `text-muted-foreground`；日期与天数加粗（`font-semibold`）。无胶囊背景。
+涉及文件（统一移动位置）：
+- `src/pages/gov/AssessGoal.tsx`：移除 187–193 行右上角提示；改为在 `<TabsContent value="district">` 与 `<TabsContent value="bq">` 顶部各渲染一行 `<TaskHint>`（按对应 `taskType` 取任务）。区级分支也在统计卡片上方加一行。
+- `src/pages/gov/AssessDual.tsx`：移除 160–167 行右上角提示；同样在两个 TabsContent 顶部、以及区级分支统计卡片上方各渲染一行。
+- `src/pages/ent/EntAssessGoal.tsx`：操作栏内的 250–253 行提示移除，改为放在 `headerScope` Tabs 下方一行（即 scope 切换 tab 与表单/卡片之间）。
+- `src/pages/ent/EntAssessDual.tsx`：区管企业分支保留，提示位置保持在年份选择栏之下、考核结果卡片之上的左侧位置（207 行附近）。市管企业分支按下方第 3 点统一处理。
 
-### 2. 仅"进行中"任务才显示
-新增 `getInProgressTask(year, types)`（在 `getActiveTask` 基础上加 `status === '进行中'`）。  
-未开始 / 已结束 / 已归档：不渲染倒计时。
+样式：`mb-3` 单行，`Clock` 图标 + 文案，与现 `TaskCountdownBadge` 一致；不加背景胶囊。
 
-### 3. 改造 `TaskCountdownBadge`
-文件：`src/components/assess/TaskCountdownBadge.tsx`
-- 重写为轻量行布局（`inline-flex` + 图标 + 文字）。
-- 新增中文日期格式化 `formatCnDate(YYYY-MM-DD) → YYYY年MM月DD日`。
-- 文案按上述规则拼接。
+### 2. 「未开始」任务也显示提示
+当年/类型存在状态为「未开始」的任务时，提示文案为：
 
-### 4. 接入点改为 `getInProgressTask`
-仅替换调用，不动布局：
-- `src/pages/gov/AssessGoal.tsx`
-- `src/pages/gov/AssessDual.tsx`
-- `src/pages/ent/EntAssessGoal.tsx`
-- `src/pages/ent/EntAssessDual.tsx`
+```
+🕒 2026年02月28日 任务待开始
+```
+
+实现：
+- `src/mocks/assessTasks.ts`：新增 `getDisplayTask(year, types)` —— 优先返回「进行中」任务，否则返回「未开始」任务（用于显示提示）。`getInProgressTask` 保留不动。
+- `src/components/assess/TaskCountdownBadge.tsx`：新增 prop `status?: AssessTaskStatus`。当 `status === '未开始'`：tone 用 `text-muted-foreground`，文案为「`{cn_date} 任务待开始`」。其它状态保持现有文案规则。
+- 所有调用点改为 `getDisplayTask` 并把 `task.status` 传入 badge。
+
+「已结束 / 已归档」仍不显示。
+
+### 3. 市管企业界面增加年份平铺 + 任务提示
+当前 `EntAssessDual.tsx` 中 `entType === 'city'`（市管企业）分支无年份选择栏。新增：
+- 在 `<EntAssessDualBqBody>` 之前渲染与区管企业一致的"报告年度"面板（参考同文件 167–197 行结构），可切换 `YEARS`。
+- 年份切换栏下方一行渲染 `<TaskCountdownBadge>`（按上述 `getDisplayTask`，类型 `"百家"、"千家"、通信业企业能耗考核`）。
+- `EntAssessDualBqBody` 暂不与 `year` 联动（mock 仅一份数据），仅作 UI 切换；切换不会破坏现有"双控考核"主体内容。
 
 ### 不改动范围
-任务管理列表/详情/模板/企业名单弹窗、业务校验逻辑、其他文案均不变。
+- 任务管理（AssessTasks）、目标分解/双控考核的业务逻辑、表单、表格数据、其他文案与状态判定。
+- 年份计算、任务过滤逻辑（沿用 `listActiveYears` / `hasActiveTask`）。

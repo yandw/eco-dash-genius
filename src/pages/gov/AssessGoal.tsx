@@ -26,7 +26,7 @@ import { getCurrentRole } from "@/mocks/currentUser";
 import {
   GOAL_TASK_TYPES,
   getActiveTask,
-  getInProgressTask,
+  getDisplayTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
@@ -184,14 +184,7 @@ export default function AssessGoal() {
               </div>
             );
           })}
-        <div className="ml-auto flex items-center gap-2">
-          {(() => {
-            const types = isCity ? GOAL_TASK_TYPES : [districtType];
-            const t = getInProgressTask(year, types);
-            return t ? <TaskCountdownBadge endDate={t.endDate} /> : null;
-          })()}
         </div>
-      </div>
       </div>
 
       <StampedDocDialog
@@ -219,6 +212,7 @@ export default function AssessGoal() {
           </TabsList>
 
           <TabsContent value="district" className="mt-4 space-y-4">
+            {(() => { const t = getDisplayTask(year, [districtType]); return t ? <div><TaskCountdownBadge endDate={t.endDate} status={t.status} /></div> : null; })()}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">参与区数</div><div className="text-lg font-semibold">{districtGoalSummary.length}</div></Card>
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{districtGoalSummary.filter((d) => d.status === "已完成").length}</div></Card>
@@ -246,6 +240,7 @@ export default function AssessGoal() {
               });
               return (
                 <>
+                  {(() => { const t = getDisplayTask(year, [bqType]); return t ? <div><TaskCountdownBadge endDate={t.endDate} status={t.status} /></div> : null; })()}
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                     <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{bqRows.length}</div></Card>
                     <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{bqCompleted}</div></Card>
@@ -299,6 +294,7 @@ export default function AssessGoal() {
         />
       ) : (
         <div className="space-y-4">
+          {(() => { const t = getDisplayTask(year, [districtType]); return t ? <div><TaskCountdownBadge endDate={t.endDate} status={t.status} /></div> : null; })()}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{summary.count}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{summary.completed}</div></Card>

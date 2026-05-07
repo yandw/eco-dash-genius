@@ -1,47 +1,58 @@
 import { Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { daysUntil, formatCnDate } from "@/mocks/assessTasks";
+import { daysUntil, formatCnDate, type AssessTaskStatus } from "@/mocks/assessTasks";
 
 interface Props {
   endDate: string;
+  status?: AssessTaskStatus;
   className?: string;
 }
 
-export function TaskCountdownBadge({ endDate, className }: Props) {
-  const d = daysUntil(endDate);
+export function TaskCountdownBadge({ endDate, status, className }: Props) {
   const cn_date = formatCnDate(endDate);
-
   let tone = "text-primary";
   let node: React.ReactNode;
-  if (d < 0) {
+
+  if (status === "未开始") {
     tone = "text-muted-foreground";
     node = (
       <>
         <span className="font-semibold">{cn_date}</span>
-        <span> 任务已截止 </span>
-        <span className="font-semibold">{Math.abs(d)}</span>
-        <span> 天</span>
-      </>
-    );
-  } else if (d === 0) {
-    tone = "text-warning";
-    node = (
-      <>
-        <span className="font-semibold">{cn_date}</span>
-        <span> 任务今日截止</span>
+        <span> 任务待开始</span>
       </>
     );
   } else {
-    if (d <= 7) tone = "text-warning";
-    node = (
-      <>
-        <span>距 </span>
-        <span className="font-semibold">{cn_date}</span>
-        <span> 任务结束截止还剩 </span>
-        <span className="font-semibold">{d}</span>
-        <span> 天</span>
-      </>
-    );
+    const d = daysUntil(endDate);
+    if (d < 0) {
+      tone = "text-muted-foreground";
+      node = (
+        <>
+          <span className="font-semibold">{cn_date}</span>
+          <span> 任务已截止 </span>
+          <span className="font-semibold">{Math.abs(d)}</span>
+          <span> 天</span>
+        </>
+      );
+    } else if (d === 0) {
+      tone = "text-warning";
+      node = (
+        <>
+          <span className="font-semibold">{cn_date}</span>
+          <span> 任务今日截止</span>
+        </>
+      );
+    } else {
+      if (d <= 7) tone = "text-warning";
+      node = (
+        <>
+          <span>距 </span>
+          <span className="font-semibold">{cn_date}</span>
+          <span> 任务结束截止还剩 </span>
+          <span className="font-semibold">{d}</span>
+          <span> 天</span>
+        </>
+      );
+    }
   }
 
   return (

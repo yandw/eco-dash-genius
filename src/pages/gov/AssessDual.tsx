@@ -27,7 +27,7 @@ import { getCurrentRole, currentUser } from "@/mocks/currentUser";
 import {
   DUAL_TASK_TYPES,
   getActiveTask,
-  getInProgressTask,
+  getDisplayTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
@@ -157,14 +157,7 @@ export default function AssessDual() {
 
         <YearTabs year={year} onChange={setYear} years={YEARS} />
 
-        {(() => {
-          const t = getInProgressTask(year, DUAL_TASK_TYPES);
-          return t ? (
-            <div className="flex justify-end -mt-2 mb-3">
-              <TaskCountdownBadge endDate={t.endDate} />
-            </div>
-          ) : null;
-        })()}
+
 
         {!hasAnyDualTask ? (
           <AssessEmptyState
@@ -186,6 +179,7 @@ export default function AssessDual() {
           </TabsList>
 
           <TabsContent value="district" className="mt-4 space-y-4">
+            {(() => { const t = getDisplayTask(year, [districtType]); return t ? <div><TaskCountdownBadge endDate={t.endDate} status={t.status} /></div> : null; })()}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">参与区数</div><div className="text-lg font-semibold">{mergedSummary.length}</div></Card>
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">完成考核</div><div className="text-lg font-semibold text-success">{mergedSummary.filter((d) => (d.status as string) === "完成考核" || d.status === "已考核").length}</div></Card>
@@ -197,6 +191,7 @@ export default function AssessDual() {
           </TabsContent>
 
           <TabsContent value="bq" className="mt-4 space-y-4">
+            {(() => { const t = getDisplayTask(year, [bqType]); return t ? <div><TaskCountdownBadge endDate={t.endDate} status={t.status} /></div> : null; })()}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{bqStats.total}</div></Card>
               <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{bqStats.done}</div></Card>
@@ -230,10 +225,10 @@ export default function AssessDual() {
       <YearTabs year={year} onChange={setYear} years={YEARS} />
 
       {(() => {
-        const t = getInProgressTask(year, [districtType]);
+        const t = getDisplayTask(year, [districtType]);
         return t ? (
-          <div className="flex justify-end -mt-2 mb-3">
-            <TaskCountdownBadge endDate={t.endDate} />
+          <div className="mb-3">
+            <TaskCountdownBadge endDate={t.endDate} status={t.status} />
           </div>
         ) : null;
       })()}
