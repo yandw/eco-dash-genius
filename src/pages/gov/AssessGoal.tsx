@@ -26,7 +26,7 @@ import { getCurrentRole } from "@/mocks/currentUser";
 import {
   GOAL_TASK_TYPES,
   getActiveTask,
-  getInProgressTask,
+  getDisplayTask,
   hasActiveTask,
   listActiveYears,
   useAssessTasksStore,
@@ -184,14 +184,7 @@ export default function AssessGoal() {
               </div>
             );
           })}
-        <div className="ml-auto flex items-center gap-2">
-          {(() => {
-            const types = isCity ? GOAL_TASK_TYPES : [districtType];
-            const t = getInProgressTask(year, types);
-            return t ? <TaskCountdownBadge endDate={t.endDate} /> : null;
-          })()}
         </div>
-      </div>
       </div>
 
       <StampedDocDialog
