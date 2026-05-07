@@ -187,6 +187,19 @@ export default function EntAssessGoal() {
         重点单位碳排放双控目标分解
       </h1>
 
+      {!hasAnyGoal ? (
+        <AssessEmptyState
+          title="今年目标分解未开始"
+          description="市级管理员尚未在任务管理中创建目标分解任务，请等待任务下发。"
+        />
+      ) : !hasDistrictTask && !hasCityTask ? (
+        <AssessEmptyState
+          title={`${year} 年目标分解未开始`}
+          description="该年度尚未下发目标分解任务，请切换年份或等待任务下发。"
+        />
+      ) : (
+      <>
+
       {/* 报告年度 */}
       <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
         <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
