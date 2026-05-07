@@ -84,6 +84,24 @@ export default function EntAssessGoal() {
   const [submitOpen, setSubmitOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
 
+  useEffect(() => {
+    if (activeYears.length && !activeYears.includes(year)) {
+      setYear(activeYears[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeYears.join(",")]);
+
+  const hasDistrictTask = hasActiveTask(year, [districtType]);
+  const hasCityTask = hasActiveTask(year, [cityType]);
+  const hasAnyGoal = activeYears.length > 0;
+
+  // 当前 scope 在该年没任务时切到有任务的 scope
+  useEffect(() => {
+    if (scope === "district" && !hasDistrictTask && hasCityTask) setScope("city");
+    if (scope === "city" && !hasCityTask && hasDistrictTask) setScope("district");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [year, hasDistrictTask, hasCityTask]);
+
   const updateMy = (_id: string, patch: Partial<CarbonGoalRow>) => setMyRow((r) => ({ ...r, ...patch }));
   const updateBq = (_id: string, patch: Partial<BqGoalRow>) => setBqRow((r) => ({ ...r, ...patch }));
 
