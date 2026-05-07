@@ -112,14 +112,14 @@ export default function EntAssessGoal() {
   // 演示：2024 年含中心负责人调整记录
   const yearChanges = scope === "district" && year === 2024 ? YEAR_CHANGES_2024 : myRow.changes;
 
-  const headerScope = (
+  const headerScope = hasAnyGoal && (hasDistrictTask || hasCityTask) ? (
     <Tabs value={scope} onValueChange={(v) => setScope(v as "district" | "city")}>
       <TabsList className="h-9">
-        <TabsTrigger value="district" className="h-7 text-xs px-4">区管企业</TabsTrigger>
-        <TabsTrigger value="city" className="h-7 text-xs px-4">市管企业</TabsTrigger>
+        {hasDistrictTask && <TabsTrigger value="district" className="h-7 text-xs px-4">区管企业</TabsTrigger>}
+        {hasCityTask && <TabsTrigger value="city" className="h-7 text-xs px-4">市管企业</TabsTrigger>}
       </TabsList>
     </Tabs>
-  );
+  ) : null;
 
   const setYearStatus = (s: EntStatus) => {
     if (scope === "district") {
