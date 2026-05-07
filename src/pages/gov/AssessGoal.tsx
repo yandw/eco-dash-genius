@@ -240,6 +240,7 @@ export default function AssessGoal() {
               });
               return (
                 <>
+                  {(() => { const t = getDisplayTask(year, [bqType]); return t ? <div><TaskCountdownBadge endDate={t.endDate} status={t.status} /></div> : null; })()}
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                     <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{bqRows.length}</div></Card>
                     <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{bqCompleted}</div></Card>
@@ -293,6 +294,7 @@ export default function AssessGoal() {
         />
       ) : (
         <div className="space-y-4">
+          {(() => { const t = getDisplayTask(year, [districtType]); return t ? <div><TaskCountdownBadge endDate={t.endDate} status={t.status} /></div> : null; })()}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{summary.count}</div></Card>
             <Card className="p-3"><div className="text-[11px] text-muted-foreground">已完成</div><div className="text-lg font-semibold text-success">{summary.completed}</div></Card>
