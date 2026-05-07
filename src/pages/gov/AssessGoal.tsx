@@ -135,6 +135,15 @@ export default function AssessGoal() {
         {isCity ? "全市重点单位碳排放目标分解" : "区下属单位碳排放目标分解"}
       </h1>
 
+      {!hasAnyGoalTask ? (
+        <AssessEmptyState
+          title="请在任务管理中创建目标分解任务"
+          description={isCity ? "尚未创建任何目标分解任务，相关考核内容将在任务创建后展示。" : "市级管理员尚未下发目标分解任务，请稍后再来查看。"}
+          showGoToTasks
+        />
+      ) : (
+      <>
+
       {/* 报告年度 */}
       <div className="panel p-4 mb-4 flex items-center gap-3 flex-wrap">
         <span className="text-sm font-medium text-foreground inline-flex items-center gap-1.5">
