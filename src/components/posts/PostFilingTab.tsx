@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArchiveSection } from "@/components/archives/ArchiveField";
+import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { FileUploadList } from "./FileUploadList";
 import { PostStaffTable } from "./PostStaffTable";
@@ -179,60 +180,68 @@ export function PostFilingTab({ data, type, readOnly, enterpriseName = "" }: Pro
       </div>
 
       {/* 主管领导 */}
-      <ArchiveSection
-        title="主管领导信息"
-        description="企业分管能源 / 碳排工作的主管领导"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          {leaderFields.map((f) =>
-            renderField(form.leader, (v) => setForm((s) => ({ ...s, leader: v })), f),
-          )}
-        </div>
-      </ArchiveSection>
-
-      {/* 负责人信息 */}
-      <ArchiveSection
-        title="负责人信息"
-        description={`${type === "energy" ? "能源管理" : "碳排放管理"}岗位负责人详细资料`}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          {ownerFields(type).map((f) =>
-            renderField(form.owner, (v) => setForm((s) => ({ ...s, owner: v })), f),
-          )}
-          <div className="md:col-span-2 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">工作经验</Label>
-            {isEdit ? (
-              <Textarea
-                rows={4}
-                defaultValue={form.owner.experience}
-                onChange={(e) =>
-                  setForm((s) => ({ ...s, owner: { ...s.owner, experience: e.target.value } }))
-                }
-              />
-            ) : (
-              <div className="text-sm text-foreground/90 border border-border/40 rounded-md bg-muted/20 p-3 min-h-[80px] leading-relaxed">
-                {form.owner.experience || <span className="text-muted-foreground">—</span>}
-              </div>
+      <Card className="p-5">
+        <ArchiveSection
+          title="主管领导信息"
+          description="企业分管能源 / 碳排工作的主管领导"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+            {leaderFields.map((f) =>
+              renderField(form.leader, (v) => setForm((s) => ({ ...s, leader: v })), f),
             )}
           </div>
-        </div>
-      </ArchiveSection>
+        </ArchiveSection>
+      </Card>
+
+      {/* 负责人信息 */}
+      <Card className="p-5">
+        <ArchiveSection
+          title="负责人信息"
+          description={`${type === "energy" ? "能源管理" : "碳排放管理"}岗位负责人详细资料`}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+            {ownerFields(type).map((f) =>
+              renderField(form.owner, (v) => setForm((s) => ({ ...s, owner: v })), f),
+            )}
+            <div className="md:col-span-2 space-y-1.5">
+              <Label className="text-xs text-muted-foreground">工作经验</Label>
+              {isEdit ? (
+                <Textarea
+                  rows={4}
+                  defaultValue={form.owner.experience}
+                  onChange={(e) =>
+                    setForm((s) => ({ ...s, owner: { ...s.owner, experience: e.target.value } }))
+                  }
+                />
+              ) : (
+                <div className="text-sm text-foreground/90 border border-border/40 rounded-md bg-muted/20 p-3 min-h-[80px] leading-relaxed">
+                  {form.owner.experience || <span className="text-muted-foreground">—</span>}
+                </div>
+              )}
+            </div>
+          </div>
+        </ArchiveSection>
+      </Card>
 
       {/* 备案文件 */}
-      <ArchiveSection
-        title="备案文件"
-        description="岗位备案表、证书扫描件等支撑材料"
-      >
-        <FileUploadList files={data.files} readOnly={readOnly} enterpriseName={enterpriseName} />
-      </ArchiveSection>
+      <Card className="p-5">
+        <ArchiveSection
+          title="备案文件"
+          description="岗位备案表、证书扫描件等支撑材料"
+        >
+          <FileUploadList files={data.files} readOnly={readOnly} enterpriseName={enterpriseName} />
+        </ArchiveSection>
+      </Card>
 
       {/* 管理人员 */}
-      <ArchiveSection
-        title="管理人员名册"
-        description={`从事${type === "energy" ? "能源" : "碳排放"}管理的全体岗位人员`}
-      >
-        <PostStaffTable staff={data.staff} readOnly={readOnly} />
-      </ArchiveSection>
+      <Card className="p-5">
+        <ArchiveSection
+          title="管理人员名册"
+          description={`从事${type === "energy" ? "能源" : "碳排放"}管理的全体岗位人员`}
+        >
+          <PostStaffTable staff={data.staff} readOnly={readOnly} />
+        </ArchiveSection>
+      </Card>
     </div>
   );
 }

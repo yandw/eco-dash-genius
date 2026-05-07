@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArchiveSection } from "@/components/archives/ArchiveField";
+import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import type { BasicInfo } from "@/mocks/posts";
 
@@ -111,29 +112,37 @@ export function PostBasicTab({ data, readOnly }: Props) {
         </div>
       )}
 
-      <ArchiveSection title="基础资料" description="企业身份与行业归属">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          {FIELDS.base.map(renderField)}
-        </div>
-      </ArchiveSection>
+      <Card className="p-5">
+        <ArchiveSection title="基础资料" description="企业身份与行业归属">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+            {FIELDS.base.map(renderField)}
+          </div>
+        </ArchiveSection>
+      </Card>
 
-      <ArchiveSection title="注册信息" description="工商登记与归属信息">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          {FIELDS.reg.map(renderField)}
-        </div>
-      </ArchiveSection>
+      <Card className="p-5">
+        <ArchiveSection title="注册信息" description="工商登记与归属信息">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+            {FIELDS.reg.map(renderField)}
+          </div>
+        </ArchiveSection>
+      </Card>
 
-      <ArchiveSection title="联系方式" description="日常沟通与统计员信息">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          {FIELDS.contact.map(renderField)}
-        </div>
-      </ArchiveSection>
+      <Card className="p-5">
+        <ArchiveSection title="联系方式" description="日常沟通与统计员信息">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+            {FIELDS.contact.map(renderField)}
+          </div>
+        </ArchiveSection>
+      </Card>
 
-      <ArchiveSection title="地址信息" description="企业经营地址">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
-          {FIELDS.loc.map(renderField)}
-        </div>
-      </ArchiveSection>
+      <Card className="p-5">
+        <ArchiveSection title="地址信息" description="企业经营地址">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+            {FIELDS.loc.map(renderField)}
+          </div>
+        </ArchiveSection>
+      </Card>
     </div>
   );
 }
