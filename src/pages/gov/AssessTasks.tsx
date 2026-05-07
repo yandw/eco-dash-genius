@@ -138,7 +138,7 @@ export default function AssessTasks() {
         <Card className="overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="whitespace-nowrap">
                 <TableHead className="w-16">序号</TableHead>
                 <TableHead>年份</TableHead>
                 <TableHead>类型</TableHead>
