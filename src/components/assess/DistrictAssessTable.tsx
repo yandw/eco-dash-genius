@@ -6,7 +6,7 @@ import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import { PassBadge } from "./PassBadge";
 import { dualResult, passByValue, type EnergyAssessRow } from "@/mocks/assess";
 import { cn } from "@/lib/utils";
-import { Pencil, Check, X } from "lucide-react";
+import { Pencil, Check, X, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
