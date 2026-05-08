@@ -300,16 +300,11 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                             </Button>
                           </div>
                         ) : (
-                          <div className="inline-flex items-center gap-1">
-                            <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => startEdit(r)} disabled={!!editingId}>
-                              <Pencil className="h-3 w-3 mr-1" />编辑
-                            </Button>
-                            {r.status === "modified" && <PassBadge value="已修改" />}
-                          </div>
+                          <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => startEdit(r)} disabled={!!editingId}>
+                            <Pencil className="h-3 w-3 mr-1" />编辑
+                          </Button>
                         )
-                      ) : (
-                        r.status === "modified" && <PassBadge value="已修改" />
-                      )}
+                      ) : null}
                     </td>
                   )}
                 </tr>
