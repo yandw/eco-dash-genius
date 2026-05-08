@@ -57,6 +57,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
       intensityActualNetGreen: Math.max(0, +(draft.intensityActual - intensityDelta).toFixed(3)),
       resultOverride: draft.resultOverride,
       remark: draft.remark,
+      modified: true,
     });
     setEditingId(null);
     setDraft(null);
@@ -123,10 +124,15 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
             const seq = (page - 1) * pageSize + idx + 1;
 
             return (
-              <tr key={r.id} className={cn("border-b border-border hover:bg-accent/30", isEditing && "bg-primary/5")}>
+              <tr key={r.id} className={cn("border-b border-border hover:bg-accent/30", r.modified && "bg-warning/5", isEditing && "bg-primary/5")}>
                 <td className={cn(cellRO, "border-r border-border text-center")}>{seq}</td>
                 <td className={cn(cellRO, "border-r border-border")}>青浦区</td>
-                <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
+                <td className={cn(cellRO, "border-r border-border")}>
+                  <div className="inline-flex items-center gap-1.5">
+                    <span>{r.entName}</span>
+                    {r.modified && <PassBadge value="已修改" />}
+                  </div>
+                </td>
                 <td className={cn(cellRO, "border-r border-border text-right")}>{r.totalGoal || ""}</td>
                 <td className={cn("border-r border-border text-right", isEditing ? "px-2 py-1 bg-background" : cellRO)}>
                   {isEditing ? (

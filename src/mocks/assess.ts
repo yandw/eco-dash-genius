@@ -207,6 +207,7 @@ export interface EnergyAssessRow {
   resultOverride?: "完成" | "未完成";
   resultOverrideRemark?: string;
   remark: string;
+  modified?: boolean;
 }
 
 // 与 carbonGoals 对应（同一批企业，能耗考核）— 数据参照图5
