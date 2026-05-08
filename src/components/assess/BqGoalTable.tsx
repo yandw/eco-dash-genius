@@ -24,7 +24,7 @@ const cellEdit = "px-2 py-1 align-middle text-xs";
 type NumF = "total2025" | "intensity2025" | "recommendTotal" | "totalGoal" | "intensityGoal";
 type TextF = "intensityIndicator" | "intensityUnit" | "remark";
 const NUMS: NumF[] = ["total2025", "intensity2025", "recommendTotal", "totalGoal", "intensityGoal"];
-const TEXTS: TextF[] = ["intensityIndicator", "intensityUnit"];
+const TEXTS: TextF[] = ["intensityIndicator", "intensityUnit", "remark"];
 
 export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, paginated }: Props) {
   const editable = mode === "ent-edit";
@@ -69,11 +69,15 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
       }
     });
     TEXTS.forEach((f) => {
+      if (f === "remark") return;
       if (draft[f] !== undefined && draft[f] !== r[f]) {
         changes.push({ field: f, oldValue: (r[f] as string) ?? "", newValue: (draft[f] as string) ?? "", remark: (draft.remark as string) || r.remark || "—", by: editorName, at: new Date().toLocaleString("zh-CN") });
       }
     });
     const remarkChanged = draft.remark !== undefined && draft.remark !== r.remark;
+    if (remarkChanged) {
+      changes.push({ field: "remark", oldValue: r.remark ?? "", newValue: (draft.remark as string) ?? "", remark: (draft.remark as string) || r.remark || "—", by: editorName, at: new Date().toLocaleString("zh-CN") });
+    }
     if (!changes.length && !remarkChanged) {
       toast.warning("未做任何修改");
       cancelEdit();
@@ -105,7 +109,12 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
       <td className={cn(isE ? cellEdit : cellRO, "border-r border-border")}>
         {isE ? (
           <Input value={(cur[f] as string) ?? ""} onChange={(e) => setDraft((d) => ({ ...d, [f]: e.target.value }))} className="h-7 text-xs" />
-        ) : ((r[f] as string) || <span className="text-muted-foreground">—</span>)}
+        ) : (
+          <span className="inline-flex items-center">
+            {(r[f] as string) ? <span>{r[f] as string}</span> : <span className="text-muted-foreground">—</span>}
+            <ChangeBadge changes={r.changes} field={f} />
+          </span>
+        )}
       </td>
     );
   };
@@ -146,13 +155,13 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
                 <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
                 {editable ? (
                   <td className={cn(cellRO, "border-r border-border text-right")}>{r.total2025?.toLocaleString() ?? "—"}</td>
-                ) : numTd(r, isE, "total2025")}
+                ) : numTd(r, isE, "total2025", { badge: true })}
                 {editable ? (
                   <td className={cn(cellRO, "border-r border-border text-right")}>{r.intensity2025 ?? "—"}</td>
-                ) : numTd(r, isE, "intensity2025", { step: "0.001" })}
+                ) : numTd(r, isE, "intensity2025", { step: "0.001", badge: true })}
                 {editable ? (
                   <td className={cn(cellRO, "border-r border-border text-right text-primary")}>{r.recommendTotal ?? "—"}</td>
-                ) : numTd(r, isE, "recommendTotal", { primary: true })}
+                ) : numTd(r, isE, "recommendTotal", { primary: true, badge: true })}
 
                 {/* 总量目标值 */}
                 <td className={cn(editable || isE ? cellEdit : cellRO, "border-r border-border text-right")}>
@@ -174,7 +183,10 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
                   ) : isE ? (
                     <Input value={(draft.intensityGoal ?? r.intensityGoal) ?? ""} onChange={(e) => setDraft((d) => ({ ...d, intensityGoal: e.target.value === "" ? null : Number(e.target.value) }))} className="h-7 text-right text-xs" type="number" step="0.001" />
                   ) : (
-                    r.intensityGoal ?? "—"
+                    <span className="inline-flex items-center justify-end">
+                      {r.intensityGoal ?? "—"}
+                      <ChangeBadge changes={r.changes} field="intensityGoal" />
+                    </span>
                   )}
                 </td>
 
@@ -190,7 +202,12 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
                     <Input value={r.remark} onChange={(e) => onChange?.(r.id, { remark: e.target.value })} className="h-7 text-xs" />
                   ) : isE ? (
                     <Input value={(draft.remark as string) ?? ""} onChange={(e) => setDraft((d) => ({ ...d, remark: e.target.value }))} className="h-7 text-xs" placeholder="修改原因" />
-                  ) : r.remark ? r.remark : <span className="text-muted-foreground">—</span>}
+                  ) : (
+                    <span className="inline-flex items-center">
+                      {r.remark ? <span>{r.remark}</span> : <span className="text-muted-foreground">—</span>}
+                      <ChangeBadge changes={r.changes} field="remark" />
+                    </span>
+                  )}
                 </td>
 
                 {showActions && (
