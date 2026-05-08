@@ -109,7 +109,12 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
       <td className={cn(isE ? cellEdit : cellRO, "border-r border-border")}>
         {isE ? (
           <Input value={(cur[f] as string) ?? ""} onChange={(e) => setDraft((d) => ({ ...d, [f]: e.target.value }))} className="h-7 text-xs" />
-        ) : ((r[f] as string) || <span className="text-muted-foreground">—</span>)}
+        ) : (
+          <span className="inline-flex items-center">
+            {(r[f] as string) ? <span>{r[f] as string}</span> : <span className="text-muted-foreground">—</span>}
+            <ChangeBadge changes={r.changes} field={f} />
+          </span>
+        )}
       </td>
     );
   };
