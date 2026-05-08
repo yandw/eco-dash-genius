@@ -57,6 +57,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
       intensityActualNetGreen: Math.max(0, +(draft.intensityActual - intensityDelta).toFixed(3)),
       resultOverride: draft.resultOverride,
       remark: draft.remark,
+      modified: true,
     });
     setEditingId(null);
     setDraft(null);
