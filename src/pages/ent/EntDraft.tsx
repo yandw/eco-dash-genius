@@ -517,6 +517,8 @@ export default function EntDraft() {
             </div>
           </div>
         </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </AppLayout>
   );
