@@ -130,18 +130,22 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
             const intensityNetCellVal = dispIntensityNet === 0 ? "#VALUE!" : dispIntensityNet;
             const seq = (page - 1) * pageSize + idx + 1;
 
+            const mf = (k: string) => (r.modifiedFields ?? []).includes(k);
+            const modCell = "ring-1 ring-inset ring-warning/50 bg-warning/10";
+            const modDot = (
+              <span
+                title="已修改"
+                className="inline-block h-1.5 w-1.5 rounded-full bg-warning ml-1 align-middle"
+              />
+            );
+
             return (
-              <tr key={r.id} className={cn("border-b border-border hover:bg-accent/30", r.modified && "bg-warning/5", isEditing && "bg-primary/5")}>
+              <tr key={r.id} className={cn("border-b border-border hover:bg-accent/30", isEditing && "bg-primary/5")}>
                 <td className={cn(cellRO, "border-r border-border text-center")}>{seq}</td>
                 <td className={cn(cellRO, "border-r border-border")}>青浦区</td>
-                <td className={cn(cellRO, "border-r border-border")}>
-                  <div className="inline-flex items-center gap-1.5">
-                    <span>{r.entName}</span>
-                    {r.modified && <PassBadge value="已修改" />}
-                  </div>
-                </td>
+                <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
                 <td className={cn(cellRO, "border-r border-border text-right")}>{r.totalGoal || ""}</td>
-                <td className={cn("border-r border-border text-right", isEditing ? "px-2 py-1 bg-background" : cellRO)}>
+                <td className={cn("border-r border-border text-right", isEditing ? "px-2 py-1 bg-background" : cellRO, !isEditing && mf("totalActual") && modCell)}>
                   {isEditing ? (
                     <Input
                       type="number"
@@ -150,7 +154,10 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                       className="h-7 text-xs text-right font-mono"
                     />
                   ) : (
-                    dispTotalActual
+                    <>
+                      {dispTotalActual}
+                      {mf("totalActual") && modDot}
+                    </>
                   )}
                 </td>
                 <td className={cn(cellRO, "border-r border-border text-right")}>{dispTotalNet}</td>
@@ -158,7 +165,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                   {totalPass === "—" ? <span className="text-muted-foreground">—</span> : <PassBadge value={totalPass} />}
                 </td>
                 <td className={cn(cellRO, "border-r border-border text-right")}>{r.intensityGoal || ""}</td>
-                <td className={cn("border-r border-border text-right", isEditing ? "px-2 py-1 bg-background" : cellRO)}>
+                <td className={cn("border-r border-border text-right", isEditing ? "px-2 py-1 bg-background" : cellRO, !isEditing && mf("intensityActual") && modCell)}>
                   {isEditing ? (
                     <Input
                       type="number"
@@ -168,7 +175,10 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                       className="h-7 text-xs text-right font-mono"
                     />
                   ) : (
-                    dispIntensityActual
+                    <>
+                      {dispIntensityActual}
+                      {mf("intensityActual") && modDot}
+                    </>
                   )}
                 </td>
                 <td className={cn(cellRO, "border-r border-border text-right")}>
@@ -182,7 +192,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                 <td className={cn(cellRO, "border-r border-border text-center")}>
                   {auto === "—" ? <span className="text-destructive font-mono">#VALUE!</span> : <PassBadge value={auto} />}
                 </td>
-                <td className={cn("border-r border-border text-center", isEditing ? "px-2 py-1 bg-background" : cellRO)}>
+                <td className={cn("border-r border-border text-center", isEditing ? "px-2 py-1 bg-background" : cellRO, !isEditing && mf("resultOverride") && modCell)}>
                   {isEditing ? (
                     <Select
                       value={draft!.resultOverride || ""}
@@ -197,12 +207,15 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                       </SelectContent>
                     </Select>
                   ) : result ? (
-                    <PassBadge value={result} />
+                    <span className="inline-flex items-center">
+                      <PassBadge value={result} />
+                      {mf("resultOverride") && modDot}
+                    </span>
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
                 </td>
-                <td className={cn("border-r border-border", isEditing ? "px-2 py-1 bg-background" : cellRO)}>
+                <td className={cn("border-r border-border", isEditing ? "px-2 py-1 bg-background" : cellRO, !isEditing && mf("remark") && modCell)}>
                   {isEditing ? (
                     <Input
                       value={draft!.remark}
@@ -211,7 +224,10 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                       className={cn("h-7 text-xs", result === "完成" && auto === "未完成" && !draft!.remark && "border-destructive")}
                     />
                   ) : dispRemark ? (
-                    dispRemark
+                    <>
+                      {dispRemark}
+                      {mf("remark") && modDot}
+                    </>
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
