@@ -185,7 +185,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                   )}
                 </td>
                 <td className={cn(cellRO, "border-r border-border text-right")}>
-                  {typeof intensityNetCellVal === "string" ? <span className="text-destructive font-mono">{intensityNetCellVal}</span> : intensityNetCellVal}
+                  {intensityNetCellVal === "—" ? <span className="text-muted-foreground">—</span> : intensityNetCellVal}
                 </td>
                 <td className={cn(cellRO, "border-r border-border text-center")}>
                   {intensityPass === "—" ? <span className="text-muted-foreground">—</span> : <PassBadge value={intensityPass} />}
