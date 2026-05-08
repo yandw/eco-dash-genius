@@ -6,7 +6,7 @@ import { ListPagination, paginate } from "@/components/ui/list-pagination";
 import { PassBadge } from "./PassBadge";
 import { dualResult, passByValue, type EnergyAssessRow } from "@/mocks/assess";
 import { cn } from "@/lib/utils";
-import { Pencil, Check, X } from "lucide-react";
+import { Pencil, Check, X, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
@@ -131,16 +131,19 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
             const seq = (page - 1) * pageSize + idx + 1;
 
             const mf = (k: string) => (r.modifiedFields ?? []).includes(k);
-            const modCell = "ring-1 ring-inset ring-warning/50 bg-warning/10";
+            const modCell = ""; // 取消单元格底色，仅靠图标 + 行高亮
             const modDot = (
               <span
                 title="已修改"
-                className="inline-block h-1.5 w-1.5 rounded-full bg-warning ml-1 align-middle"
-              />
+                className="ml-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-destructive/20 text-destructive align-middle"
+              >
+                <AlertCircle className="h-3 w-3" />
+              </span>
             );
+            const rowModified = (r.modifiedFields?.length ?? 0) > 0;
 
             return (
-              <tr key={r.id} className={cn("border-b border-border hover:bg-accent/30", isEditing && "bg-primary/5")}>
+              <tr key={r.id} className={cn("border-b border-border hover:bg-accent/30", rowModified && "bg-warning/5", isEditing && "bg-primary/5")}>
                 <td className={cn(cellRO, "border-r border-border text-center")}>{seq}</td>
                 <td className={cn(cellRO, "border-r border-border")}>青浦区</td>
                 <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
