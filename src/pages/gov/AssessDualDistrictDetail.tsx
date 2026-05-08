@@ -125,11 +125,12 @@ export default function AssessDualDistrictDetail() {
       </div>
 
       {isQingpu && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-3">
           <Card className="p-3"><div className="text-[11px] text-muted-foreground">企业总数</div><div className="text-lg font-semibold">{summary.count}</div></Card>
           <Card className="p-3"><div className="text-[11px] text-muted-foreground">完成</div><div className="text-lg font-semibold text-success">{summary.pass}</div></Card>
           <Card className="p-3"><div className="text-[11px] text-muted-foreground">未完成</div><div className="text-lg font-semibold text-destructive">{summary.count - summary.pass}</div></Card>
           <Card className="p-3"><div className="text-[11px] text-muted-foreground">达标率</div><div className="text-lg font-semibold text-primary">{Math.round((summary.pass / summary.count) * 100)}%</div></Card>
+          <Card className="p-3"><div className="text-[11px] text-muted-foreground">已修改</div><div className="text-lg font-semibold text-warning">{modifiedCount}</div></Card>
         </div>
       )}
 
@@ -137,8 +138,38 @@ export default function AssessDualDistrictDetail() {
         考核说明：考核结果分为完成、未完成两个等次（总量和强度目标均完成可视为完成，有1项未完成即视为未完成）。双控指标完成情况为"未完成"但考核结果为"完成"的，需在备注中说明原因。
       </div>
 
+      {isQingpu && (
+        <div className="panel p-3 mb-3 flex flex-wrap items-end gap-3">
+          <div className="flex-1 min-w-[220px]">
+            <Label className="text-xs text-muted-foreground mb-1 inline-block">企业名称</Label>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="输入关键字搜索"
+                className="h-9 pl-8 text-xs"
+              />
+            </div>
+          </div>
+          <div className="min-w-[180px]">
+            <Label className="text-xs text-muted-foreground mb-1 inline-block">是否已修改</Label>
+            <Select value={modifiedFilter} onValueChange={(v) => setModifiedFilter(v as ModifiedFilter)}>
+              <SelectTrigger className="h-9 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">全部</SelectItem>
+                <SelectItem value="modified">已修改（{modifiedCount}）</SelectItem>
+                <SelectItem value="unmodified">未修改</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+
       {isQingpu ? (
-        <DistrictAssessTable rows={rows} mode="city-edit" onChange={update} />
+        <DistrictAssessTable rows={displayRows} mode="city-edit" onChange={update} />
       ) : (
         <div className="rounded-md border border-border bg-card py-16 text-center text-sm text-muted-foreground">
           演示数据仅包含青浦区，其它区显示样式相同。
