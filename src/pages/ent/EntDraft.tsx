@@ -32,6 +32,11 @@ export default function EntDraft() {
           </p>
         </div>
 
+        <Tabs defaultValue="goal-decomp" className="w-full">
+          <TabsList>
+            <TabsTrigger value="goal-decomp">目标分解流程图</TabsTrigger>
+          </TabsList>
+          <TabsContent value="goal-decomp" className="mt-4">
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="w-1 h-4 bg-primary rounded-sm" />
