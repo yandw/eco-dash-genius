@@ -1,13 +1,18 @@
-import { useState } from "react";
-import { ArrowLeft, ChevronRight, Download, Undo2, Save, Send } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowLeft, ChevronRight, Download, Undo2, Save, Send, Search } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DistrictAssessTable } from "@/components/assess/DistrictAssessTable";
 import { districts, energyAssess, type EnergyAssessRow } from "@/mocks/assess";
 import { useAssessStatusStore, rollbackAssess, submitAssess } from "@/mocks/assessStatusStore";
 import { toast } from "sonner";
+
+type ModifiedFilter = "all" | "modified" | "unmodified";
 
 export default function AssessDualDistrictDetail() {
   const { districtId } = useParams<{ districtId: string }>();
