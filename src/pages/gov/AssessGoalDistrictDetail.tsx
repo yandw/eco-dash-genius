@@ -62,15 +62,14 @@ export default function AssessGoalDistrictDetail() {
 
   return (
     <AppLayout side="gov" title="目标分解" subtitle={`${districtName} 下属企业碳排放目标分解`}>
-      <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 flex-wrap">
-        <Link to="/gov/assess/goal" className="hover:text-primary">目标分解</Link>
-        <ChevronRight className="h-3 w-3" />
-        <Link to="/gov/assess/goal" className="hover:text-primary">区下属单位碳排放目标分解</Link>
-        <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground">{districtName} 下属企业碳排放目标分解</span>
-      </div>
-
-      <div className="flex items-center mb-4">
+      <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
+          <Link to="/gov/assess/goal" className="hover:text-primary">目标分解</Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link to="/gov/assess/goal" className="hover:text-primary">区下属单位碳排放目标分解</Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-foreground">{districtName} 下属企业碳排放目标分解</span>
+        </div>
         <Button variant="ghost" size="sm" className="h-8" onClick={() => navigate("/gov/assess/goal")}>
           <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回列表
         </Button>
