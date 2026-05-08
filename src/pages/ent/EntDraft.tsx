@@ -103,7 +103,7 @@ export default function EntDraft() {
                       y={y + l.h / 2 - 8}
                       textAnchor="middle"
                       className="fill-foreground"
-                      style={{ fontSize: 14, fontWeight: 600 }}
+                      style={{ fontSize: 16, fontWeight: 600 }}
                     >
                       {l.title}
                     </text>
@@ -112,7 +112,7 @@ export default function EntDraft() {
                       y={y + l.h / 2 + 12}
                       textAnchor="middle"
                       className="fill-muted-foreground"
-                      style={{ fontSize: 11 }}
+                      style={{ fontSize: 13 }}
                     >
                       {l.sub}
                     </text>
@@ -143,7 +143,7 @@ export default function EntDraft() {
                 y={laneYs[0] + 74}
                 textAnchor="middle"
                 fill="white"
-                style={{ fontSize: 11, fontWeight: 600 }}
+                style={{ fontSize: 13, fontWeight: 600 }}
               >
                 开始
               </text>
@@ -164,7 +164,7 @@ export default function EntDraft() {
                   y={laneYs[0] + 54}
                   textAnchor="middle"
                   className="fill-foreground"
-                  style={{ fontSize: 13, fontWeight: 600 }}
+                  style={{ fontSize: 15, fontWeight: 600 }}
                 >
                   市级管理员创建考核任务
                 </text>
@@ -173,7 +173,7 @@ export default function EntDraft() {
                   y={laneYs[0] + 76}
                   textAnchor="middle"
                   className="fill-muted-foreground"
-                  style={{ fontSize: 11 }}
+                  style={{ fontSize: 13 }}
                 >
                   设置考核年度、范围、截止时间等
                 </text>
@@ -182,7 +182,7 @@ export default function EntDraft() {
                   y={laneYs[0] + 94}
                   textAnchor="middle"
                   className="fill-muted-foreground"
-                  style={{ fontSize: 11 }}
+                  style={{ fontSize: 13 }}
                 >
                   发布任务并下发
                 </text>
@@ -212,7 +212,7 @@ export default function EntDraft() {
                   y={laneYs[0] + 42}
                   textAnchor="middle"
                   className="fill-foreground"
-                  style={{ fontSize: 12 }}
+                  style={{ fontSize: 14 }}
                 >
                   任务①：区下属单位碳排放目标分解
                 </text>
@@ -231,7 +231,7 @@ export default function EntDraft() {
                   y={laneYs[0] + 106}
                   textAnchor="middle"
                   className="fill-foreground"
-                  style={{ fontSize: 12 }}
+                  style={{ fontSize: 14 }}
                 >
                   任务②：&ldquo;百家&rdquo;&ldquo;千家&rdquo;、通信业企业目标分解
                 </text>
@@ -267,7 +267,7 @@ export default function EntDraft() {
                 x={contentX + 558}
                 y={laneYs[1] + 8}
                 className="fill-muted-foreground"
-                style={{ fontSize: 11 }}
+                style={{ fontSize: 13 }}
               >
                 任务下发
               </text>
@@ -288,7 +288,7 @@ export default function EntDraft() {
                   y={laneYs[1] + 56}
                   textAnchor="middle"
                   className="fill-foreground"
-                  style={{ fontSize: 13, fontWeight: 600 }}
+                  style={{ fontSize: 15, fontWeight: 600 }}
                 >
                   企业接收任务
                 </text>
@@ -297,7 +297,7 @@ export default function EntDraft() {
                   y={laneYs[1] + 78}
                   textAnchor="middle"
                   className="fill-muted-foreground"
-                  style={{ fontSize: 11 }}
+                  style={{ fontSize: 13 }}
                 >
                   在企业侧打开目标分解任务
                 </text>
@@ -327,7 +327,7 @@ export default function EntDraft() {
                   y={laneYs[1] + 56}
                   textAnchor="middle"
                   className="fill-foreground"
-                  style={{ fontSize: 13, fontWeight: 600 }}
+                  style={{ fontSize: 15, fontWeight: 600 }}
                 >
                   填报碳排放目标值
                 </text>
@@ -336,7 +336,7 @@ export default function EntDraft() {
                   y={laneYs[1] + 78}
                   textAnchor="middle"
                   className="fill-muted-foreground"
-                  style={{ fontSize: 11 }}
+                  style={{ fontSize: 13 }}
                 >
                   录入总量 / 强度等目标数据
                 </text>
@@ -365,7 +365,7 @@ export default function EntDraft() {
                   y={laneYs[1] + 70}
                   textAnchor="middle"
                   fill="white"
-                  style={{ fontSize: 13, fontWeight: 600 }}
+                  style={{ fontSize: 15, fontWeight: 600 }}
                 >
                   点击提交
                 </text>
@@ -385,7 +385,7 @@ export default function EntDraft() {
                 x={contentX + 758}
                 y={laneYs[2] - 4}
                 className="fill-muted-foreground"
-                style={{ fontSize: 11 }}
+                style={{ fontSize: 13 }}
               >
                 数据汇总
               </text>
@@ -407,7 +407,7 @@ export default function EntDraft() {
                   y={laneYs[2] + 49}
                   textAnchor="middle"
                   className="fill-foreground"
-                  style={{ fontSize: 12, fontWeight: 600 }}
+                  style={{ fontSize: 14, fontWeight: 600 }}
                 >
                   企业填报数据汇总
                 </text>
@@ -465,7 +465,7 @@ export default function EntDraft() {
                             y={cardY + 28}
                             textAnchor="middle"
                             className="fill-foreground"
-                            style={{ fontSize: 13, fontWeight: 600 }}
+                            style={{ fontSize: 15, fontWeight: 600 }}
                           >
                             {it.title}
                           </text>
@@ -474,7 +474,7 @@ export default function EntDraft() {
                             y={cardY + 58}
                             textAnchor="middle"
                             className="fill-muted-foreground"
-                            style={{ fontSize: 11 }}
+                            style={{ fontSize: 13 }}
                           >
                             {it.desc1}
                           </text>
@@ -483,7 +483,7 @@ export default function EntDraft() {
                             y={cardY + 82}
                             textAnchor="middle"
                             className="fill-muted-foreground"
-                            style={{ fontSize: 11 }}
+                            style={{ fontSize: 13 }}
                           >
                             {it.desc2}
                           </text>
