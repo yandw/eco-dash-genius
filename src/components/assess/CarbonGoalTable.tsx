@@ -197,15 +197,15 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                   {/* 2025 总量 */}
                   {editable ? (
                     <td className={cn(cellRO, "border-r border-border text-right")}>{r.total2025 || "—"}</td>
-                  ) : numCell(r, isInlineEditing, "total2025")}
+                  ) : numCell(r, isInlineEditing, "total2025", { showBadge: true })}
                   {/* 2025 强度 */}
                   {editable ? (
                     <td className={cn(cellRO, "border-r border-border text-right")}>{r.intensity2025 || "—"}</td>
-                  ) : numCell(r, isInlineEditing, "intensity2025", { step: "0.001" })}
+                  ) : numCell(r, isInlineEditing, "intensity2025", { step: "0.001", showBadge: true })}
                   {/* 推荐值 */}
                   {editable ? (
                     <td className={cn(cellRO, "border-r border-border text-right text-primary")}>{r.recommendTotal ?? "—"}</td>
-                  ) : numCell(r, isInlineEditing, "recommendTotal", { primary: true })}
+                  ) : numCell(r, isInlineEditing, "recommendTotal", { primary: true, showBadge: true })}
 
                   {/* 2026 总量 */}
                   <td className={cn(editable || isInlineEditing ? cellEdit : cellRO, "border-r border-border text-right")}>
