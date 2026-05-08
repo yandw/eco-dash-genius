@@ -139,10 +139,11 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
             className="h-7 text-xs"
             placeholder={placeholder}
           />
-        ) : (r[field] as string) ? (
-          <span>{r[field] as string}</span>
         ) : (
-          <span className="text-muted-foreground">—</span>
+          <span className="inline-flex items-center">
+            {(r[field] as string) ? <span>{r[field] as string}</span> : <span className="text-muted-foreground">—</span>}
+            <ChangeBadge changes={r.changes} field={field} />
+          </span>
         )}
       </td>
     );
