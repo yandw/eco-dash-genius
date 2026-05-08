@@ -71,7 +71,7 @@ export function EntCarbonGoalForm({ row, onChange }: Props) {
       </Card>
 
       <Card className="p-5">
-        <SectionTitle>2026 年碳排放目标（待填报）</SectionTitle>
+        <SectionTitle>2026 年碳排放目标</SectionTitle>
         {row.changes.length > 0 && (
           <div className="mb-4 rounded-md border border-amber-400/50 bg-amber-50 dark:bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300 flex items-start gap-2">
             <span className="mt-0.5">⚠</span>
