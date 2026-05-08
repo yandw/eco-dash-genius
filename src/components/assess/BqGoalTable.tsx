@@ -202,7 +202,12 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
                     <Input value={r.remark} onChange={(e) => onChange?.(r.id, { remark: e.target.value })} className="h-7 text-xs" />
                   ) : isE ? (
                     <Input value={(draft.remark as string) ?? ""} onChange={(e) => setDraft((d) => ({ ...d, remark: e.target.value }))} className="h-7 text-xs" placeholder="修改原因" />
-                  ) : r.remark ? r.remark : <span className="text-muted-foreground">—</span>}
+                  ) : (
+                    <span className="inline-flex items-center">
+                      {r.remark ? <span>{r.remark}</span> : <span className="text-muted-foreground">—</span>}
+                      <ChangeBadge changes={r.changes} field="remark" />
+                    </span>
+                  )}
                 </td>
 
                 {showActions && (
