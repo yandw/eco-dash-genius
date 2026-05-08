@@ -281,10 +281,11 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                         className="h-7 text-xs"
                         placeholder="修改原因"
                       />
-                    ) : r.remark ? (
-                      <span>{r.remark}</span>
                     ) : (
-                      <span className="text-muted-foreground">—</span>
+                      <span className="inline-flex items-center">
+                        {r.remark ? <span>{r.remark}</span> : <span className="text-muted-foreground">—</span>}
+                        <ChangeBadge changes={r.changes} field="remark" />
+                      </span>
                     )}
                   </td>
 
