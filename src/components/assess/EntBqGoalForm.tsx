@@ -63,7 +63,7 @@ export function EntBqGoalForm({ row, onChange }: Props) {
       </Card>
 
       <Card className="p-5">
-        <SectionTitle>2026 年碳排放目标（待填报）</SectionTitle>
+        <SectionTitle>2026 年碳排放目标</SectionTitle>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
           <Field label={<span className="inline-flex items-center gap-1">总量目标值（万吨CO₂）<ChangeBadge changes={row.changes} field="totalGoal" /></span>}>
             <Input
