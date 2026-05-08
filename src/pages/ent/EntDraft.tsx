@@ -35,6 +35,7 @@ export default function EntDraft() {
         <Tabs defaultValue="goal-decomp" className="w-full">
           <TabsList>
             <TabsTrigger value="goal-decomp">目标分解流程图</TabsTrigger>
+            <TabsTrigger value="assess-flow">能耗考核流程图</TabsTrigger>
           </TabsList>
           <TabsContent value="goal-decomp" className="mt-4">
         <Card className="p-6">
