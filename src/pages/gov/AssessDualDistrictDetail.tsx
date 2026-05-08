@@ -29,6 +29,20 @@ export default function AssessDualDistrictDetail() {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   };
 
+  const [keyword, setKeyword] = useState("");
+  const [modifiedFilter, setModifiedFilter] = useState<ModifiedFilter>("all");
+
+  const modifiedCount = rows.filter((r) => r.modified).length;
+
+  const displayRows = useMemo(() => {
+    return rows.filter((r) => {
+      if (modifiedFilter === "modified" && !r.modified) return false;
+      if (modifiedFilter === "unmodified" && r.modified) return false;
+      if (keyword && !r.entName.includes(keyword.trim())) return false;
+      return true;
+    });
+  }, [rows, keyword, modifiedFilter]);
+
   const summary = {
     count: rows.length,
     pass: rows.filter((r) => {
