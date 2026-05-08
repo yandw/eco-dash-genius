@@ -208,6 +208,7 @@ export interface EnergyAssessRow {
   resultOverrideRemark?: string;
   remark: string;
   modified?: boolean;
+  modifiedFields?: string[];
 }
 
 // 与 carbonGoals 对应（同一批企业，能耗考核）— 数据参照图5
