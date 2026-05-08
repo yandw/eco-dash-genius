@@ -96,6 +96,16 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
       }
     });
     const remarkChanged = draft.remark !== undefined && draft.remark !== r.remark;
+    if (remarkChanged) {
+      changes.push({
+        field: "remark",
+        oldValue: r.remark ?? "",
+        newValue: (draft.remark as string) ?? "",
+        remark: (draft.remark as string) || r.remark || "—",
+        by: editorName,
+        at: new Date().toLocaleString("zh-CN"),
+      });
+    }
     if (!changes.length && !remarkChanged) {
       toast.warning("未做任何修改");
       cancelEdit();
