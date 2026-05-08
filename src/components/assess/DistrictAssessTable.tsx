@@ -127,7 +127,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
             const dispResultOverride = isEditing ? draft!.resultOverride : r.resultOverride;
             const result = dispResultOverride ?? (auto === "—" ? "" : auto);
             const dispRemark = isEditing ? draft!.remark : r.remark;
-            const intensityNetCellVal = dispIntensityNet === 0 ? "#VALUE!" : dispIntensityNet;
+            const intensityNetCellVal: string | number = dispIntensityNet === 0 ? "—" : dispIntensityNet;
             const seq = (page - 1) * pageSize + idx + 1;
 
             const mf = (k: string) => (r.modifiedFields ?? []).includes(k);
@@ -185,7 +185,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                   )}
                 </td>
                 <td className={cn(cellRO, "border-r border-border text-right")}>
-                  {typeof intensityNetCellVal === "string" ? <span className="text-destructive font-mono">{intensityNetCellVal}</span> : intensityNetCellVal}
+                  {intensityNetCellVal === "—" ? <span className="text-muted-foreground">—</span> : intensityNetCellVal}
                 </td>
                 <td className={cn(cellRO, "border-r border-border text-center")}>
                   {intensityPass === "—" ? <span className="text-muted-foreground">—</span> : <PassBadge value={intensityPass} />}
@@ -193,7 +193,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                 <td className={cn(cellRO, "border-r border-border")}>{r.intensityIndicator}</td>
                 <td className={cn(cellRO, "border-r border-border")}>{r.intensityUnit}</td>
                 <td className={cn(cellRO, "border-r border-border text-center")}>
-                  {auto === "—" ? <span className="text-destructive font-mono">#VALUE!</span> : <PassBadge value={auto} />}
+                  {auto === "—" ? <span className="text-muted-foreground">—</span> : <PassBadge value={auto} />}
                 </td>
                 <td className={cn("border-r border-border text-center", isEditing ? "px-2 py-1 bg-background" : cellRO, !isEditing && mf("resultOverride") && modCell)}>
                   {isEditing ? (

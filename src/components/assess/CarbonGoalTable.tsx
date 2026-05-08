@@ -96,6 +96,16 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
       }
     });
     const remarkChanged = draft.remark !== undefined && draft.remark !== r.remark;
+    if (remarkChanged) {
+      changes.push({
+        field: "remark",
+        oldValue: r.remark ?? "",
+        newValue: (draft.remark as string) ?? "",
+        remark: (draft.remark as string) || r.remark || "—",
+        by: editorName,
+        at: new Date().toLocaleString("zh-CN"),
+      });
+    }
     if (!changes.length && !remarkChanged) {
       toast.warning("未做任何修改");
       cancelEdit();
@@ -139,10 +149,11 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
             className="h-7 text-xs"
             placeholder={placeholder}
           />
-        ) : (r[field] as string) ? (
-          <span>{r[field] as string}</span>
         ) : (
-          <span className="text-muted-foreground">—</span>
+          <span className="inline-flex items-center">
+            {(r[field] as string) ? <span>{r[field] as string}</span> : <span className="text-muted-foreground">—</span>}
+            <ChangeBadge changes={r.changes} field={field} />
+          </span>
         )}
       </td>
     );
@@ -196,15 +207,15 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                   {/* 2025 总量 */}
                   {editable ? (
                     <td className={cn(cellRO, "border-r border-border text-right")}>{r.total2025 || "—"}</td>
-                  ) : numCell(r, isInlineEditing, "total2025")}
+                  ) : numCell(r, isInlineEditing, "total2025", { showBadge: true })}
                   {/* 2025 强度 */}
                   {editable ? (
                     <td className={cn(cellRO, "border-r border-border text-right")}>{r.intensity2025 || "—"}</td>
-                  ) : numCell(r, isInlineEditing, "intensity2025", { step: "0.001" })}
+                  ) : numCell(r, isInlineEditing, "intensity2025", { step: "0.001", showBadge: true })}
                   {/* 推荐值 */}
                   {editable ? (
                     <td className={cn(cellRO, "border-r border-border text-right text-primary")}>{r.recommendTotal ?? "—"}</td>
-                  ) : numCell(r, isInlineEditing, "recommendTotal", { primary: true })}
+                  ) : numCell(r, isInlineEditing, "recommendTotal", { primary: true, showBadge: true })}
 
                   {/* 2026 总量 */}
                   <td className={cn(editable || isInlineEditing ? cellEdit : cellRO, "border-r border-border text-right")}>
@@ -280,10 +291,11 @@ export function CarbonGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pa
                         className="h-7 text-xs"
                         placeholder="修改原因"
                       />
-                    ) : r.remark ? (
-                      <span>{r.remark}</span>
                     ) : (
-                      <span className="text-muted-foreground">—</span>
+                      <span className="inline-flex items-center">
+                        {r.remark ? <span>{r.remark}</span> : <span className="text-muted-foreground">—</span>}
+                        <ChangeBadge changes={r.changes} field="remark" />
+                      </span>
                     )}
                   </td>
 
