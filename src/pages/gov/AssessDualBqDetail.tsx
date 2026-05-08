@@ -83,19 +83,21 @@ export default function AssessDualBqDetail() {
     <AppLayout side="gov" title="双控考核" subtitle={`${row.entName} · ${row.year}年节能目标考核评分`}>
       <input ref={reportInput} type="file" className="hidden" accept=".pdf,.zip,.doc,.docx" onChange={handleReportUpload} />
 
-      <div className="text-xs text-muted-foreground mb-3 flex items-center gap-1">
-        <button className="hover:text-primary" onClick={() => navigate("/gov/assess/dual")}>双控考核</button>
-        <span>/</span>
-        <button className="hover:text-primary" onClick={() => navigate("/gov/assess/dual")}>"百家""千家"通信业企业能耗考核</button>
-        <span>/</span>
-        <span className="text-foreground/80">{row.entName}</span>
+      <div className="mb-3 flex items-center justify-between gap-3 flex-wrap">
+        <div className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
+          <button className="hover:text-primary" onClick={() => navigate("/gov/assess/dual")}>双控考核</button>
+          <span>/</span>
+          <button className="hover:text-primary" onClick={() => navigate("/gov/assess/dual")}>"百家""千家"通信业企业能耗考核</button>
+          <span>/</span>
+          <span className="text-foreground/80">{row.entName}</span>
+        </div>
+        <Button variant="ghost" size="sm" className="h-8" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回
+        </Button>
       </div>
 
       {/* 顶部工具栏 */}
       <div className="panel p-3 mb-4 flex items-center gap-3 flex-wrap">
-        <Button variant="outline" size="sm" className="h-9" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回
-        </Button>
         <div className="flex-1 min-w-[200px] flex items-center justify-end gap-2">
           <Button size="sm" variant="outline" className="h-9 text-primary border-primary/40 hover:text-primary hover:bg-primary/5" onClick={() => toast.success("正在下载证明材料")}>
             <Download className="h-3.5 w-3.5 mr-1" />下载证明材料
