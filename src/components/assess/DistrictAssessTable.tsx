@@ -50,6 +50,12 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
     // 同步 net 值（演示数据：保留实际值与 net 值的差额）
     const totalDelta = (r.totalActual || 0) - (r.totalActualNetGreen || 0);
     const intensityDelta = (r.intensityActual || 0) - (r.intensityActualNetGreen || 0);
+    // 计算变更字段
+    const changed = new Set<string>(r.modifiedFields ?? []);
+    if (draft.totalActual !== r.totalActual) changed.add("totalActual");
+    if (draft.intensityActual !== r.intensityActual) changed.add("intensityActual");
+    if ((draft.resultOverride ?? "") !== (r.resultOverride ?? "")) changed.add("resultOverride");
+    if ((draft.remark ?? "") !== (r.remark ?? "")) changed.add("remark");
     onChange?.(r.id, {
       totalActual: draft.totalActual,
       intensityActual: draft.intensityActual,
@@ -57,7 +63,8 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
       intensityActualNetGreen: Math.max(0, +(draft.intensityActual - intensityDelta).toFixed(3)),
       resultOverride: draft.resultOverride,
       remark: draft.remark,
-      modified: true,
+      modified: changed.size > 0 || r.modified,
+      modifiedFields: Array.from(changed),
     });
     setEditingId(null);
     setDraft(null);
