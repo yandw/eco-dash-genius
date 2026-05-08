@@ -87,7 +87,6 @@ export const govItems: NavItem[] = [
       ...(isCityAdmin()
         ? [
             { title: "任务管理", url: "/gov/assess/tasks", icon: ClipboardList },
-            { title: "区/集团管理", url: "/gov/assess/orgs", icon: Building2 },
           ]
         : []),
     ],
