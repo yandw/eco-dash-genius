@@ -33,6 +33,7 @@ import EntArchives from "./pages/ent/EntArchives.tsx";
 import EntArchiveDetail from "./pages/ent/EntArchiveDetail.tsx";
 import EntDownloads from "./pages/ent/EntDownloads.tsx";
 import EntSystem from "./pages/ent/EntSystem.tsx";
+import EntDraft from "./pages/ent/EntDraft.tsx";
 import Decade from "./pages/gov/Decade.tsx";
 import DualTrack from "./pages/gov/DualTrack.tsx";
 import DualAssess from "./pages/gov/DualAssess.tsx";
@@ -110,6 +111,7 @@ const App = () => (
           <Route path="/ent/assess/dual" element={<EntAssessDual />} />
           <Route path="/ent/downloads" element={<EntDownloads />} />
           <Route path="/ent/system" element={<EntSystem />} />
+          <Route path="/ent/draft" element={<EntDraft />} />
 
           {/* 门户 */}
           <Route path="/portal" element={<PortalHome />} />

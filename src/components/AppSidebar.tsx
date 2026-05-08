@@ -25,6 +25,7 @@ import {
   Users,
   Newspaper,
   Target,
+  FileEdit,
 } from "lucide-react";
 import { isCityAdmin } from "@/mocks/currentUser";
 import { NavLink } from "@/components/NavLink";
@@ -131,6 +132,7 @@ export const entItems: NavItem[] = [
   },
   { title: "文件下载", url: "/ent/downloads", icon: Download },
   { title: "系统管理", url: "/ent/system", icon: Settings },
+  { title: "草稿区", url: "/ent/draft", icon: FileEdit },
 ];
 
 export const navItems = govItems;
