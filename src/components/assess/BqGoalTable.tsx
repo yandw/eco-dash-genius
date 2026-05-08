@@ -69,11 +69,15 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
       }
     });
     TEXTS.forEach((f) => {
+      if (f === "remark") return;
       if (draft[f] !== undefined && draft[f] !== r[f]) {
         changes.push({ field: f, oldValue: (r[f] as string) ?? "", newValue: (draft[f] as string) ?? "", remark: (draft.remark as string) || r.remark || "—", by: editorName, at: new Date().toLocaleString("zh-CN") });
       }
     });
     const remarkChanged = draft.remark !== undefined && draft.remark !== r.remark;
+    if (remarkChanged) {
+      changes.push({ field: "remark", oldValue: r.remark ?? "", newValue: (draft.remark as string) ?? "", remark: (draft.remark as string) || r.remark || "—", by: editorName, at: new Date().toLocaleString("zh-CN") });
+    }
     if (!changes.length && !remarkChanged) {
       toast.warning("未做任何修改");
       cancelEdit();
