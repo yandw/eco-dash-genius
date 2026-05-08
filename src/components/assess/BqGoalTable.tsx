@@ -183,7 +183,10 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
                   ) : isE ? (
                     <Input value={(draft.intensityGoal ?? r.intensityGoal) ?? ""} onChange={(e) => setDraft((d) => ({ ...d, intensityGoal: e.target.value === "" ? null : Number(e.target.value) }))} className="h-7 text-right text-xs" type="number" step="0.001" />
                   ) : (
-                    r.intensityGoal ?? "—"
+                    <span className="inline-flex items-center justify-end">
+                      {r.intensityGoal ?? "—"}
+                      <ChangeBadge changes={r.changes} field="intensityGoal" />
+                    </span>
                   )}
                 </td>
 
