@@ -22,7 +22,7 @@ export default function EntDraft() {
   const contentX = laneLabelW + 24;
 
   return (
-    <AppLayout side="ent">
+    <AppLayout side="ent" title="草稿区" subtitle="业务流程草图与评审用图">
       <div className="space-y-4">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">草稿区</h1>
