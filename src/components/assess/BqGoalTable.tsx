@@ -155,13 +155,13 @@ export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, pagina
                 <td className={cn(cellRO, "border-r border-border")}>{r.entName}</td>
                 {editable ? (
                   <td className={cn(cellRO, "border-r border-border text-right")}>{r.total2025?.toLocaleString() ?? "—"}</td>
-                ) : numTd(r, isE, "total2025")}
+                ) : numTd(r, isE, "total2025", { badge: true })}
                 {editable ? (
                   <td className={cn(cellRO, "border-r border-border text-right")}>{r.intensity2025 ?? "—"}</td>
-                ) : numTd(r, isE, "intensity2025", { step: "0.001" })}
+                ) : numTd(r, isE, "intensity2025", { step: "0.001", badge: true })}
                 {editable ? (
                   <td className={cn(cellRO, "border-r border-border text-right text-primary")}>{r.recommendTotal ?? "—"}</td>
-                ) : numTd(r, isE, "recommendTotal", { primary: true })}
+                ) : numTd(r, isE, "recommendTotal", { primary: true, badge: true })}
 
                 {/* 总量目标值 */}
                 <td className={cn(editable || isE ? cellEdit : cellRO, "border-r border-border text-right")}>
