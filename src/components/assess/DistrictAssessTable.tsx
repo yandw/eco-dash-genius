@@ -193,7 +193,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
                 <td className={cn(cellRO, "border-r border-border")}>{r.intensityIndicator}</td>
                 <td className={cn(cellRO, "border-r border-border")}>{r.intensityUnit}</td>
                 <td className={cn(cellRO, "border-r border-border text-center")}>
-                  {auto === "—" ? <span className="text-destructive font-mono">#VALUE!</span> : <PassBadge value={auto} />}
+                  {auto === "—" ? <span className="text-muted-foreground">—</span> : <PassBadge value={auto} />}
                 </td>
                 <td className={cn("border-r border-border text-center", isEditing ? "px-2 py-1 bg-background" : cellRO, !isEditing && mf("resultOverride") && modCell)}>
                   {isEditing ? (
