@@ -1,5 +1,6 @@
 import { AppLayout } from "@/components/AppLayout";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function EntDraft() {
   // 泳道布局参数
@@ -31,6 +32,11 @@ export default function EntDraft() {
           </p>
         </div>
 
+        <Tabs defaultValue="goal-decomp" className="w-full">
+          <TabsList>
+            <TabsTrigger value="goal-decomp">目标分解流程图</TabsTrigger>
+          </TabsList>
+          <TabsContent value="goal-decomp" className="mt-4">
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="w-1 h-4 bg-primary rounded-sm" />
@@ -511,6 +517,8 @@ export default function EntDraft() {
             </div>
           </div>
         </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </AppLayout>
   );
