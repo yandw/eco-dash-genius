@@ -34,18 +34,20 @@ export default function AssessDualDistrictDetail() {
 
   return (
     <AppLayout side="gov" title="双控考核" subtitle={`${districtName} 下属企业能耗目标考评`}>
-      <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 flex-wrap">
-        <Link to="/gov/assess/dual" className="hover:text-primary">双控考核</Link>
-        <ChevronRight className="h-3 w-3" />
-        <Link to="/gov/assess/dual" className="hover:text-primary">区下属单位能耗目标考核</Link>
-        <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground">{districtName} 下属企业能耗目标考评</span>
-      </div>
-
-      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+      <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
+          <Link to="/gov/assess/dual" className="hover:text-primary">双控考核</Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link to="/gov/assess/dual" className="hover:text-primary">区下属单位能耗目标考核</Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-foreground">{districtName} 下属企业能耗目标考评</span>
+        </div>
         <Button variant="ghost" size="sm" className="h-8" onClick={() => navigate("/gov/assess/dual")}>
           <ArrowLeft className="h-3.5 w-3.5 mr-1" />返回列表
         </Button>
+      </div>
+
+      <div className="flex items-center justify-end mb-3 flex-wrap gap-2">
         <div className="flex items-center gap-2">
           {entry?.doc && (
             <Button
