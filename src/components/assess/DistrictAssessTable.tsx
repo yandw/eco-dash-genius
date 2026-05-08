@@ -127,7 +127,7 @@ export function DistrictAssessTable({ rows, mode, onChange }: Props) {
             const dispResultOverride = isEditing ? draft!.resultOverride : r.resultOverride;
             const result = dispResultOverride ?? (auto === "—" ? "" : auto);
             const dispRemark = isEditing ? draft!.remark : r.remark;
-            const intensityNetCellVal = dispIntensityNet === 0 ? "#VALUE!" : dispIntensityNet;
+            const intensityNetCellVal: string | number = dispIntensityNet === 0 ? "—" : dispIntensityNet;
             const seq = (page - 1) * pageSize + idx + 1;
 
             const mf = (k: string) => (r.modifiedFields ?? []).includes(k);
