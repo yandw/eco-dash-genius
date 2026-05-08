@@ -24,7 +24,7 @@ const cellEdit = "px-2 py-1 align-middle text-xs";
 type NumF = "total2025" | "intensity2025" | "recommendTotal" | "totalGoal" | "intensityGoal";
 type TextF = "intensityIndicator" | "intensityUnit" | "remark";
 const NUMS: NumF[] = ["total2025", "intensity2025", "recommendTotal", "totalGoal", "intensityGoal"];
-const TEXTS: TextF[] = ["intensityIndicator", "intensityUnit"];
+const TEXTS: TextF[] = ["intensityIndicator", "intensityUnit", "remark"];
 
 export function BqGoalTable({ rows, mode, onEdit, onChange, onInlineSave, paginated }: Props) {
   const editable = mode === "ent-edit";
