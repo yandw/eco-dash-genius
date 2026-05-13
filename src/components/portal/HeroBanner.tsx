@@ -39,9 +39,11 @@ export function HeroBanner() {
           <Link to="/ent" className="portal-cta-ghost">
             企业服务侧 <ArrowRight className="h-4 w-4" />
           </Link>
+          {/* 体验门户 V2 入口暂时隐藏，后续恢复
           <Link to="/portal/v2" className="portal-cta-ghost">
             体验门户 V2 <ArrowRight className="h-4 w-4" />
           </Link>
+          */}
         </div>
       </div>
     </section>
