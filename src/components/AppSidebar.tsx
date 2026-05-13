@@ -62,12 +62,8 @@ export const govItems: NavItem[] = [
       { title: "双控跟踪", url: "/gov/dual-track", icon: LineChart },
       { title: "双控考核", url: "/gov/dual-assess", icon: Award },
       { title: "IDC监察", url: "/gov/idc", icon: Server },
-      
     ],
   },
-  { title: "节能月度报告", url: "/gov/report-monthly", icon: FileBarChart },
-  { title: "节能年度报告", url: "/gov/report-yearly", icon: CalendarRange },
-  { title: "能源限额报告", url: "/gov/energy-quota", icon: Gauge },
   {
     title: "档案管理",
     url: "/gov/archives",
@@ -91,10 +87,6 @@ export const govItems: NavItem[] = [
         : []),
     ],
   },
-  { title: "固定资产管理", url: "/gov/assets", icon: Boxes },
-  { title: "绿色制造管理", url: "/gov/green-mfg", icon: Leaf },
-  
-  { title: "企业管理", url: "/gov/enterprise", icon: Building2 },
   {
     title: "系统管理",
     url: "/gov/system",
