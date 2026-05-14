@@ -90,7 +90,8 @@ export function DualCalcPanel({ industry }: Props) {
         const emission = ready
           ? r.qty * (r.ncv as number) * (r.cc as number) * ((r.ox as number) / 100) * (44 / 12)
           : null;
-        return { ...r, emission };
+        const intensity = emission != null && r.output > 0 ? emission / r.output : null;
+        return { ...r, emission, intensity };
       }),
     [fuelRows],
   );
@@ -100,7 +101,8 @@ export function DualCalcPanel({ industry }: Props) {
       elecRows.map((r) => {
         const ready = r.qty > 0 && r.factor != null;
         const emission = ready ? r.qty * (r.factor as number) : null;
-        return { ...r, emission };
+        const intensity = emission != null && r.output > 0 ? emission / r.output : null;
+        return { ...r, emission, intensity };
       }),
     [elecRows],
   );
