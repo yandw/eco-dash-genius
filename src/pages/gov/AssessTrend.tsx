@@ -10,7 +10,7 @@ export default function AssessTrend() {
   if (!isCityAdmin()) return <Navigate to="/gov/assess/goal" replace />;
 
   return (
-    <AppLayout>
+    <AppLayout title="趋势测算" subtitle={"考核管理 / 趋势测算"}>
       <div className="p-6 space-y-4">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
