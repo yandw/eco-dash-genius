@@ -65,15 +65,6 @@ export const govItems: NavItem[] = [
     ],
   },
   {
-    title: "档案管理",
-    url: "/gov/archives",
-    icon: FolderArchive,
-    children: [
-      { title: "节能档案", url: "/gov/archives", icon: FolderArchive },
-      { title: "岗位备案", url: "/gov/posts", icon: Users },
-    ],
-  },
-  {
     title: "考核管理",
     url: "/gov/assess",
     icon: ClipboardCheck,
@@ -85,6 +76,15 @@ export const govItems: NavItem[] = [
             { title: "任务管理", url: "/gov/assess/tasks", icon: ClipboardList },
           ]
         : []),
+    ],
+  },
+  {
+    title: "档案管理",
+    url: "/gov/archives",
+    icon: FolderArchive,
+    children: [
+      { title: "节能档案", url: "/gov/archives", icon: FolderArchive },
+      { title: "岗位备案", url: "/gov/posts", icon: Users },
     ],
   },
   {
