@@ -109,6 +109,8 @@ export function DualCalcPanel({ industry }: Props) {
 
   const fuelSubtotal = fuelComputed.reduce((s, r) => s + (r.emission ?? 0), 0);
   const elecSubtotal = elecComputed.reduce((s, r) => s + (r.emission ?? 0), 0);
+  const fuelOutputSubtotal = fuelComputed.reduce((s, r) => s + (r.output ?? 0), 0);
+  const elecOutputSubtotal = elecComputed.reduce((s, r) => s + (r.output ?? 0), 0);
   const total = fuelSubtotal + elecSubtotal;
 
   const updateFuel = (id: string, patch: Partial<FuelRow>) =>
