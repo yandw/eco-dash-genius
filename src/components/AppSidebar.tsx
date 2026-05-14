@@ -26,6 +26,7 @@ import {
   Newspaper,
   Target,
   FileEdit,
+  PieChart,
 } from "lucide-react";
 import { isCityAdmin } from "@/mocks/currentUser";
 import { NavLink } from "@/components/NavLink";
