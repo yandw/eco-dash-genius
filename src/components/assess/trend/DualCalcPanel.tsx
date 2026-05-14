@@ -39,6 +39,7 @@ interface FuelRow {
   ncv: number | null;
   cc: number | null;
   ox: number | null;
+  output: number;
 }
 
 interface ElecRow {
@@ -48,6 +49,7 @@ interface ElecRow {
   unit: string;
   source: DataSource;
   factor: number | null;
+  output: number;
 }
 
 const fmt = (n: number, d = 2) =>
@@ -62,6 +64,7 @@ const newFuelRow = (): FuelRow => ({
   ncv: null,
   cc: null,
   ox: null,
+  output: 0,
 });
 
 const newElecRow = (): ElecRow => ({
@@ -71,6 +74,7 @@ const newElecRow = (): ElecRow => ({
   unit: "MWh",
   source: "default",
   factor: null,
+  output: 0,
 });
 
 export function DualCalcPanel({ industry }: Props) {
@@ -86,7 +90,8 @@ export function DualCalcPanel({ industry }: Props) {
         const emission = ready
           ? r.qty * (r.ncv as number) * (r.cc as number) * ((r.ox as number) / 100) * (44 / 12)
           : null;
-        return { ...r, emission };
+        const intensity = emission != null && r.output > 0 ? emission / r.output : null;
+        return { ...r, emission, intensity };
       }),
     [fuelRows],
   );
@@ -96,13 +101,16 @@ export function DualCalcPanel({ industry }: Props) {
       elecRows.map((r) => {
         const ready = r.qty > 0 && r.factor != null;
         const emission = ready ? r.qty * (r.factor as number) : null;
-        return { ...r, emission };
+        const intensity = emission != null && r.output > 0 ? emission / r.output : null;
+        return { ...r, emission, intensity };
       }),
     [elecRows],
   );
 
   const fuelSubtotal = fuelComputed.reduce((s, r) => s + (r.emission ?? 0), 0);
   const elecSubtotal = elecComputed.reduce((s, r) => s + (r.emission ?? 0), 0);
+  const fuelOutputSubtotal = fuelComputed.reduce((s, r) => s + (r.output ?? 0), 0);
+  const elecOutputSubtotal = elecComputed.reduce((s, r) => s + (r.output ?? 0), 0);
   const total = fuelSubtotal + elecSubtotal;
 
   const updateFuel = (id: string, patch: Partial<FuelRow>) =>
@@ -171,6 +179,8 @@ export function DualCalcPanel({ industry }: Props) {
                   <TableHead className="text-right min-w-[150px]">单位热值含碳量 (tC/GJ)</TableHead>
                   <TableHead className="text-right min-w-[110px]">碳氧化率 (%)</TableHead>
                   <TableHead className="text-right min-w-[110px]">排放量 (tCO₂)</TableHead>
+                  <TableHead className="text-right min-w-[120px]">生产总值 (万元)</TableHead>
+                  <TableHead className="text-right min-w-[140px]">碳排放强度 (tCO₂/万元)</TableHead>
                   <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -274,6 +284,18 @@ export function DualCalcPanel({ industry }: Props) {
                       {r.emission == null ? "—" : fmt(r.emission)}
                     </TableCell>
                     <TableCell>
+                      <Input
+                        type="number"
+                        className="h-8 text-right text-primary"
+                        value={r.output || ""}
+                        onChange={(e) => updateFuel(r.id, { output: +e.target.value || 0 })}
+                        placeholder="0.00"
+                      />
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums font-medium text-warning">
+                      {r.intensity == null ? "—" : fmt(r.intensity, 4)}
+                    </TableCell>
+                    <TableCell>
                       <Button
                         size="icon"
                         variant="ghost"
@@ -293,6 +315,10 @@ export function DualCalcPanel({ industry }: Props) {
                   <TableCell className="text-right tabular-nums text-warning">
                     {fmt(fuelSubtotal)}
                   </TableCell>
+                  <TableCell className="text-right tabular-nums text-warning">
+                    {fmt(fuelOutputSubtotal)}
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">—</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               </TableBody>
@@ -355,6 +381,8 @@ export function DualCalcPanel({ industry }: Props) {
                   <TableHead className="min-w-[100px]">数据来源</TableHead>
                   <TableHead className="text-right min-w-[160px]">CO₂ 排放因子</TableHead>
                   <TableHead className="text-right min-w-[120px]">排放量 (tCO₂)</TableHead>
+                  <TableHead className="text-right min-w-[120px]">生产总值 (万元)</TableHead>
+                  <TableHead className="text-right min-w-[140px]">碳排放强度 (tCO₂/万元)</TableHead>
                   <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -433,6 +461,18 @@ export function DualCalcPanel({ industry }: Props) {
                       {r.emission == null ? "—" : fmt(r.emission)}
                     </TableCell>
                     <TableCell>
+                      <Input
+                        type="number"
+                        className="h-8 text-right text-primary"
+                        value={r.output || ""}
+                        onChange={(e) => updateElec(r.id, { output: +e.target.value || 0 })}
+                        placeholder="0.00"
+                      />
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums font-medium text-primary">
+                      {r.intensity == null ? "—" : fmt(r.intensity, 4)}
+                    </TableCell>
+                    <TableCell>
                       <Button
                         size="icon"
                         variant="ghost"
@@ -452,6 +492,10 @@ export function DualCalcPanel({ industry }: Props) {
                   <TableCell className="text-right tabular-nums text-primary">
                     {fmt(elecSubtotal)}
                   </TableCell>
+                  <TableCell className="text-right tabular-nums text-primary">
+                    {fmt(elecOutputSubtotal)}
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">—</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               </TableBody>
