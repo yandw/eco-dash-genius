@@ -1,37 +1,22 @@
 ## 目标
-4 个 Tab（能耗增量 / 能耗强度 / 碳排增量 / 碳排强度）顶部的「测算公式」整块卡片去掉，公式直接在列表表头对应"自动计算列"展示。
+趋势分解只保留"整段（单一终点年）"模式，去掉"逐年（2026–2030）"Tab 与对应子界面/逻辑。
 
-## 改动范围
-仅前端展示，不改任何计算逻辑。
+## 改动文件：`src/pages/gov/AssessTrendDecomp.tsx`
 
-### 1. `src/components/assess/trend/IncrementPanel.tsx`
-- 删除顶部 `<FormulaCard ... />` 整块（含 items、notes）
-- 删除未使用的 `FormulaCard` import
-- 表头当前已有公式简写（如 `D = (1+C)^5−1`），补充缺失的语义：
-  - B 列表头副行追加 desc：`单位工业增加值${indicator}下降率（负值）`
-  - C 列表头副行追加 desc：`工业增加值同比`
-  - F 基数行（基数输入区）已显示来源；在其旁补一行小字：`F = 2025年${indicator}基数`
-  - D / E / G / H 列保持现有公式 + 一行 desc（"工业增加值5年累计" / "5年${indicator}增长率" / "2030年${indicator}" / "${indicator}增加量"），用 `text-[11px] text-muted-foreground` 第三行展示
+1. 删除 `Tabs/TabsList/TabsTrigger` 的 import，删除 `Granularity` 类型与 `granularity / setGranularity` state。
+2. 删除逐年模式相关 state：`yearTargets / setYearTargets`、`viewYear / setViewYear`。
+3. 删除 `decomposeMultiYear` 调用 (`multiYear` useMemo) 与 import；同样删除 `DEFAULT_YEAR_TARGETS` import。
+4. `isYearly` 全部按 false 收敛：
+   - `activeResults` = `singleResults`，`activeAllocatable` = `allocatable`
+   - `endYearTarget` = `targetYear`，`cityTotalForCompare` = `totalQuotaInput`
+   - `trendData` 仅保留整段线性插值分支
+   - `overLocked` 用 `allocatable` 比较
+5. 顶部"全市目标设置"卡：删除右上角 Tabs 切换器，保留单一终点年 UI（目标年度 / 全市总量目标 / 储备 / 可分解额度），删除逐年 6 列输入区与 "默认按等比下降至 2030 年 −12%" 提示。
+6. 副标题改为：`基于权重算法将全市碳排放总量目标按区进行分解`（去掉"支持整段与逐年两种模式"）。
+7. "区维度参数表"卡：删除 `isYearly` 条件块（"展示年份分配额度"提示、年份 Select 选择器）。
+8. 表头/单元格涉及 `isYearly` 的分支清理：锁定值列说明改回"万吨"，去掉"·终点年"备注；区表标题列 `分配额度` 副行恒为 `(${targetYear} 年)`。
+9. `reset()` 函数移除 `setGranularity / setYearTargets / setViewYear` 调用。
 
-### 2. `src/components/assess/trend/IntensityPanel.tsx`
-- 删除顶部 `<FormulaCard ... />` 与其 import
-- 表头补全：
-  - C 列：`工业增加值同比`
-  - D 列：`(1+C)^5−1` + desc `工业增加值5年累计`
-  - E 列：`5年${indicator}累计增长率`
-  - F 列（仅能耗）：`(1+E)^(1/5)−1` + desc `折算的年均${indicator}增速`
-  - G/F 列：`(1+E)/(1+D)−1` + desc `5年单位增加值${indicator}下降率`
-- 参考目标线（-13.5% / -18%）原本在 FormulaCard notes 里，移到表格右上角操作栏左侧用一行小字保留：`参考目标 -13.5% / -18%`
-
-### 3. 不删除文件
-`FormulaCard.tsx` 暂时保留（其它地方未使用，但避免连带影响）。
-
-## 视觉规范
-- 表头单元格保持 3 行结构：
-  - 第 1 行：列名（默认字体）
-  - 第 2 行：公式或"输入 X"标记（`text-[11px]`，输入项用 `text-primary`，自动计算用 `text-muted-foreground`）
-  - 第 3 行（新增）：中文 desc（`text-[11px] text-muted-foreground/80`），让用户在表头即可读懂含义，不再依赖顶部公式卡
-
-## 不影响
-- `trendCalc.ts` 计算逻辑、默认数据、图表区不动
-- 趋势分解页 (`AssessTrendDecomp`) 不动
+## 不动
+- `src/lib/trendDecomp.ts`、`src/mocks/trendDecompDefaults.ts` 文件保留 `decomposeMultiYear` / `DEFAULT_YEAR_TARGETS` 等导出（不再被引用，但避免连带影响），仅页面层去引用即可。
+- 算法、能耗维度、锁定逻辑、图表等其他部分不变。
