@@ -317,7 +317,7 @@ export default function AssessTrendDecomp() {
                     <TableHead className="text-center w-[180px]">
                       锁定值<br/>
                       <span className="text-[10px] text-muted-foreground">
-                        （万吨{isYearly ? "·终点年" : ""}）
+                        （万吨）
                       </span>
                     </TableHead>
                     <TableHead className="text-right">权重</TableHead>
