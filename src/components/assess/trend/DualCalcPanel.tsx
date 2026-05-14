@@ -284,6 +284,18 @@ export function DualCalcPanel({ industry }: Props) {
                       {r.emission == null ? "—" : fmt(r.emission)}
                     </TableCell>
                     <TableCell>
+                      <Input
+                        type="number"
+                        className="h-8 text-right text-primary"
+                        value={r.output || ""}
+                        onChange={(e) => updateFuel(r.id, { output: +e.target.value || 0 })}
+                        placeholder="0.00"
+                      />
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums font-medium text-warning">
+                      {r.intensity == null ? "—" : fmt(r.intensity, 4)}
+                    </TableCell>
+                    <TableCell>
                       <Button
                         size="icon"
                         variant="ghost"
