@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { PieChart as PieIcon, RotateCcw, Download, Save, Lock, Unlock, AlertTriangle } from "lucide-react";
+import { PieChart as PieIcon, RotateCcw, Lock, Unlock, AlertTriangle } from "lucide-react";
 import {
   Bar,
   BarChart,
