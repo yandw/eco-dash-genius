@@ -58,38 +58,23 @@ export function IntensityPanel({ kind }: Props) {
     [`${indicator}强度下降率`]: Number((r.g * 100).toFixed(2)) / 100,
   }));
 
-  const formulaItems = isEnergy
-    ? [
-        { name: "D", expr: "(1 + C)^5 − 1", desc: "工业增加值5年累计" },
-        { name: "F", expr: "(1 + E)^(1/5) − 1", desc: "折算的年均能耗增速" },
-        { name: "G", expr: "(1 + E) / (1 + D) − 1", desc: "5年单位增加值能耗下降率" },
-      ]
-    : [
-        { name: "D", expr: "(1 + C)^5 − 1", desc: "工业增加值5年累计" },
-        { name: "F", expr: "(1 + E) / (1 + D) − 1", desc: "5年单位增加值碳排放下降率" },
-      ];
-
   return (
     <div className="space-y-4">
-      <FormulaCard
-        items={formulaItems}
-        notes={[
-          "C = 工业增加值同比（预设）",
-          `E = 5年${indicator}累计增长率（预设）`,
-          `${intensityName}为负值表示下降，需达到 ${(refY * 100).toFixed(1)}% 以下`,
-        ]}
-      />
-
       <Card className="p-4">
-        <div className="flex items-center justify-end mb-3 gap-2">
-          <Button size="sm" variant="outline" onClick={addRow}>
-            <Plus className="h-4 w-4 mr-1" />
-            新增情景
-          </Button>
-          <Button size="sm" variant="ghost" onClick={reset}>
-            <RotateCcw className="h-4 w-4 mr-1" />
-            重置默认
-          </Button>
+        <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+          <div className="text-xs text-muted-foreground">
+            {intensityName}为负值表示下降，需达到 <span className="text-primary font-medium">{(refY * 100).toFixed(1)}%</span> 以下
+          </div>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" onClick={addRow}>
+              <Plus className="h-4 w-4 mr-1" />
+              新增情景
+            </Button>
+            <Button size="sm" variant="ghost" onClick={reset}>
+              <RotateCcw className="h-4 w-4 mr-1" />
+              重置默认
+            </Button>
+          </div>
         </div>
 
         <div className="border rounded-md overflow-hidden">
