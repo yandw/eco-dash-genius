@@ -69,6 +69,9 @@ export const govItems: NavItem[] = [
     url: "/gov/assess",
     icon: ClipboardCheck,
     children: [
+      ...(isCityAdmin()
+        ? [{ title: "趋势测算", url: "/gov/assess/trend", icon: LineChart }]
+        : []),
       { title: "目标分解", url: "/gov/assess/goal", icon: Target },
       { title: "双控考核", url: "/gov/assess/dual", icon: ClipboardCheck },
       ...(isCityAdmin()
