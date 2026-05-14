@@ -105,12 +105,19 @@ export const govItems: NavItem[] = [
   },
 ];
 
-export const entItems: NavItem[] = [
+// 暂时隐藏的企业侧一级菜单（保留代码以便后续恢复）
+const _entItemsHidden: NavItem[] = [
   { title: "我的工作台", url: "/ent", icon: LayoutDashboard },
   { title: "月度报告填报", url: "/ent/report-monthly", icon: FileBarChart },
   { title: "年度报告填报", url: "/ent/report-yearly", icon: CalendarRange },
   { title: "限额报告填报", url: "/ent/energy-quota", icon: Gauge },
   { title: "企业设置", url: "/ent/profile", icon: Building2 },
+  { title: "文件下载", url: "/ent/downloads", icon: Download },
+  { title: "系统管理", url: "/ent/system", icon: Settings },
+  { title: "草稿区", url: "/ent/draft", icon: FileEdit },
+];
+
+export const entItems: NavItem[] = [
   {
     title: "档案管理",
     url: "/ent/archives",
@@ -130,9 +137,6 @@ export const entItems: NavItem[] = [
       { title: "考核结果", url: "/ent/assess/dual", icon: ClipboardCheck },
     ],
   },
-  { title: "文件下载", url: "/ent/downloads", icon: Download },
-  { title: "系统管理", url: "/ent/system", icon: Settings },
-  { title: "草稿区", url: "/ent/draft", icon: FileEdit },
 ];
 
 export const navItems = govItems;
