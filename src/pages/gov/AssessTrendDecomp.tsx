@@ -64,7 +64,8 @@ export default function AssessTrendDecomp() {
   if (!isCityAdmin()) return <Navigate to="/gov/assess/goal" replace />;
 
   const [targetYear, setTargetYear] = useState<number>(DEFAULT_TARGET_YEAR);
-  const [totalQuotaInput, setTotalQuotaInput] = useState<number>(DEFAULT_CITY_TOTAL * 0.88);
+  const [dropRate, setDropRate] = useState<number>(0.12);
+  const totalQuotaInput = DEFAULT_CITY_TOTAL * (1 - dropRate);
 
   const [reservePct, setReservePct] = useState<number>(DEFAULT_RESERVE_PCT);
   const [algo, setAlgo] = useState<DecompAlgo>("historical");
