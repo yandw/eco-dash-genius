@@ -160,99 +160,57 @@ export default function AssessTrendDecomp() {
 
           {/* ① 全市目标设置 */}
           <Card className="p-4 space-y-3">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2">
-                <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
-                <h2 className="font-medium">全市目标设置</h2>
-              </div>
-              <Tabs value={granularity} onValueChange={(v) => setGranularity(v as Granularity)}>
-                <TabsList className="h-8">
-                  <TabsTrigger value="single" className="text-xs h-6">整段（单一终点年）</TabsTrigger>
-                  <TabsTrigger value="yearly" className="text-xs h-6">逐年（2026–2030）</TabsTrigger>
-                </TabsList>
-              </Tabs>
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
+              <h2 className="font-medium">全市目标设置</h2>
             </div>
 
-            {!isYearly ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">目标年度</Label>
-                    <Select value={String(targetYear)} onValueChange={(v) => setTargetYear(+v)}>
-                      <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {TARGET_YEARS.map((y) => (
-                          <SelectItem key={y} value={String(y)}>{y} 年</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">全市总量目标（万吨 CO₂）</Label>
-                    <Input
-                      type="number"
-                      className="h-9 text-primary font-medium"
-                      value={totalQuotaInput}
-                      onChange={(e) => setTotalQuotaInput(+e.target.value || 0)}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">
-                      预留储备额度：{fmtPct(reservePct, 0)}
-                    </Label>
-                    <Slider
-                      value={[reservePct * 100]}
-                      min={0} max={20} step={1}
-                      onValueChange={(v) => setReservePct(v[0] / 100)}
-                      className="py-2.5"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">可分解额度（自动）</Label>
-                    <div className="h-9 px-3 rounded-md bg-muted/50 flex items-center text-sm font-semibold">
-                      {fmt(allocatable)} 万吨
-                    </div>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">目标年度</Label>
+                <Select value={String(targetYear)} onValueChange={(v) => setTargetYear(+v)}>
+                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {TARGET_YEARS.map((y) => (
+                      <SelectItem key={y} value={String(y)}>{y} 年</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">全市总量目标（万吨 CO₂）</Label>
+                <Input
+                  type="number"
+                  className="h-9 text-primary font-medium"
+                  value={totalQuotaInput}
+                  onChange={(e) => setTotalQuotaInput(+e.target.value || 0)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">
+                  预留储备额度：{fmtPct(reservePct, 0)}
+                </Label>
+                <Slider
+                  value={[reservePct * 100]}
+                  min={0} max={20} step={1}
+                  onValueChange={(v) => setReservePct(v[0] / 100)}
+                  className="py-2.5"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">可分解额度（自动）</Label>
+                <div className="h-9 px-3 rounded-md bg-muted/50 flex items-center text-sm font-semibold">
+                  {fmt(allocatable)} 万吨
                 </div>
-              </>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-                  {yearTargets.map((y) => (
-                    <div key={y.year} className="space-y-1.5">
-                      <Label className="text-xs text-muted-foreground">{y.year} 年总量目标</Label>
-                      <Input
-                        type="number"
-                        className="h-9 text-primary font-medium"
-                        value={y.totalQuota}
-                        onChange={(e) => updateYearTarget(y.year, +e.target.value || 0)}
-                      />
-                    </div>
-                  ))}
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">
-                      储备：{fmtPct(reservePct, 0)}
-                    </Label>
-                    <Slider
-                      value={[reservePct * 100]}
-                      min={0} max={20} step={1}
-                      onValueChange={(v) => setReservePct(v[0] / 100)}
-                      className="py-2.5"
-                    />
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  默认按等比下降至 2030 年 −12%；可逐年调整任意年份目标。
-                </div>
-              </>
-            )}
+              </div>
+            </div>
 
             <div className="text-xs text-muted-foreground">
               较 2025 全市基数（{fmt(DEFAULT_CITY_TOTAL, 0)} 万吨）
-              <span className={cityTotalForCompare < DEFAULT_CITY_TOTAL ? "text-success ml-1" : "text-destructive ml-1"}>
-                {cityTotalForCompare < DEFAULT_CITY_TOTAL ? "下降" : "上升"} {fmt(Math.abs((cityTotalForCompare - DEFAULT_CITY_TOTAL) / DEFAULT_CITY_TOTAL) * 100, 1)}%
+              <span className={totalQuotaInput < DEFAULT_CITY_TOTAL ? "text-success ml-1" : "text-destructive ml-1"}>
+                {totalQuotaInput < DEFAULT_CITY_TOTAL ? "下降" : "上升"} {fmt(Math.abs((totalQuotaInput - DEFAULT_CITY_TOTAL) / DEFAULT_CITY_TOTAL) * 100, 1)}%
               </span>
-              （{isYearly ? `终点年 ${endYearTarget}` : `目标年 ${targetYear}`}）
+              （目标年 {targetYear}）
             </div>
           </Card>
 
