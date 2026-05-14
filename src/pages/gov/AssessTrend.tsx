@@ -31,7 +31,7 @@ export default function AssessTrend() {
             <TabsTrigger value="energy-int">能耗强度测算</TabsTrigger>
             <TabsTrigger value="carbon-inc">碳排放增量测算</TabsTrigger>
             <TabsTrigger value="carbon-int">碳排放强度测算</TabsTrigger>
-            <TabsTrigger value="dual-calc">双控测算</TabsTrigger>
+            <TabsTrigger value="dual-calc">碳双控测算</TabsTrigger>
           </TabsList>
 
           <TabsContent value="energy-inc" className="mt-4">

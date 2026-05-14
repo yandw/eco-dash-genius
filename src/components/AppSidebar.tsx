@@ -77,6 +77,7 @@ export const govItems: NavItem[] = [
           ]
         : []),
       { title: "目标分解", url: "/gov/assess/goal", icon: Target },
+      { title: "碳双控测算", url: "/gov/assess/dual-calc", icon: Gauge },
       { title: "双控考核", url: "/gov/assess/dual", icon: ClipboardCheck },
       ...(isCityAdmin()
         ? [
@@ -125,6 +126,7 @@ export const entItems: NavItem[] = [
     icon: ClipboardCheck,
     children: [
       { title: "目标分解", url: "/ent/assess/goal", icon: Target },
+      { title: "碳双控测算", url: "/ent/assess/dual-calc", icon: Gauge },
       { title: "考核结果", url: "/ent/assess/dual", icon: ClipboardCheck },
     ],
   },
