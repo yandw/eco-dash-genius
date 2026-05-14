@@ -141,7 +141,7 @@ export default function AssessTrendDecomp() {
               <div>
                 <h1 className="text-xl font-semibold">趋势分解</h1>
                 <p className="text-sm text-muted-foreground">
-                  基于权重算法将全市碳排放总量目标按区进行分解，支持整段与逐年两种模式
+                  基于权重算法将全市碳排放总量目标按区进行分解
                 </p>
               </div>
             </div>
