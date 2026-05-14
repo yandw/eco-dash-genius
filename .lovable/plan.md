@@ -1,62 +1,38 @@
-## 目标
-在「考核管理」下新增二级菜单 **趋势分解**（仅市级管理员可见），用算法把全市碳排放总量目标按区进行分解，输出每个区的配额，并提供可视化对比。
 
-## 菜单与路由
-- `src/components/AppSidebar.tsx`：在 `govItems → 考核管理 → children` 中，紧跟"碳排测算"之后新增 `{ title: "趋势分解", url: "/gov/assess/trend-decomp", icon: PieChart }`，同样用 `isCityAdmin()` 包裹。
-- `src/App.tsx`：注册新路由，懒加载新页面 `src/pages/gov/AssessTrendDecomp.tsx`，非市级访问跳转至 `/gov/assess/goal`。
+## 趋势分解模块迭代
 
-## 页面信息架构（`AssessTrendDecomp.tsx`）
+### 1. 维度调整：去人口、加能耗总量
 
-```text
-顶部页头（图标 + 标题 + 副标题：基于权重算法的碳排放目标区域分解）
-└─ 顶部操作条：[重置默认] [导出 Excel(占位)] [保存方案(占位)]
+**数据** `src/mocks/trendDecompDefaults.ts`
+- `DistrictInput` 字段：`historical2025 / gdp / energy`（删除 `population`）
+- 6 个区补充 `energy`（万吨标煤）默认值
 
-①「全市目标设置」面板（卡片）
-  - 目标年度（2026~2030 下拉，默认 2030）
-  - 全市总量目标（万吨 CO₂，数值输入，默认从「碳排测算」基数 8768 推算）
-  - 目标类型（单选）：① 总量上限  ② 较 2025 下降率
-  - 是否预留储备额度（百分比，默认 3%）
-  - 当前可分解额度 = 总量 × (1 − 预留%)（只读，自动计算）
+**算法** `src/lib/trendDecomp.ts`
+- `weightPopulation` → `weightEnergy`（按区能耗占比）
+- `composite` 含义：α 历史排放 + β GDP + γ 能耗总量
+- `ALGO_LABEL` / `ALGO_FORMULA` 文案与公式中"人口"全部替换为"能耗"
 
-②「分解算法」面板
-  - 算法选择（单选卡片，4 种）：
-      1. 历史排放权重法（按区 2025 排放占比）
-      2. GDP 贡献权重法（按区 GDP 占比）
-      3. 强度递减法（按"区现状强度 × 统一下降率"）
-      4. 多因子综合法（历史 α + GDP β + 人口 γ，权重可调）
-  - 仅"多因子综合法"显示三档滑杆 α/β/γ（合计自动归一），其余隐藏
-  - 公式卡片：实时显示当前算法的数学公式
+**页面** `src/pages/gov/AssessTrendDecomp.tsx`
+- 区参数表"人口（万人）"列 → "能耗（万吨标煤）"列
+- composite 滑块第 3 项 "人口 γ" → "能耗 γ"
+- 算法卡片副标题"历史 + GDP + 人口加权" → "历史 + GDP + 能耗加权"
 
-③「区维度参数表」（按 `assessOrgs.districtData` 6 个区生成）
-  列：区名 | 2025 历史排放(万吨) | GDP(亿) | 人口(万) | 锁定值(万吨,可选) | 算法权重(自动) | 分配额度(自动) | 同比 2025 增减 | 占比%
-  - 前 4 列预填默认值（mock），可编辑
-  - "锁定值"勾选后该区按手填值固定，剩余额度在其他区间重算
-  - 末行汇总：合计 = 可分解额度（不一致时红色提示）
+### 2. 分解粒度：整段(2026–2030) / 逐年
 
-④「分解结果可视化」（双列卡片）
-  - 左：水平柱状图 — 各区分配额度对比（Recharts BarChart）
-  - 右：环形饼图 — 各区占比（Recharts PieChart）
-  - 下方：折线图 — 当前方案下各区 2025→2030 趋势（基于线性插值）
+在「全市目标设置」区新增 **分解模式** 切换（RadioGroup）：
 
-⑤ 底部「方案对比」抽屉（占位按钮）—— 暂存已保存方案以备后续对比
-```
+- **整段模式（默认）**：现有逻辑，仅给出目标年（2026-2030）单一终点的分配，趋势图为 2025→目标年线性插值。
+- **逐年模式**：取消单一目标年，输入扩展为 2026/2027/2028/2029/2030 五年的全市总量目标（默认按等比下降自动填充，可逐年覆盖）。
+  - 算法对每一年独立调用 `decompose`，得到每个区在 5 个年度的分配额度
+  - 区参数表"分配额度"列展开为 5 列（2026…2030），同比/占比按目标年（2030）展示
+  - 趋势折线图 X 轴为 2025→2030 的真实分配（非插值），每条线为一个区
+  - 条形图与饼图默认展示终点年（2030）的分配，提供年份切换器
 
-## 算法（`src/lib/trendDecomp.ts`，纯函数）
-- `weightHistorical(rows)`：`w_i = hist_i / Σhist`
-- `weightGdp(rows)`：`w_i = gdp_i / Σgdp`
-- `weightIntensity(rows, dropRate)`：`alloc_i = hist_i × (1 − dropRate)`，其余按比例缩放至 = 可分解额度
-- `weightComposite(rows, α, β, γ)`：归一权重后线性叠加
-- `applyLocks(rows, total)`：锁定值先扣除，剩余额度按权重在未锁定区分配
-- 所有算法返回 `{ districtId, weight, allocation, deltaVs2025, share }[]`
+**算法层新增**：`decomposeMultiYear(districts, yearTargets[], options)` 返回 `{ year, results[] }[]`；锁定值在逐年模式下视为「终点年锁定」，中间年按线性反推。
 
-## 数据
-- `src/mocks/trendDecompDefaults.ts`：6 个区的默认 `historical2025 / gdp / population`（基于 `assessOrgs` 的区列表）+ 全市默认总量 8768、默认下降率 12%。
+### 3. 不改动
+- 路由 / 菜单入口 / 权限 / 储备额度 / 历史排放与 GDP 输入交互
 
-## 设计与样式
-- 复用 `panel`、`Card`、`Tabs`、`Select`、`Input`、`Button`、`Slider`、`Tooltip`，纯使用 `index.css` 语义色 (`primary` / `success` / `warning` / `muted-foreground`)。
-- 输入单元用 `text-primary`，自动计算用 `text-foreground`，提示用 `text-muted-foreground`，超量警告用 `text-destructive`。
-
-## 范围说明
-- 纯前端 mock，无后端、无导出、无方案持久化（按钮先用 toast 占位）。
-- 仅市级管理员可见和访问。
-- 区列表来自现有 `assessOrgs.districtData`（目前 6 个区，新增区会自动出现在表中）。
+### 涉及文件
+- 修改：`src/lib/trendDecomp.ts`、`src/mocks/trendDecompDefaults.ts`、`src/pages/gov/AssessTrendDecomp.tsx`
+- 不新建组件
