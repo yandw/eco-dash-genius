@@ -298,23 +298,6 @@ export default function AssessTrendDecomp() {
               <div className="flex items-center gap-2">
                 <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
                 <h2 className="font-medium">区维度参数表</h2>
-                {isYearly && (
-                  <span className="text-xs text-muted-foreground ml-2">
-                    展示年份分配额度
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-3">
-                {isYearly && (
-                  <Select value={String(viewYear)} onValueChange={(v) => setViewYear(+v)}>
-                    <SelectTrigger className="h-8 w-[120px]"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {yearTargets.map((y) => (
-                        <SelectItem key={y.year} value={String(y.year)}>{y.year} 年</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
                 {overLocked && (
                   <div className="flex items-center gap-1 text-xs text-destructive">
                     <AlertTriangle className="h-3.5 w-3.5" />
