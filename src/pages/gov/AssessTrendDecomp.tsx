@@ -445,9 +445,7 @@ export default function AssessTrendDecomp() {
             <div className="flex items-center gap-2 mb-3">
               <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
               <h2 className="font-medium">
-                {isYearly
-                  ? `${DEFAULT_BASE_YEAR} → ${endYearTarget} 各区逐年分配趋势`
-                  : `${DEFAULT_BASE_YEAR} → ${targetYear} 各区趋势（线性插值）`}
+                {DEFAULT_BASE_YEAR} → {targetYear} 各区趋势（线性插值）
               </h2>
             </div>
             <ResponsiveContainer width="100%" height={300}>
