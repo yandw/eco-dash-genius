@@ -64,6 +64,7 @@ const newFuelRow = (): FuelRow => ({
   ncv: null,
   cc: null,
   ox: null,
+  output: 0,
 });
 
 const newElecRow = (): ElecRow => ({
@@ -73,6 +74,7 @@ const newElecRow = (): ElecRow => ({
   unit: "MWh",
   source: "default",
   factor: null,
+  output: 0,
 });
 
 export function DualCalcPanel({ industry }: Props) {
