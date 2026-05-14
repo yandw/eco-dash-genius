@@ -150,12 +150,6 @@ export default function AssessTrendDecomp() {
               <Button variant="outline" size="sm" onClick={reset}>
                 <RotateCcw className="h-3.5 w-3.5 mr-1" />重置默认
               </Button>
-              <Button variant="outline" size="sm" onClick={() => toast.info("导出功能开发中")}>
-                <Download className="h-3.5 w-3.5 mr-1" />导出 Excel
-              </Button>
-              <Button size="sm" onClick={() => toast.success("方案已保存（占位）")}>
-                <Save className="h-3.5 w-3.5 mr-1" />保存方案
-              </Button>
             </div>
           </div>
 
@@ -179,12 +173,14 @@ export default function AssessTrendDecomp() {
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">全市总量目标（万吨 CO₂）</Label>
-                <Input
-                  type="number"
-                  className="h-9 text-primary font-medium"
-                  value={totalQuotaInput}
-                  onChange={(e) => setTotalQuotaInput(+e.target.value || 0)}
+                <Label className="text-xs text-muted-foreground">
+                  较 2025 下降率：{fmtPct(dropRate, 0)}
+                </Label>
+                <Slider
+                  value={[dropRate * 100]}
+                  min={0} max={30} step={1}
+                  onValueChange={(v) => setDropRate(v[0] / 100)}
+                  className="py-2.5"
                 />
               </div>
               <div className="space-y-1.5">
@@ -207,10 +203,8 @@ export default function AssessTrendDecomp() {
             </div>
 
             <div className="text-xs text-muted-foreground">
-              较 2025 全市基数（{fmt(DEFAULT_CITY_TOTAL, 0)} 万吨）
-              <span className={totalQuotaInput < DEFAULT_CITY_TOTAL ? "text-success ml-1" : "text-destructive ml-1"}>
-                {totalQuotaInput < DEFAULT_CITY_TOTAL ? "下降" : "上升"} {fmt(Math.abs((totalQuotaInput - DEFAULT_CITY_TOTAL) / DEFAULT_CITY_TOTAL) * 100, 1)}%
-              </span>
+              全市总量目标 <span className="text-primary font-medium">{fmt(totalQuotaInput)} 万吨</span>，较 2025 全市基数（{fmt(DEFAULT_CITY_TOTAL, 0)} 万吨）
+              <span className="text-success ml-1">下降 {fmtPct(dropRate, 1)}</span>
               （目标年 {targetYear}）
             </div>
           </Card>
