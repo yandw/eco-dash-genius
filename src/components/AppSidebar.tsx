@@ -70,7 +70,10 @@ export const govItems: NavItem[] = [
     icon: ClipboardCheck,
     children: [
       ...(isCityAdmin()
-        ? [{ title: "碳排测算", url: "/gov/assess/trend", icon: LineChart }]
+        ? [
+            { title: "碳排测算", url: "/gov/assess/trend", icon: LineChart },
+            { title: "趋势分解", url: "/gov/assess/trend-decomp", icon: PieChart },
+          ]
         : []),
       { title: "目标分解", url: "/gov/assess/goal", icon: Target },
       { title: "双控考核", url: "/gov/assess/dual", icon: ClipboardCheck },
