@@ -60,20 +60,11 @@ const fmt = (n: number, d = 1) =>
   n.toLocaleString("zh-CN", { maximumFractionDigits: d, minimumFractionDigits: d });
 const fmtPct = (n: number, d = 1) => `${(n * 100).toFixed(d)}%`;
 
-type Granularity = "single" | "yearly";
-
 export default function AssessTrendDecomp() {
   if (!isCityAdmin()) return <Navigate to="/gov/assess/goal" replace />;
 
-  const [granularity, setGranularity] = useState<Granularity>("single");
-
-  // 整段模式
   const [targetYear, setTargetYear] = useState<number>(DEFAULT_TARGET_YEAR);
   const [totalQuotaInput, setTotalQuotaInput] = useState<number>(DEFAULT_CITY_TOTAL * 0.88);
-
-  // 逐年模式
-  const [yearTargets, setYearTargets] = useState(DEFAULT_YEAR_TARGETS);
-  const [viewYear, setViewYear] = useState<number>(DEFAULT_TARGET_YEAR);
 
   const [reservePct, setReservePct] = useState<number>(DEFAULT_RESERVE_PCT);
   const [algo, setAlgo] = useState<DecompAlgo>("historical");
@@ -83,12 +74,11 @@ export default function AssessTrendDecomp() {
   const [gamma, setGamma] = useState<number>(DEFAULT_COMPOSITE.gamma);
   const [districts, setDistricts] = useState<DistrictInput[]>(DEFAULT_DISTRICT_INPUTS);
 
-  // 整段模式计算
   const allocatable = useMemo(
     () => Math.max(0, totalQuotaInput * (1 - reservePct)),
     [totalQuotaInput, reservePct],
   );
-  const singleResults = useMemo(
+  const activeResults = useMemo(
     () =>
       decompose(districts, {
         algo,
@@ -99,85 +89,35 @@ export default function AssessTrendDecomp() {
     [districts, algo, allocatable, intensityDrop, alpha, beta, gamma],
   );
 
-  // 逐年模式计算
-  const multiYear = useMemo(
-    () =>
-      decomposeMultiYear(
-        districts,
-        yearTargets,
-        DEFAULT_BASE_YEAR,
-        reservePct,
-        { algo, intensityDropRate: intensityDrop, alpha, beta, gamma },
-      ),
-    [districts, yearTargets, reservePct, algo, intensityDrop, alpha, beta, gamma],
-  );
-
-  const isYearly = granularity === "yearly";
-  const endYearTarget = isYearly ? yearTargets[yearTargets.length - 1].year : targetYear;
-  const cityTotalForCompare = isYearly
-    ? yearTargets[yearTargets.length - 1].totalQuota
-    : totalQuotaInput;
-
-  // 当前展示的年份结果（逐年模式可切换；整段=终点年）
-  const activeResults = useMemo(() => {
-    if (!isYearly) return singleResults;
-    const found = multiYear.find((y) => y.year === viewYear) ?? multiYear[multiYear.length - 1];
-    return found.results;
-  }, [isYearly, singleResults, multiYear, viewYear]);
-
-  const activeAllocatable = isYearly
-    ? (multiYear.find((y) => y.year === viewYear) ?? multiYear[multiYear.length - 1]).allocatable
-    : allocatable;
-
+  const activeAllocatable = allocatable;
   const totalAlloc = activeResults.reduce((s, r) => s + r.allocation, 0);
   const lockedSum = districts.reduce((s, r) => s + (r.locked ? r.lockValue ?? 0 : 0), 0);
-  const overLocked = lockedSum > (isYearly ? multiYear[multiYear.length - 1].allocatable : allocatable);
+  const overLocked = lockedSum > allocatable;
   const histTotal = districts.reduce((s, r) => s + r.historical2025, 0);
 
-  // 趋势数据
+  // 趋势数据 - 整段线性插值
   const trendData = useMemo(() => {
-    if (isYearly) {
-      // 真实逐年分配，前置 2025 历史值
-      const rows: Array<Record<string, number | string>> = [];
-      const base: Record<string, number | string> = { year: `${DEFAULT_BASE_YEAR}年` };
-      districts.forEach((d) => { base[d.name] = d.historical2025; });
-      rows.push(base);
-      multiYear.forEach((yd) => {
-        const row: Record<string, number | string> = { year: `${yd.year}年` };
-        yd.results.forEach((r) => { row[r.name] = +r.allocation.toFixed(1); });
-        rows.push(row);
-      });
-      return rows;
-    }
-    // 整段：线性插值
     const span = Math.max(1, targetYear - DEFAULT_BASE_YEAR);
     const years: number[] = [];
     for (let y = DEFAULT_BASE_YEAR; y <= targetYear; y++) years.push(y);
     return years.map((y) => {
       const t = (y - DEFAULT_BASE_YEAR) / span;
       const row: Record<string, number | string> = { year: `${y}年` };
-      singleResults.forEach((r, i) => {
+      activeResults.forEach((r, i) => {
         const start = districts[i].historical2025;
         row[r.name] = +(start + (r.allocation - start) * t).toFixed(1);
       });
       return row;
     });
-  }, [isYearly, multiYear, singleResults, districts, targetYear]);
+  }, [activeResults, districts, targetYear]);
 
   const updateDistrict = (id: string, patch: Partial<DistrictInput>) => {
     setDistricts((prev) => prev.map((d) => (d.id === id ? { ...d, ...patch } : d)));
   };
 
-  const updateYearTarget = (year: number, totalQuota: number) => {
-    setYearTargets((prev) => prev.map((y) => (y.year === year ? { ...y, totalQuota } : y)));
-  };
-
   const reset = () => {
-    setGranularity("single");
     setTargetYear(DEFAULT_TARGET_YEAR);
     setTotalQuotaInput(DEFAULT_CITY_TOTAL * 0.88);
-    setYearTargets(DEFAULT_YEAR_TARGETS);
-    setViewYear(DEFAULT_TARGET_YEAR);
     setReservePct(DEFAULT_RESERVE_PCT);
     setAlgo("historical");
     setIntensityDrop(DEFAULT_INTENSITY_DROP);
