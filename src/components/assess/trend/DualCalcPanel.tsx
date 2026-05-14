@@ -381,6 +381,8 @@ export function DualCalcPanel({ industry }: Props) {
                   <TableHead className="min-w-[100px]">数据来源</TableHead>
                   <TableHead className="text-right min-w-[160px]">CO₂ 排放因子</TableHead>
                   <TableHead className="text-right min-w-[120px]">排放量 (tCO₂)</TableHead>
+                  <TableHead className="text-right min-w-[120px]">生产总值 (万元)</TableHead>
+                  <TableHead className="text-right min-w-[140px]">碳排放强度 (tCO₂/万元)</TableHead>
                   <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
