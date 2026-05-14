@@ -1,4 +1,4 @@
-// 十五五趋势测算 - 默认情景与基数（来自上传 Excel）
+// 十五五碳排测算 - 默认情景与基数（来自上传 Excel）
 
 export const ENERGY_BASE_2025 = 3972.46; // 万吨标煤，来源：市统计局
 export const CARBON_BASE_2025 = 8768; // 万吨CO2，来源：年报企业汇总
