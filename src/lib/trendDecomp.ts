@@ -6,9 +6,9 @@ export interface DistrictInput {
   name: string;
   historical2025: number; // 万吨 CO₂
   gdp: number; // 亿元
-  population: number; // 万人
+  energy: number; // 万吨标煤（能耗总量）
   locked?: boolean;
-  lockValue?: number; // 万吨
+  lockValue?: number; // 万吨（终点年锁定）
 }
 
 export interface DecompResult {
@@ -28,7 +28,7 @@ export interface DecompOptions {
   intensityDropRate?: number; // 强度递减法用
   alpha?: number; // 历史权重 0~1
   beta?: number; // GDP 权重 0~1
-  gamma?: number; // 人口权重 0~1
+  gamma?: number; // 能耗权重 0~1
 }
 
 const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
@@ -36,7 +36,7 @@ const safeDiv = (a: number, b: number) => (b > 0 ? a / b : 0);
 function rawWeights(rows: DistrictInput[], opts: DecompOptions): number[] {
   const sumH = rows.reduce((s, r) => s + r.historical2025, 0);
   const sumG = rows.reduce((s, r) => s + r.gdp, 0);
-  const sumP = rows.reduce((s, r) => s + r.population, 0);
+  const sumE = rows.reduce((s, r) => s + r.energy, 0);
 
   switch (opts.algo) {
     case "historical":
@@ -44,7 +44,6 @@ function rawWeights(rows: DistrictInput[], opts: DecompOptions): number[] {
     case "gdp":
       return rows.map((r) => safeDiv(r.gdp, sumG));
     case "intensity": {
-      // 以"现状排放 ×（1−下降率）"作为初始权重，再归一化
       const drop = opts.intensityDropRate ?? 0.12;
       const raw = rows.map((r) => r.historical2025 * (1 - drop));
       const sum = raw.reduce((s, v) => s + v, 0);
@@ -59,7 +58,7 @@ function rawWeights(rows: DistrictInput[], opts: DecompOptions): number[] {
       return rows.map((r) =>
         na * safeDiv(r.historical2025, sumH) +
         nb * safeDiv(r.gdp, sumG) +
-        ng * safeDiv(r.population, sumP),
+        ng * safeDiv(r.energy, sumE),
       );
     }
   }
@@ -68,7 +67,6 @@ function rawWeights(rows: DistrictInput[], opts: DecompOptions): number[] {
 export function decompose(rows: DistrictInput[], opts: DecompOptions): DecompResult[] {
   const weights = rawWeights(rows, opts);
 
-  // 处理锁定值：先扣除锁定区，剩余按权重在未锁定区分配
   const lockedSum = rows.reduce((s, r) => s + (r.locked ? (r.lockValue ?? 0) : 0), 0);
   const remain = Math.max(0, opts.totalQuota - lockedSum);
   const unlockedWeightSum = rows.reduce(
@@ -100,6 +98,39 @@ export function decompose(rows: DistrictInput[], opts: DecompOptions): DecompRes
   });
 }
 
+// 逐年分解：对每个年度独立计算分配
+// 锁定值视为「终点年锁定」，中间年按 2025 历史 → 终点锁定值线性插值
+export interface YearDecomp {
+  year: number;
+  totalQuota: number; // 该年全市总量目标
+  allocatable: number; // 扣除储备后可分解额度
+  results: DecompResult[];
+}
+
+export function decomposeMultiYear(
+  rows: DistrictInput[],
+  yearTargets: { year: number; totalQuota: number }[], // 升序
+  baseYear: number,
+  reservePct: number,
+  opts: Omit<DecompOptions, "totalQuota">,
+): YearDecomp[] {
+  const endYear = yearTargets[yearTargets.length - 1].year;
+  const span = Math.max(1, endYear - baseYear);
+
+  return yearTargets.map(({ year, totalQuota }) => {
+    const allocatable = Math.max(0, totalQuota * (1 - reservePct));
+    // 中间年：将终点锁定值按线性插值
+    const yearRows: DistrictInput[] = rows.map((r) => {
+      if (!r.locked || r.lockValue == null) return r;
+      const t = (year - baseYear) / span;
+      const interp = r.historical2025 + (r.lockValue - r.historical2025) * t;
+      return { ...r, lockValue: interp };
+    });
+    const results = decompose(yearRows, { ...opts, totalQuota: allocatable });
+    return { year, totalQuota, allocatable, results };
+  });
+}
+
 export const ALGO_LABEL: Record<DecompAlgo, string> = {
   historical: "历史排放权重法",
   gdp: "GDP 贡献权重法",
@@ -111,5 +142,5 @@ export const ALGO_FORMULA: Record<DecompAlgo, string> = {
   historical: "Aᵢ = Q × (Hᵢ / ΣH)　（Hᵢ：区 i 的 2025 历史排放）",
   gdp: "Aᵢ = Q × (Gᵢ / ΣG)　（Gᵢ：区 i 的 GDP）",
   intensity: "Aᵢ = Q × [Hᵢ(1−r)] / Σ[Hᵢ(1−r)]　（r：统一下降率）",
-  composite: "Aᵢ = Q × [α·Hᵢ/ΣH + β·Gᵢ/ΣG + γ·Pᵢ/ΣP]　（α+β+γ 自动归一）",
+  composite: "Aᵢ = Q × [α·Hᵢ/ΣH + β·Gᵢ/ΣG + γ·Eᵢ/ΣE]　（E：能耗总量；α+β+γ 自动归一）",
 };
