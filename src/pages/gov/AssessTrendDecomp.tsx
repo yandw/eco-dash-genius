@@ -424,7 +424,7 @@ export default function AssessTrendDecomp() {
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-3">
                 <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
-                <h2 className="font-medium">各区占比{isYearly ? `（${viewYear} 年）` : ""}</h2>
+                <h2 className="font-medium">各区占比</h2>
               </div>
               <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
