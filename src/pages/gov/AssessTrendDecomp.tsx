@@ -436,7 +436,7 @@ export default function AssessTrendDecomp() {
                     <TableHead className="text-right">2025 历史排放<br/><span className="text-[10px] text-muted-foreground">（万吨）</span></TableHead>
                     <TableHead className="text-right">GDP<br/><span className="text-[10px] text-muted-foreground">（亿元）</span></TableHead>
                     <TableHead className="text-right">能耗总量<br/><span className="text-[10px] text-muted-foreground">（万吨标煤）</span></TableHead>
-                    <TableHead className="text-center w-[110px]">
+                    <TableHead className="text-center w-[180px]">
                       锁定值<br/>
                       <span className="text-[10px] text-muted-foreground">
                         （万吨{isYearly ? "·终点年" : ""}）
