@@ -492,6 +492,10 @@ export function DualCalcPanel({ industry }: Props) {
                   <TableCell className="text-right tabular-nums text-primary">
                     {fmt(elecSubtotal)}
                   </TableCell>
+                  <TableCell className="text-right tabular-nums text-primary">
+                    {fmt(elecOutputSubtotal)}
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">—</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               </TableBody>
