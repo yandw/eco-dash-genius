@@ -25,14 +25,12 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { isCityAdmin } from "@/mocks/currentUser";
 import {
   ALGO_FORMULA,
   ALGO_LABEL,
   decompose,
-  decomposeMultiYear,
   type DecompAlgo,
   type DistrictInput,
 } from "@/lib/trendDecomp";
@@ -44,7 +42,6 @@ import {
   DEFAULT_INTENSITY_DROP,
   DEFAULT_RESERVE_PCT,
   DEFAULT_TARGET_YEAR,
-  DEFAULT_YEAR_TARGETS,
 } from "@/mocks/trendDecompDefaults";
 import { toast } from "sonner";
 
@@ -63,20 +60,11 @@ const fmt = (n: number, d = 1) =>
   n.toLocaleString("zh-CN", { maximumFractionDigits: d, minimumFractionDigits: d });
 const fmtPct = (n: number, d = 1) => `${(n * 100).toFixed(d)}%`;
 
-type Granularity = "single" | "yearly";
-
 export default function AssessTrendDecomp() {
   if (!isCityAdmin()) return <Navigate to="/gov/assess/goal" replace />;
 
-  const [granularity, setGranularity] = useState<Granularity>("single");
-
-  // 整段模式
   const [targetYear, setTargetYear] = useState<number>(DEFAULT_TARGET_YEAR);
   const [totalQuotaInput, setTotalQuotaInput] = useState<number>(DEFAULT_CITY_TOTAL * 0.88);
-
-  // 逐年模式
-  const [yearTargets, setYearTargets] = useState(DEFAULT_YEAR_TARGETS);
-  const [viewYear, setViewYear] = useState<number>(DEFAULT_TARGET_YEAR);
 
   const [reservePct, setReservePct] = useState<number>(DEFAULT_RESERVE_PCT);
   const [algo, setAlgo] = useState<DecompAlgo>("historical");
@@ -86,12 +74,11 @@ export default function AssessTrendDecomp() {
   const [gamma, setGamma] = useState<number>(DEFAULT_COMPOSITE.gamma);
   const [districts, setDistricts] = useState<DistrictInput[]>(DEFAULT_DISTRICT_INPUTS);
 
-  // 整段模式计算
   const allocatable = useMemo(
     () => Math.max(0, totalQuotaInput * (1 - reservePct)),
     [totalQuotaInput, reservePct],
   );
-  const singleResults = useMemo(
+  const activeResults = useMemo(
     () =>
       decompose(districts, {
         algo,
@@ -102,85 +89,35 @@ export default function AssessTrendDecomp() {
     [districts, algo, allocatable, intensityDrop, alpha, beta, gamma],
   );
 
-  // 逐年模式计算
-  const multiYear = useMemo(
-    () =>
-      decomposeMultiYear(
-        districts,
-        yearTargets,
-        DEFAULT_BASE_YEAR,
-        reservePct,
-        { algo, intensityDropRate: intensityDrop, alpha, beta, gamma },
-      ),
-    [districts, yearTargets, reservePct, algo, intensityDrop, alpha, beta, gamma],
-  );
-
-  const isYearly = granularity === "yearly";
-  const endYearTarget = isYearly ? yearTargets[yearTargets.length - 1].year : targetYear;
-  const cityTotalForCompare = isYearly
-    ? yearTargets[yearTargets.length - 1].totalQuota
-    : totalQuotaInput;
-
-  // 当前展示的年份结果（逐年模式可切换；整段=终点年）
-  const activeResults = useMemo(() => {
-    if (!isYearly) return singleResults;
-    const found = multiYear.find((y) => y.year === viewYear) ?? multiYear[multiYear.length - 1];
-    return found.results;
-  }, [isYearly, singleResults, multiYear, viewYear]);
-
-  const activeAllocatable = isYearly
-    ? (multiYear.find((y) => y.year === viewYear) ?? multiYear[multiYear.length - 1]).allocatable
-    : allocatable;
-
+  const activeAllocatable = allocatable;
   const totalAlloc = activeResults.reduce((s, r) => s + r.allocation, 0);
   const lockedSum = districts.reduce((s, r) => s + (r.locked ? r.lockValue ?? 0 : 0), 0);
-  const overLocked = lockedSum > (isYearly ? multiYear[multiYear.length - 1].allocatable : allocatable);
+  const overLocked = lockedSum > allocatable;
   const histTotal = districts.reduce((s, r) => s + r.historical2025, 0);
 
-  // 趋势数据
+  // 趋势数据 - 整段线性插值
   const trendData = useMemo(() => {
-    if (isYearly) {
-      // 真实逐年分配，前置 2025 历史值
-      const rows: Array<Record<string, number | string>> = [];
-      const base: Record<string, number | string> = { year: `${DEFAULT_BASE_YEAR}年` };
-      districts.forEach((d) => { base[d.name] = d.historical2025; });
-      rows.push(base);
-      multiYear.forEach((yd) => {
-        const row: Record<string, number | string> = { year: `${yd.year}年` };
-        yd.results.forEach((r) => { row[r.name] = +r.allocation.toFixed(1); });
-        rows.push(row);
-      });
-      return rows;
-    }
-    // 整段：线性插值
     const span = Math.max(1, targetYear - DEFAULT_BASE_YEAR);
     const years: number[] = [];
     for (let y = DEFAULT_BASE_YEAR; y <= targetYear; y++) years.push(y);
     return years.map((y) => {
       const t = (y - DEFAULT_BASE_YEAR) / span;
       const row: Record<string, number | string> = { year: `${y}年` };
-      singleResults.forEach((r, i) => {
+      activeResults.forEach((r, i) => {
         const start = districts[i].historical2025;
         row[r.name] = +(start + (r.allocation - start) * t).toFixed(1);
       });
       return row;
     });
-  }, [isYearly, multiYear, singleResults, districts, targetYear]);
+  }, [activeResults, districts, targetYear]);
 
   const updateDistrict = (id: string, patch: Partial<DistrictInput>) => {
     setDistricts((prev) => prev.map((d) => (d.id === id ? { ...d, ...patch } : d)));
   };
 
-  const updateYearTarget = (year: number, totalQuota: number) => {
-    setYearTargets((prev) => prev.map((y) => (y.year === year ? { ...y, totalQuota } : y)));
-  };
-
   const reset = () => {
-    setGranularity("single");
     setTargetYear(DEFAULT_TARGET_YEAR);
     setTotalQuotaInput(DEFAULT_CITY_TOTAL * 0.88);
-    setYearTargets(DEFAULT_YEAR_TARGETS);
-    setViewYear(DEFAULT_TARGET_YEAR);
     setReservePct(DEFAULT_RESERVE_PCT);
     setAlgo("historical");
     setIntensityDrop(DEFAULT_INTENSITY_DROP);
@@ -204,7 +141,7 @@ export default function AssessTrendDecomp() {
               <div>
                 <h1 className="text-xl font-semibold">趋势分解</h1>
                 <p className="text-sm text-muted-foreground">
-                  基于权重算法将全市碳排放总量目标按区进行分解，支持整段与逐年两种模式
+                  基于权重算法将全市碳排放总量目标按区进行分解
                 </p>
               </div>
             </div>
@@ -223,99 +160,57 @@ export default function AssessTrendDecomp() {
 
           {/* ① 全市目标设置 */}
           <Card className="p-4 space-y-3">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2">
-                <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
-                <h2 className="font-medium">全市目标设置</h2>
-              </div>
-              <Tabs value={granularity} onValueChange={(v) => setGranularity(v as Granularity)}>
-                <TabsList className="h-8">
-                  <TabsTrigger value="single" className="text-xs h-6">整段（单一终点年）</TabsTrigger>
-                  <TabsTrigger value="yearly" className="text-xs h-6">逐年（2026–2030）</TabsTrigger>
-                </TabsList>
-              </Tabs>
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
+              <h2 className="font-medium">全市目标设置</h2>
             </div>
 
-            {!isYearly ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">目标年度</Label>
-                    <Select value={String(targetYear)} onValueChange={(v) => setTargetYear(+v)}>
-                      <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {TARGET_YEARS.map((y) => (
-                          <SelectItem key={y} value={String(y)}>{y} 年</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">全市总量目标（万吨 CO₂）</Label>
-                    <Input
-                      type="number"
-                      className="h-9 text-primary font-medium"
-                      value={totalQuotaInput}
-                      onChange={(e) => setTotalQuotaInput(+e.target.value || 0)}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">
-                      预留储备额度：{fmtPct(reservePct, 0)}
-                    </Label>
-                    <Slider
-                      value={[reservePct * 100]}
-                      min={0} max={20} step={1}
-                      onValueChange={(v) => setReservePct(v[0] / 100)}
-                      className="py-2.5"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">可分解额度（自动）</Label>
-                    <div className="h-9 px-3 rounded-md bg-muted/50 flex items-center text-sm font-semibold">
-                      {fmt(allocatable)} 万吨
-                    </div>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">目标年度</Label>
+                <Select value={String(targetYear)} onValueChange={(v) => setTargetYear(+v)}>
+                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {TARGET_YEARS.map((y) => (
+                      <SelectItem key={y} value={String(y)}>{y} 年</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">全市总量目标（万吨 CO₂）</Label>
+                <Input
+                  type="number"
+                  className="h-9 text-primary font-medium"
+                  value={totalQuotaInput}
+                  onChange={(e) => setTotalQuotaInput(+e.target.value || 0)}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">
+                  预留储备额度：{fmtPct(reservePct, 0)}
+                </Label>
+                <Slider
+                  value={[reservePct * 100]}
+                  min={0} max={20} step={1}
+                  onValueChange={(v) => setReservePct(v[0] / 100)}
+                  className="py-2.5"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">可分解额度（自动）</Label>
+                <div className="h-9 px-3 rounded-md bg-muted/50 flex items-center text-sm font-semibold">
+                  {fmt(allocatable)} 万吨
                 </div>
-              </>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-                  {yearTargets.map((y) => (
-                    <div key={y.year} className="space-y-1.5">
-                      <Label className="text-xs text-muted-foreground">{y.year} 年总量目标</Label>
-                      <Input
-                        type="number"
-                        className="h-9 text-primary font-medium"
-                        value={y.totalQuota}
-                        onChange={(e) => updateYearTarget(y.year, +e.target.value || 0)}
-                      />
-                    </div>
-                  ))}
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">
-                      储备：{fmtPct(reservePct, 0)}
-                    </Label>
-                    <Slider
-                      value={[reservePct * 100]}
-                      min={0} max={20} step={1}
-                      onValueChange={(v) => setReservePct(v[0] / 100)}
-                      className="py-2.5"
-                    />
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  默认按等比下降至 2030 年 −12%；可逐年调整任意年份目标。
-                </div>
-              </>
-            )}
+              </div>
+            </div>
 
             <div className="text-xs text-muted-foreground">
               较 2025 全市基数（{fmt(DEFAULT_CITY_TOTAL, 0)} 万吨）
-              <span className={cityTotalForCompare < DEFAULT_CITY_TOTAL ? "text-success ml-1" : "text-destructive ml-1"}>
-                {cityTotalForCompare < DEFAULT_CITY_TOTAL ? "下降" : "上升"} {fmt(Math.abs((cityTotalForCompare - DEFAULT_CITY_TOTAL) / DEFAULT_CITY_TOTAL) * 100, 1)}%
+              <span className={totalQuotaInput < DEFAULT_CITY_TOTAL ? "text-success ml-1" : "text-destructive ml-1"}>
+                {totalQuotaInput < DEFAULT_CITY_TOTAL ? "下降" : "上升"} {fmt(Math.abs((totalQuotaInput - DEFAULT_CITY_TOTAL) / DEFAULT_CITY_TOTAL) * 100, 1)}%
               </span>
-              （{isYearly ? `终点年 ${endYearTarget}` : `目标年 ${targetYear}`}）
+              （目标年 {targetYear}）
             </div>
           </Card>
 
@@ -403,23 +298,6 @@ export default function AssessTrendDecomp() {
               <div className="flex items-center gap-2">
                 <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
                 <h2 className="font-medium">区维度参数表</h2>
-                {isYearly && (
-                  <span className="text-xs text-muted-foreground ml-2">
-                    展示年份分配额度
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-3">
-                {isYearly && (
-                  <Select value={String(viewYear)} onValueChange={(v) => setViewYear(+v)}>
-                    <SelectTrigger className="h-8 w-[120px]"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {yearTargets.map((y) => (
-                        <SelectItem key={y.year} value={String(y.year)}>{y.year} 年</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
                 {overLocked && (
                   <div className="flex items-center gap-1 text-xs text-destructive">
                     <AlertTriangle className="h-3.5 w-3.5" />
@@ -439,14 +317,14 @@ export default function AssessTrendDecomp() {
                     <TableHead className="text-center w-[180px]">
                       锁定值<br/>
                       <span className="text-[10px] text-muted-foreground">
-                        （万吨{isYearly ? "·终点年" : ""}）
+                        （万吨）
                       </span>
                     </TableHead>
                     <TableHead className="text-right">权重</TableHead>
                     <TableHead className="text-right">
                       分配额度<br/>
                       <span className="text-[10px] text-muted-foreground">
-                        （{isYearly ? `${viewYear} 年` : "万吨"}）
+                        （{targetYear} 年 · 万吨）
                       </span>
                     </TableHead>
                     <TableHead className="text-right">同比 2025</TableHead>
@@ -525,7 +403,7 @@ export default function AssessTrendDecomp() {
               <div className="flex items-center gap-2 mb-3">
                 <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
                 <h2 className="font-medium">
-                  各区分配额度对比{isYearly ? `（${viewYear} 年）` : ""}
+                  各区分配额度对比
                 </h2>
               </div>
               <ResponsiveContainer width="100%" height={280}>
@@ -546,7 +424,7 @@ export default function AssessTrendDecomp() {
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-3">
                 <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
-                <h2 className="font-medium">各区占比{isYearly ? `（${viewYear} 年）` : ""}</h2>
+                <h2 className="font-medium">各区占比</h2>
               </div>
               <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
@@ -567,9 +445,7 @@ export default function AssessTrendDecomp() {
             <div className="flex items-center gap-2 mb-3">
               <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
               <h2 className="font-medium">
-                {isYearly
-                  ? `${DEFAULT_BASE_YEAR} → ${endYearTarget} 各区逐年分配趋势`
-                  : `${DEFAULT_BASE_YEAR} → ${targetYear} 各区趋势（线性插值）`}
+                {DEFAULT_BASE_YEAR} → {targetYear} 各区趋势（线性插值）
               </h2>
             </div>
             <ResponsiveContainer width="100%" height={300}>
