@@ -47,7 +47,7 @@ export default function AssessTrend() {
             <IntensityPanel kind="carbon" />
           </TabsContent>
           <TabsContent value="dual-calc" className="mt-4">
-            <DualCalcForm />
+            <DualCalcForm withIndustryTabs />
           </TabsContent>
         </Tabs>
       </div>

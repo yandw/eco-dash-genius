@@ -4,7 +4,7 @@
 export type IndustryKey = "fossil" | "steel" | "power" | "other";
 
 export const INDUSTRY_LABEL: Record<IndustryKey, string> = {
-  fossil: "化石",
+  fossil: "化工",
   steel: "钢铁",
   power: "电力",
   other: "工业其它",
