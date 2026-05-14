@@ -324,7 +324,7 @@ export default function AssessTrendDecomp() {
                     <TableHead className="text-right">
                       分配额度<br/>
                       <span className="text-[10px] text-muted-foreground">
-                        （{isYearly ? `${viewYear} 年` : "万吨"}）
+                        （{targetYear} 年 · 万吨）
                       </span>
                     </TableHead>
                     <TableHead className="text-right">同比 2025</TableHead>
