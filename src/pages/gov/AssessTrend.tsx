@@ -10,14 +10,14 @@ export default function AssessTrend() {
   if (!isCityAdmin()) return <Navigate to="/gov/assess/goal" replace />;
 
   return (
-    <AppLayout title="趋势测算" subtitle={"考核管理 / 趋势测算"}>
+    <AppLayout title="碳排测算" subtitle={"考核管理 / 碳排测算"}>
       <div className="p-6 space-y-4">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <TrendingUp className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold">趋势测算</h1>
+            <h1 className="text-xl font-semibold">碳排测算</h1>
             <p className="text-sm text-muted-foreground">
               "十五五"能耗与碳排放增量、强度多情景测算，输入预设值即时计算并可视化
             </p>
