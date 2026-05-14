@@ -69,20 +69,6 @@ export function IncrementPanel({ kind }: Props) {
 
   return (
     <div className="space-y-4">
-      <FormulaCard
-        items={[
-          { name: "D", expr: "(1 + C)^5 − 1", desc: "工业增加值5年累计" },
-          { name: "E", expr: "(1 + B)(1 + D) − 1", desc: `5年${indicator}增长率` },
-          { name: "G", expr: "F × (1 + E)", desc: `2030年${indicator}` },
-          { name: "H", expr: "G − F", desc: `${indicator}增加量` },
-        ]}
-        notes={[
-          `B = ${dropLabel}（预设，负值）`,
-          "C = 工业增加值同比（预设）",
-          `F = 2025年${indicator}基数 (${unit})`,
-        ]}
-      />
-
       <Card className="p-4">
         <div className="flex items-center justify-between mb-3 flex-wrap gap-3">
           <div className="flex items-center gap-2 text-sm">
