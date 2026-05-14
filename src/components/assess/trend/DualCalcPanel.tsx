@@ -179,6 +179,8 @@ export function DualCalcPanel({ industry }: Props) {
                   <TableHead className="text-right min-w-[150px]">单位热值含碳量 (tC/GJ)</TableHead>
                   <TableHead className="text-right min-w-[110px]">碳氧化率 (%)</TableHead>
                   <TableHead className="text-right min-w-[110px]">排放量 (tCO₂)</TableHead>
+                  <TableHead className="text-right min-w-[120px]">生产总值 (万元)</TableHead>
+                  <TableHead className="text-right min-w-[140px]">碳排放强度 (tCO₂/万元)</TableHead>
                   <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
