@@ -403,7 +403,7 @@ export default function AssessTrendDecomp() {
               <div className="flex items-center gap-2 mb-3">
                 <span className="inline-block h-4 w-1 rounded-sm bg-primary" />
                 <h2 className="font-medium">
-                  各区分配额度对比{isYearly ? `（${viewYear} 年）` : ""}
+                  各区分配额度对比
                 </h2>
               </div>
               <ResponsiveContainer width="100%" height={280}>
