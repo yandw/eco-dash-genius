@@ -39,6 +39,7 @@ interface FuelRow {
   ncv: number | null;
   cc: number | null;
   ox: number | null;
+  output: number;
 }
 
 interface ElecRow {
@@ -48,6 +49,7 @@ interface ElecRow {
   unit: string;
   source: DataSource;
   factor: number | null;
+  output: number;
 }
 
 const fmt = (n: number, d = 2) =>
