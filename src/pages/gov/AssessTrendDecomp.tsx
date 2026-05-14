@@ -25,14 +25,12 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { isCityAdmin } from "@/mocks/currentUser";
 import {
   ALGO_FORMULA,
   ALGO_LABEL,
   decompose,
-  decomposeMultiYear,
   type DecompAlgo,
   type DistrictInput,
 } from "@/lib/trendDecomp";
@@ -44,7 +42,6 @@ import {
   DEFAULT_INTENSITY_DROP,
   DEFAULT_RESERVE_PCT,
   DEFAULT_TARGET_YEAR,
-  DEFAULT_YEAR_TARGETS,
 } from "@/mocks/trendDecompDefaults";
 import { toast } from "sonner";
 
