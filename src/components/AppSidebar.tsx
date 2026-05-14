@@ -119,22 +119,22 @@ const _entItemsHidden: NavItem[] = [
 
 export const entItems: NavItem[] = [
   {
+    title: "考核管理",
+    url: "/ent/assess",
+    icon: ClipboardCheck,
+    children: [
+      { title: "碳双控测算", url: "/ent/assess/dual-calc", icon: Gauge },
+      { title: "目标分解", url: "/ent/assess/goal", icon: Target },
+      { title: "考核结果", url: "/ent/assess/dual", icon: ClipboardCheck },
+    ],
+  },
+  {
     title: "档案管理",
     url: "/ent/archives",
     icon: FolderArchive,
     children: [
       { title: "节能档案", url: "/ent/archives", icon: FolderArchive },
       { title: "岗位备案", url: "/ent/posts", icon: Users },
-    ],
-  },
-  {
-    title: "考核管理",
-    url: "/ent/assess",
-    icon: ClipboardCheck,
-    children: [
-      { title: "目标分解", url: "/ent/assess/goal", icon: Target },
-      { title: "碳双控测算", url: "/ent/assess/dual-calc", icon: Gauge },
-      { title: "考核结果", url: "/ent/assess/dual", icon: ClipboardCheck },
     ],
   },
 ];
