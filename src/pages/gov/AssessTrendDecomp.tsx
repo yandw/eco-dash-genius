@@ -118,7 +118,7 @@ export default function AssessTrendDecomp() {
 
   const reset = () => {
     setTargetYear(DEFAULT_TARGET_YEAR);
-    setTotalQuotaInput(DEFAULT_CITY_TOTAL * 0.88);
+    setDropRate(0.12);
     setReservePct(DEFAULT_RESERVE_PCT);
     setAlgo("historical");
     setIntensityDrop(DEFAULT_INTENSITY_DROP);
