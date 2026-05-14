@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, RotateCcw, Trash2, Database } from "lucide-react";
-import { FormulaCard } from "./FormulaCard";
 import { PercentInput } from "./PercentInput";
 import { TrendChart } from "./TrendChart";
 import { calcIncrement, projectYearly } from "@/lib/trendCalc";
