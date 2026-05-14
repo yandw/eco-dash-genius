@@ -2,6 +2,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IncrementPanel } from "@/components/assess/trend/IncrementPanel";
 import { IntensityPanel } from "@/components/assess/trend/IntensityPanel";
+import { DualCalcForm } from "@/components/assess/trend/DualCalcForm";
 import { isCityAdmin } from "@/mocks/currentUser";
 import { Navigate } from "react-router-dom";
 import { TrendingUp } from "lucide-react";
@@ -25,11 +26,12 @@ export default function AssessTrend() {
         </div>
 
         <Tabs defaultValue="energy-inc">
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full md:w-auto">
+          <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full md:w-auto">
             <TabsTrigger value="energy-inc">能耗增量测算</TabsTrigger>
             <TabsTrigger value="energy-int">能耗强度测算</TabsTrigger>
             <TabsTrigger value="carbon-inc">碳排放增量测算</TabsTrigger>
             <TabsTrigger value="carbon-int">碳排放强度测算</TabsTrigger>
+            <TabsTrigger value="dual-calc">双控测算</TabsTrigger>
           </TabsList>
 
           <TabsContent value="energy-inc" className="mt-4">
@@ -43,6 +45,9 @@ export default function AssessTrend() {
           </TabsContent>
           <TabsContent value="carbon-int" className="mt-4">
             <IntensityPanel kind="carbon" />
+          </TabsContent>
+          <TabsContent value="dual-calc" className="mt-4">
+            <DualCalcForm />
           </TabsContent>
         </Tabs>
       </div>
