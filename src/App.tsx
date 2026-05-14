@@ -47,6 +47,7 @@ import AssessDualDistrictDetail from "./pages/gov/AssessDualDistrictDetail.tsx";
 import AssessDualBqDetail from "./pages/gov/AssessDualBqDetail.tsx";
 import AssessTasks from "./pages/gov/AssessTasks.tsx";
 import AssessTrend from "./pages/gov/AssessTrend.tsx";
+import AssessTrendDecomp from "./pages/gov/AssessTrendDecomp.tsx";
 import EntAssessGoal from "./pages/ent/EntAssessGoal.tsx";
 import EntAssessDual from "./pages/ent/EntAssessDual.tsx";
 import GovPostDetail from "./pages/gov/GovPostDetail.tsx";
@@ -89,6 +90,7 @@ const App = () => (
           <Route path="/gov/assess/dual/bq/:entId" element={<AssessDualBqDetail />} />
           <Route path="/gov/assess/tasks" element={<AssessTasks />} />
           <Route path="/gov/assess/trend" element={<AssessTrend />} />
+          <Route path="/gov/assess/trend-decomp" element={<AssessTrendDecomp />} />
           <Route path="/gov/assets" element={<Assets />} />
           <Route path="/gov/green-mfg" element={<GreenMfg />} />
           <Route path="/gov/benchmark" element={<Benchmark />} />
