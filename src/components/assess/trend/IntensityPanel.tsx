@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, RotateCcw, Trash2 } from "lucide-react";
-import { FormulaCard } from "./FormulaCard";
+
 import { PercentInput } from "./PercentInput";
 import { TrendChart } from "./TrendChart";
 import { calcEnergyIntensity, calcCarbonIntensity } from "@/lib/trendCalc";
