@@ -146,28 +146,6 @@ export function IncrementPanel({ kind }: Props) {
           </Table>
         </div>
       </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <TrendChart
-          title={`各情景 2030 ${indicator} 与增加量对比（${unit}）`}
-          data={chartData}
-          xKey="name"
-          series={[
-            { key: "2030预测", name: `2030年${indicator}` },
-            { key: "增加量", name: "增加量", color: "hsl(var(--accent))" },
-          ]}
-          yFormatter={(v) => fmtNum(v, 0)}
-          kind="bar"
-        />
-        <TrendChart
-          title={`情景 1 逐年推演（${unit}，按复合年增速）`}
-          data={yearly}
-          xKey="year"
-          series={[{ key: "value", name: indicator, type: "line" }]}
-          yFormatter={(v) => fmtNum(v, 0)}
-          kind="line"
-        />
-      </div>
     </div>
   );
 }
