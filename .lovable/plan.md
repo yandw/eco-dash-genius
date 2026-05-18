@@ -1,50 +1,41 @@
-## 目标
-在所有「碳双控测算」界面（市级管理员 4 个行业 Tab、区级管理员、企业侧）的表格中，于「排放量(tCO₂)」列之后新增两列：
-- **生产总值（万元）**：用户手动输入
-- **碳排放强度（tCO₂/万元）** = 排放量 / 生产总值，自动计算（实时）
+# 市级管理员能碳测算调整
 
-## 范围
-仅修改 `src/components/assess/trend/DualCalcPanel.tsx`（所有入口共用此面板，一处改动全部生效）。
+## 1. 侧边栏菜单调整 (`src/components/AppSidebar.tsx`)
 
-## 改动点
+在 `考核管理` 的 `isCityAdmin()` 分支中：
+- 删除 `{ title: "碳双控测算", url: "/gov/assess/dual-calc", icon: Gauge }`（仅市级管理员看不到，企业侧保留）。等等——查代码，"碳双控测算"实际在 `isCityAdmin()` 外面对所有人显示。需求是"市级管理员的二级菜单去掉"，所以改为：将该项放入非市级管理员的分支显示（区级才显示），市级管理员不显示。
+- 将 `碳排测算` 项的 title 由 `"碳排测算"` 改为 `"能碳测算"`。
 
-### 1. 数据模型
-- `FuelRow` 与 `ElecRow` 各新增字段：`output: number`（生产总值，万元，默认 0）。
-- `newFuelRow()` / `newElecRow()` 初始化 `output: 0`。
+## 2. AssessTrend 页面调整 (`src/pages/gov/AssessTrend.tsx`)
 
-### 2. 计算
-在 `fuelComputed` / `elecComputed` 的 map 中，基于已有 `emission` 追加：
-```
-intensity = (emission != null && output > 0) ? emission / output : null
-```
+- 页面标题、subtitle、h1 文案均由"碳排测算"改为"能碳测算"。
+- 移除 `dual-calc` Tab 与对应 `TabsContent`（已在菜单里独立入口；同时第1点提到去掉菜单中的碳双控测算——保留 dual-calc 页面路由本身，但本"能碳测算"Tab 列表不再包含它）。
+- TabsList 改为 4 列。
 
-### 3. 表格列
-范围一表格 `<TableHeader>` 与每行：
-- 在「排放量 (tCO₂)」`<TableHead>` 之后插入：
-  - `生产总值 (万元)`（右对齐，min-w-[120px]）
-  - `碳排放强度 (tCO₂/万元)`（右对齐，min-w-[140px]）
-- 行内：
-  - 生产总值列：`<Input type="number">`，绑定 `r.output`，`onChange` 调用 `updateFuel(r.id, { output: +e.target.value || 0 })`
-  - 碳排放强度列：纯展示，`r.intensity == null ? "—" : fmt(r.intensity, 4)`，文本色 `text-warning`
+## 3. IncrementPanel / IntensityPanel 隐藏图表
 
-范围二表格做同样处理（颜色用 `text-primary`，updater 用 `updateElec`）。
+需求："4个tab，去掉每个tab的柱状图、趋势图，只保留测算表格，默认保留1行数据"。
 
-### 4. 合计行
-- 范围一合计行 `colSpan` 由 `7` 改为 `9`（新增 2 列向左推 1 格，需重算）— 当前结构：`#, 燃料, 净消耗, 来源, 低位发热, 含碳, 氧化率, 排放, 删除` = 9 列；合计 `colSpan=7` 占前 7 列，排放 1 列，删除 1 列。新增 2 列后总列数 = 11，合计应 `colSpan=7`，再加新增的"生产总值合计/强度占位"，最简方案：合计行改为 `colSpan=7`（前 7 列）+ 排放小计 + 生产总值合计单元（合计输入用 `—` 或求和）+ 强度单元（`—`）+ 删除空列。
-- 决定：**合计行下「生产总值」展示总和（数值求和），「碳排放强度」展示 `—`**（避免误导，因为整体强度 ≠ 各行强度均值）。
-- 范围二同理，原 `colSpan=5` 保持，后接 排放小计 / 生产总值小计 / 强度`—` / 删除空列。
+仅在市级管理员场景生效。当前这两个组件只在 `AssessTrend`（市级专属页）使用，所以可直接修改组件：
+- `src/components/assess/trend/IncrementPanel.tsx`：移除底部 `<TrendChart .../>` 渲染；初始 `rows` 改为 `initial.slice(0, 1)`，重置同理。
+- `src/components/assess/trend/IntensityPanel.tsx`：同上。
 
-### 5. 删除按钮列
-保持最右侧不变。
+（不删除 `TrendChart` 导入与 chartData 计算？为简洁起见一并删除未使用导入。）
 
-## 不改动
-- `DualCalcForm`、`dualCalcDefaults`、其他页面与路由
-- 公式说明卡仅为范围一/二排放公式，不新增公式说明（如需可后续补充）
+## 4. 碳双控测算 界面：行业改为下拉选择
 
-## 视觉
-- 新列单元格内 Input 高度 `h-8`、右对齐、`text-primary`
-- 强度文本采用 `tabular-nums font-medium`，颜色与该范围主色一致
-- 表格已 `overflow-x-auto`，新增列不破坏响应式
+修改 `src/components/assess/trend/DualCalcForm.tsx`：
+- 当 `withIndustryTabs=true` 时，不再渲染 `Tabs`，改为顶部一个"行业"`<Select>`（使用 `INDUSTRY_LABEL` 4 个选项：化工 / 钢铁 / 电力 / 工业其它），下方根据所选 industry 渲染单个 `<DualCalcPanel industry={selected} />`。
+- 默认值 `fossil`。
+- 布局：标签"行业"+ Select，约 w-48，右对齐于卡片或顶部条。
 
-## 验证
-进入 `/gov/assess/dual-calc`（市级查看 4 Tab）/ 区级 / 企业侧三处页面，输入排放参数 + 生产总值，确认强度实时变化、合计行求和正确。
+此改动同时影响：
+- `/gov/assess/dual-calc`（`AssessDualCalc.tsx`，市级管理员 `withIndustryTabs=true`）——符合需求。
+- `AssessTrend` 中的 dual-calc tab 已按第2点移除，无影响。
+
+## 技术细节
+
+- `isCityAdmin()` 判断保持。
+- `withIndustryTabs` 参数语义保持不变（true=多行业可切；现以 Select 形式呈现）。
+- 表格"默认保留1行数据"指页面首次进入时只显示 1 行，用户仍可"新增情景"。
+- 不删除 `TrendChart`、`dual-calc` 路由、`AssessTrendDecomp` 等代码。
