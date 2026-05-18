@@ -50,12 +50,8 @@ export function IntensityPanel({ kind }: Props) {
   };
 
   const removeRow = (id: string) => setRows((rs) => rs.filter((r) => r.id !== id));
-  const reset = () => setRows(initial);
+  const reset = () => setRows(initial.slice(0, 1));
 
-  const chartData = computed.map((r) => ({
-    name: `${(r.e * 100).toFixed(1)}%`,
-    [`${indicator}强度下降率`]: Number((r.g * 100).toFixed(2)) / 100,
-  }));
 
   return (
     <div className="space-y-4">
