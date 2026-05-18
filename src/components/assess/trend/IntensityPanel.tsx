@@ -142,16 +142,6 @@ export function IntensityPanel({ kind }: Props) {
           </Table>
         </div>
       </Card>
-
-      <TrendChart
-        title={`${indicator}增长率 E 与${indicator}强度下降率的趋势关系`}
-        data={chartData}
-        xKey="name"
-        series={[{ key: `${indicator}强度下降率`, name: `${indicator}强度下降率`, type: "line" }]}
-        yFormatter={(v) => `${(v * 100).toFixed(1)}%`}
-        referenceY={{ value: refY, label: refLabel }}
-        kind="line"
-      />
     </div>
   );
 }
