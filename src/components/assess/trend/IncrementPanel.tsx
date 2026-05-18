@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, RotateCcw, Trash2, Database } from "lucide-react";
 import { PercentInput } from "./PercentInput";
-import { TrendChart } from "./TrendChart";
-import { calcIncrement, projectYearly } from "@/lib/trendCalc";
+import { calcIncrement } from "@/lib/trendCalc";
 import {
   ENERGY_BASE_2025,
   CARBON_BASE_2025,
@@ -27,7 +26,7 @@ export function IncrementPanel({ kind }: Props) {
   const initialDefaults = isEnergy ? energyIncrementDefaults : carbonIncrementDefaults;
   const initialBase = isEnergy ? ENERGY_BASE_2025 : CARBON_BASE_2025;
 
-  const [rows, setRows] = useState<IncrementScenario[]>(initialDefaults);
+  const [rows, setRows] = useState<IncrementScenario[]>(initialDefaults.slice(0, 1));
   const [base, setBase] = useState<number>(initialBase);
 
   const unit = isEnergy ? "万吨标煤" : "万吨CO₂";
@@ -52,20 +51,9 @@ export function IncrementPanel({ kind }: Props) {
 
   const removeRow = (id: string) => setRows((rs) => rs.filter((r) => r.id !== id));
   const reset = () => {
-    setRows(initialDefaults);
+    setRows(initialDefaults.slice(0, 1));
     setBase(initialBase);
   };
-
-  const chartData = computed.map((r) => ({
-    name: `${(r.b * 100).toFixed(1)}%`,
-    "2030预测": Number(r.g.toFixed(2)),
-    "增加量": Number(r.h.toFixed(2)),
-  }));
-
-  // 选中第一行做逐年推演
-  const yearly = computed[0]
-    ? projectYearly(base, computed[0].e).map((p) => ({ year: String(p.year), value: Number(p.value.toFixed(2)) }))
-    : [];
 
   return (
     <div className="space-y-4">
@@ -158,28 +146,6 @@ export function IncrementPanel({ kind }: Props) {
           </Table>
         </div>
       </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <TrendChart
-          title={`各情景 2030 ${indicator} 与增加量对比（${unit}）`}
-          data={chartData}
-          xKey="name"
-          series={[
-            { key: "2030预测", name: `2030年${indicator}` },
-            { key: "增加量", name: "增加量", color: "hsl(var(--accent))" },
-          ]}
-          yFormatter={(v) => fmtNum(v, 0)}
-          kind="bar"
-        />
-        <TrendChart
-          title={`情景 1 逐年推演（${unit}，按复合年增速）`}
-          data={yearly}
-          xKey="year"
-          series={[{ key: "value", name: indicator, type: "line" }]}
-          yFormatter={(v) => fmtNum(v, 0)}
-          kind="line"
-        />
-      </div>
     </div>
   );
 }

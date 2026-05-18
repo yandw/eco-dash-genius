@@ -5,7 +5,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, RotateCcw, Trash2 } from "lucide-react";
 
 import { PercentInput } from "./PercentInput";
-import { TrendChart } from "./TrendChart";
 import { calcEnergyIntensity, calcCarbonIntensity } from "@/lib/trendCalc";
 import {
   energyIntensityDefaults,
@@ -27,7 +26,7 @@ export function IntensityPanel({ kind }: Props) {
   const refY = isEnergy ? -0.135 : -0.18;
   const refLabel = isEnergy ? "参考目标 -13.5%" : "参考目标 -18%";
 
-  const [rows, setRows] = useState<IntensityScenario[]>(initial);
+  const [rows, setRows] = useState<IntensityScenario[]>(initial.slice(0, 1));
 
   const computed = useMemo(
     () =>
@@ -51,12 +50,8 @@ export function IntensityPanel({ kind }: Props) {
   };
 
   const removeRow = (id: string) => setRows((rs) => rs.filter((r) => r.id !== id));
-  const reset = () => setRows(initial);
+  const reset = () => setRows(initial.slice(0, 1));
 
-  const chartData = computed.map((r) => ({
-    name: `${(r.e * 100).toFixed(1)}%`,
-    [`${indicator}强度下降率`]: Number((r.g * 100).toFixed(2)) / 100,
-  }));
 
   return (
     <div className="space-y-4">
@@ -147,16 +142,6 @@ export function IntensityPanel({ kind }: Props) {
           </Table>
         </div>
       </Card>
-
-      <TrendChart
-        title={`${indicator}增长率 E 与${indicator}强度下降率的趋势关系`}
-        data={chartData}
-        xKey="name"
-        series={[{ key: `${indicator}强度下降率`, name: `${indicator}强度下降率`, type: "line" }]}
-        yFormatter={(v) => `${(v * 100).toFixed(1)}%`}
-        referenceY={{ value: refY, label: refLabel }}
-        kind="line"
-      />
     </div>
   );
 }
