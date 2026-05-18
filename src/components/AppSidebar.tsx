@@ -72,12 +72,14 @@ export const govItems: NavItem[] = [
     children: [
       ...(isCityAdmin()
         ? [
-            { title: "碳排测算", url: "/gov/assess/trend", icon: LineChart },
+            { title: "能碳测算", url: "/gov/assess/trend", icon: LineChart },
             // { title: "趋势分解", url: "/gov/assess/trend-decomp", icon: PieChart }, // 暂时隐藏
           ]
         : []),
       { title: "目标分解", url: "/gov/assess/goal", icon: Target },
-      { title: "碳双控测算", url: "/gov/assess/dual-calc", icon: Gauge },
+      ...(!isCityAdmin()
+        ? [{ title: "碳双控测算", url: "/gov/assess/dual-calc", icon: Gauge }]
+        : []),
       { title: "双控考核", url: "/gov/assess/dual", icon: ClipboardCheck },
       ...(isCityAdmin()
         ? [
