@@ -26,7 +26,7 @@ export function IntensityPanel({ kind }: Props) {
   const refY = isEnergy ? -0.135 : -0.18;
   const refLabel = isEnergy ? "参考目标 -13.5%" : "参考目标 -18%";
 
-  const [rows, setRows] = useState<IntensityScenario[]>(initial);
+  const [rows, setRows] = useState<IntensityScenario[]>(initial.slice(0, 1));
 
   const computed = useMemo(
     () =>
