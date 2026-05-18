@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, RotateCcw, Trash2, Database } from "lucide-react";
 import { PercentInput } from "./PercentInput";
-import { TrendChart } from "./TrendChart";
-import { calcIncrement, projectYearly } from "@/lib/trendCalc";
+import { calcIncrement } from "@/lib/trendCalc";
 import {
   ENERGY_BASE_2025,
   CARBON_BASE_2025,
