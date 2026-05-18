@@ -51,20 +51,9 @@ export function IncrementPanel({ kind }: Props) {
 
   const removeRow = (id: string) => setRows((rs) => rs.filter((r) => r.id !== id));
   const reset = () => {
-    setRows(initialDefaults);
+    setRows(initialDefaults.slice(0, 1));
     setBase(initialBase);
   };
-
-  const chartData = computed.map((r) => ({
-    name: `${(r.b * 100).toFixed(1)}%`,
-    "2030预测": Number(r.g.toFixed(2)),
-    "增加量": Number(r.h.toFixed(2)),
-  }));
-
-  // 选中第一行做逐年推演
-  const yearly = computed[0]
-    ? projectYearly(base, computed[0].e).map((p) => ({ year: String(p.year), value: Number(p.value.toFixed(2)) }))
-    : [];
 
   return (
     <div className="space-y-4">
