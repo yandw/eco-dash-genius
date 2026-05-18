@@ -5,7 +5,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, RotateCcw, Trash2 } from "lucide-react";
 
 import { PercentInput } from "./PercentInput";
-import { TrendChart } from "./TrendChart";
 import { calcEnergyIntensity, calcCarbonIntensity } from "@/lib/trendCalc";
 import {
   energyIntensityDefaults,
