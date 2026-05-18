@@ -26,7 +26,7 @@ export function IncrementPanel({ kind }: Props) {
   const initialDefaults = isEnergy ? energyIncrementDefaults : carbonIncrementDefaults;
   const initialBase = isEnergy ? ENERGY_BASE_2025 : CARBON_BASE_2025;
 
-  const [rows, setRows] = useState<IncrementScenario[]>(initialDefaults);
+  const [rows, setRows] = useState<IncrementScenario[]>(initialDefaults.slice(0, 1));
   const [base, setBase] = useState<number>(initialBase);
 
   const unit = isEnergy ? "万吨标煤" : "万吨CO₂";
